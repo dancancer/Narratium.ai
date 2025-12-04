@@ -50,7 +50,7 @@ export async function switchDialogueBranch({ characterId, nodeId }: SwitchDialog
           id: node.nodeId,
           role: "assistant",
           thinkingContent: node.thinkingContent ?? "",
-          content: node.assistantResponse,
+          content: node.parsedContent?.regexResult || node.assistantResponse,
           parsedContent: node.parsedContent || null, 
           nodeId: node.nodeId,
         });

@@ -3,6 +3,13 @@
 import { useEffect, useRef, memo, useState, useCallback, useMemo } from "react";
 import { useSymbolColorStore } from "@/contexts/SymbolColorStore";
 import { useLanguage } from "@/app/i18n";
+import {
+  SLASH_RUNNER_SCRIPT,
+  SLASH_RUNNER_STYLES,
+  extractSlashRunnerEmbeds,
+  injectSlashRunnerEmbeds,
+  isCompleteHtmlDocument,
+} from "./chatHtmlHelpers";
 
 // Virtual queue for rendering optimization
 class VirtualRenderQueue {
@@ -113,14 +120,6 @@ function convertMarkdown(str: string): string {
   });
 
   return str;
-}
-
-function isCompleteHtmlDocument(str: string): boolean {
-  const trimmed = str.trim().toLowerCase();
-  return (
-    trimmed.includes("<!doctype html") ||
-    (trimmed.startsWith("<html") && trimmed.includes("</html>"))
-  );
 }
 
 function detectHtmlTags(str: string) {
@@ -251,6 +250,19 @@ const CACHE_MAX_SIZE = 50; // Limit cache size to prevent memory bloat
 // Generate a cache key from unique tags
 function generateCacheKey(tags: string[]): string {
   return tags.sort().join("|");
+}
+
+function rewriteIframeParentAccess(html: string): string {
+  if (!html || !html.includes("<iframe") || !html.includes("window.parent")) return html;
+  let patched = html.replace(
+    /(<iframe[^>]*srcdoc=["'])([\s\S]*?)(["'])/gi,
+    (_match, prefix, srcdocContent, suffix) => `${prefix}${srcdocContent.replace(/window\.parent(?!\.parent)/g, "window.parent.parent")}${suffix}`,
+  );
+  patched = patched.replace(
+    /(<iframe[^>]*>)([\s\S]*?)(<\/iframe>)/gi,
+    (_match, start, inner, end) => `${start}${inner.replace(/window\.parent(?!\.parent)/g, "window.parent.parent")}${end}`,
+  );
+  return patched;
 }
 
 // Clear old cache entries when limit is reached
@@ -538,12 +550,16 @@ export default memo(function ChatHtmlBubble({
       return lastProcessedHtmlRef.current;
     }
     
-    const md = convertMarkdown(rawHtml);
+    const { cleaned, embeds } = extractSlashRunnerEmbeds(rawHtml);
+    const md = convertMarkdown(cleaned);
     const tagged = replaceTags(md);
-    const result = tagged.replace(/^[\s\r\n]+|[\s\r\n]+$/g, "");
+    const injected = injectSlashRunnerEmbeds(tagged, embeds);
+    const result = injected.replace(/^[\s\r\n]+|[\s\r\n]+$/g, "");
     lastProcessedHtmlRef.current = result;
     return result;
   }, [rawHtml]);
+
+  const iframeSafeHtml = useMemo(() => rewriteIframeParentAccess(processedHtml), [processedHtml]);
 
   // Batched update function using virtual queue
   const batchedUpdate = useCallback((updateFn: () => void) => {
@@ -609,30 +625,11 @@ export default memo(function ChatHtmlBubble({
   const adjustHeightOnce = useCallback(() => {
     adjustHeightOptimized();
   }, [adjustHeightOptimized]);
-  
-  const isFullDoc = isCompleteHtmlDocument(rawHtml);
-  if (isFullDoc) {
-    return (
-      <iframe
-        ref={frameRef}
-        sandbox="allow-scripts allow-same-origin"
-        srcDoc={rawHtml}
-        onLoad={adjustHeightOnce}
-        style={{
-          width: "100%",
-          border: 0,
-          overflow: "auto",
-          height: "600px",
-          background: "transparent",
-        }}
-      />
-    );
-  }
 
   // Optimized streaming script with virtual queue integration
   const streamingScript = enableStreaming
     ? `<script>
-      const full = ${JSON.stringify(processedHtml)};
+      const full = ${JSON.stringify(iframeSafeHtml)};
       const wrap = document.getElementById('content-wrapper');
       let i = 0;
       let streamingQueue = [];
@@ -667,9 +664,9 @@ export default memo(function ChatHtmlBubble({
     <\/script>`
     : "";
 
-  const initialContent = enableStreaming ? "" : processedHtml;
+  const initialContent = enableStreaming ? "" : iframeSafeHtml;
 
-  const srcDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*,*::before,*::after{box-sizing:border-box;max-width:100%}html,body{margin:0;padding:0;color:#f4e8c1;font:16px/${1.5} serif;background:transparent;word-wrap:break-word;overflow-wrap:break-word;hyphens:auto;white-space:pre-wrap;overflow:hidden;}img,video,iframe{max-width:100%;height:auto;display:block;margin:0 auto}table{width:100%;border-collapse:collapse;overflow-x:auto;display:block}code,pre{font-family:monospace;font-size:0.9rem;white-space:pre-wrap;background:rgba(40,40,40,0.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);}pre{background:rgba(40,40,40,0.8);padding:12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);margin:8px 0;}blockquote{margin:8px 0;padding:8px 12px;border-left:4px solid #93c5fd;background:rgba(147,197,253,0.08);border-radius:0 4px 4px 0;font-style:italic;color:#93c5fd;}strong{color:#fb7185;font-weight:bold;}em{color:#c4b5fd;font-style:italic;}.dialogue{color:#fda4af;}a{color:#93c5fd}.tag-styled{white-space:inherit;}</style></head><body><div id="content-wrapper">${initialContent}</div><script>
+  const srcDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*,*::before,*::after{box-sizing:border-box;max-width:100%}html,body{margin:0;padding:0;color:#f4e8c1;font:16px/${1.5} serif;background:transparent;word-wrap:break-word;overflow-wrap:break-word;hyphens:auto;white-space:pre-wrap;overflow:hidden;}img,video,iframe{max-width:100%;height:auto;display:block;margin:0 auto}table{width:100%;border-collapse:collapse;overflow-x:auto;display:block}code,pre{font-family:monospace;font-size:0.9rem;white-space:pre-wrap;background:rgba(40,40,40,0.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);}pre{background:rgba(40,40,40,0.8);padding:12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);margin:8px 0;}blockquote{margin:8px 0;padding:8px 12px;border-left:4px solid #93c5fd;background:rgba(147,197,253,0.08);border-radius:0 4px 4px 0;font-style:italic;color:#93c5fd;}strong{color:#fb7185;font-weight:bold;}em{color:#c4b5fd;font-style:italic;}.dialogue{color:#fda4af;}a{color:#93c5fd}.tag-styled{white-space:inherit;}${SLASH_RUNNER_STYLES}</style></head><body><div id="content-wrapper">${initialContent}</div><script>
 // Virtual queue integration for performance optimization
 const virtualQueue = {
   tasks: [],
@@ -851,6 +848,7 @@ resizeObserver.observe(document.body);
 if (contentWrapper) {
   resizeObserver.observe(contentWrapper);
 }
+${SLASH_RUNNER_SCRIPT}
 
 // Handle recalculation requests from parent with throttling and virtual queue
 let lastRecalculateRequest = 0;
@@ -967,12 +965,12 @@ window.addEventListener('message', function(e) {
         batchedUpdate(() => {
           doc.body.innerHTML = "";
           const contentDiv = doc.createElement("div");
-          contentDiv.innerHTML = processedHtml;
+          contentDiv.innerHTML = iframeSafeHtml;
           doc.body.appendChild(contentDiv);
         });
       }
     }
-  }, [processedHtml, batchedUpdate]);
+  }, [iframeSafeHtml, batchedUpdate]);
 
   // Cleanup virtual queue on unmount
   useEffect(() => {
@@ -997,6 +995,7 @@ window.addEventListener('message', function(e) {
     );
   }
 
+  console.log(srcDoc);
   return (
     <div className="chat-bubble-container" style={{ maxWidth: "calc(100% - 10px)", margin: "0 auto" }}>
       <style jsx>{`
@@ -1032,4 +1031,3 @@ window.addEventListener('message', function(e) {
     </div>
   );
 });
-

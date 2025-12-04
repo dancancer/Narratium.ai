@@ -65,6 +65,9 @@ interface Message {
 interface Props {
   character: Character;
   messages: Message[];
+  openingMessages: { id: string; content: string }[];
+  openingIndex: number;
+  openingLocked: boolean;
   userInput: string;
   setUserInput: (val: string) => void;
   isSending: boolean;
@@ -73,6 +76,7 @@ interface Props {
   onSuggestedInput: (input: string) => void;
   onTruncate: (id: string) => void;
   onRegenerate: (id: string) => void;
+  onOpeningNavigate: (direction: "prev" | "next") => void;
   fontClass: string;
   serifFontClass: string;
   t: (key: string) => string;
@@ -89,6 +93,9 @@ interface Props {
 export default function CharacterChatPanel({
   character,
   messages,
+  openingMessages,
+  openingIndex,
+  openingLocked,
   userInput,
   setUserInput,
   isSending,
@@ -97,6 +104,7 @@ export default function CharacterChatPanel({
   onSuggestedInput,
   onTruncate,
   onRegenerate,
+  onOpeningNavigate,
   fontClass,
   serifFontClass,
   t,
@@ -717,6 +725,55 @@ export default function CharacterChatPanel({
             </div>
           ) : (
             <div className="space-y-8">
+              {!openingLocked &&
+                openingMessages.length > 1 &&
+                messages.length === 1 &&
+                messages[0].role === "assistant" && (
+                <div className="flex items-center justify-center gap-3 text-[#c0a480]">
+                  <button
+                    onClick={() => onOpeningNavigate("prev")}
+                    disabled={isSending}
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[#534741] bg-[#1c1c1c] hover:border-[#a18d6f] hover:text-[#f9c86d] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    aria-label="切换上一条开场"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  <span className={`text-sm ${serifFontClass}`}>
+                    {t("firstMessage") || "开场白"} {openingIndex + 1}/
+                    {openingMessages.length}
+                  </span>
+                  <button
+                    onClick={() => onOpeningNavigate("next")}
+                    disabled={isSending}
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[#534741] bg-[#1c1c1c] hover:border-[#a18d6f] hover:text-[#f9c86d] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    aria-label="切换下一条开场"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 4.293a1 1 0 011.414 0L14 9.586a1 1 0 010 1.414l-5.293 5.293a1 1 0 01-1.414-1.414L11.586 10 7.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
               {messages.map((message, index) => {
                 if (message.role === "sample") return null;
 
@@ -1298,6 +1355,7 @@ export default function CharacterChatPanel({
               <input
                 type="text"
                 value={userInput}
+                id="send_textarea"
                 onChange={(e) => setUserInput(e.target.value)}
                 placeholder={
                   t("characterChat.typeMessage") || "Type a message..."

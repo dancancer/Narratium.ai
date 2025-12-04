@@ -46,45 +46,23 @@ export async function initCharacterDialogue(options: InitCharacterDialogueOption
       dialogueTree = await LocalCharacterDialogueOperations.createDialogueTree(characterId);
     }
 
-    let nodeIds: string[] = [];
-    const adaptedMessages: string[] = [];
-    const processedMessages: string[] = [];
+    const openingMessages: { id: string; content: string }[] = [];
     if (firstAssistantMessage) {
       const messagesToProcess = [...firstAssistantMessage];
       let firstProcessedMessage = "";
 
-      if (messagesToProcess.length > 0) {
-        const firstMessage = messagesToProcess[0];
-        const adaptedFirstMessage = adaptText(firstMessage, language, username);
-        
-        const firstRegexResult = await RegexProcessor.processFullContext(
-          adaptedFirstMessage, 
-          { 
-            ownerId: characterId, 
-          },
-        );
-        
-        firstProcessedMessage = firstRegexResult.replacedText;
-        adaptedMessages.push(adaptedFirstMessage);
-        processedMessages.push(firstProcessedMessage);
-      }
-
-      for (const message of [...messagesToProcess].reverse()) {
+      for (let index = 0; index < messagesToProcess.length; index++) {
+        const message = messagesToProcess[index];
         const adaptedMessage = adaptText(message, language, username);
-        
+
         const regexResult = await RegexProcessor.processFullContext(
           adaptedMessage, 
           { 
             ownerId: characterId, 
           },
         );
-        
+
         const processedMessage = regexResult.replacedText;
-        
-        if (message !== messagesToProcess[messagesToProcess.length - 1]) {
-          adaptedMessages.push(adaptedMessage);
-          processedMessages.push(processedMessage);
-        }
 
         const nodeId = await LocalCharacterDialogueOperations.addNodeToDialogueTree(
           characterId,
@@ -100,15 +78,31 @@ export async function initCharacterDialogue(options: InitCharacterDialogueOption
           },
           undefined,
         );
-        nodeIds.push(nodeId);
+
+        if (index === 0) {
+          firstProcessedMessage = processedMessage;
+        }
+
+        openingMessages.push({
+          id: nodeId,
+          content: processedMessage,
+        });
       }
-      
-      return {
-        success: true,
-        characterId,
-        firstMessage: firstProcessedMessage,
-        nodeId: nodeIds[0],
-      };
+
+      const activeOpeningId = openingMessages[0]?.id || "";
+      if (activeOpeningId) {
+        await LocalCharacterDialogueOperations.switchBranch(characterId, activeOpeningId);
+      }
+
+      if (openingMessages.length > 0) {
+        return {
+          success: true,
+          characterId,
+          firstMessage: firstProcessedMessage,
+          nodeId: activeOpeningId,
+          openingMessages,
+        };
+      }
     }
 
     throw new Error("No assistant message generated");

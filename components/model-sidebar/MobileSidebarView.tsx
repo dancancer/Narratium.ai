@@ -176,7 +176,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   <div className="mb-3">
                     <span className="text-sm text-[#8a8a8a]">{t("modelSettings.baseUrl") || "Base URL"}:</span>
                     <span className="ml-2 text-sm text-[#f4e8c1] break-all">
-                      {baseUrl.includes("://") ? "http://api-server/v1" : baseUrl}
+                      {baseUrl.trim() || getBaseUrlPlaceholder(llmType)}
                     </span>
                   </div>
                 )}

@@ -93,6 +93,9 @@ export default function CharacterPage() {
 
   const [character, setCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [openingMessages, setOpeningMessages] = useState<{ id: string; content: string }[]>([]);
+  const [openingIndex, setOpeningIndex] = useState(0);
+  const [openingLocked, setOpeningLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitializing, setIsInitializing] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -217,6 +220,7 @@ export default function CharacterPage() {
             content: msg.content,
           }));
 
+          console.log("------", messages);
           setMessages(formattedMessages);
 
           const lastMessage = dialogue.messages[dialogue.messages.length - 1];
@@ -302,6 +306,50 @@ export default function CharacterPage() {
     }
   };
 
+  const handleOpeningNavigate = async (direction: "prev" | "next") => {
+    if (!characterId) return;
+    if (openingLocked || openingMessages.length <= 1) return;
+
+    const total = openingMessages.length;
+    const nextIndex =
+      direction === "prev"
+        ? (openingIndex - 1 + total) % total
+        : (openingIndex + 1) % total;
+    const target = openingMessages[nextIndex];
+
+    try {
+      const response = await switchDialogueBranch({
+        characterId,
+        nodeId: target.id,
+      });
+
+      if (response.success && response.dialogue) {
+        const formattedMessages = response.dialogue.messages.map((msg: any) => ({
+          id: msg.id,
+          role: msg.role == "system" ? "assistant" : msg.role,
+          thinkingContent: msg.thinkingContent ?? "",
+          content: msg.content,
+        }));
+
+        setMessages(formattedMessages);
+        setSuggestedInputs([]);
+        setOpeningIndex(nextIndex);
+      } else {
+        setMessages([
+          {
+            id: target.id,
+            role: "assistant",
+            content: target.content,
+          },
+        ]);
+        setOpeningIndex(nextIndex);
+        setSuggestedInputs([]);
+      }
+    } catch (error) {
+      console.error("Error switching opening message:", error);
+    }
+  };
+
   const fetchLatestDialogue = async () => {
     if (!characterId) return;
 
@@ -331,6 +379,32 @@ export default function CharacterPage() {
           dialogue.messages[dialogue.messages.length - 1].parsedContent
             ?.nextPrompts || [],
         );
+        const hasUserMessage = formattedMessages.some((msg) => msg.role === "user");
+        const rootOpenings =
+          dialogue.tree?.nodes?.filter(
+            (node: any) => node.parentNodeId === "root" && !node.userInput,
+          ) || [];
+        const processedOpenings = rootOpenings
+          .map((node: any) => {
+            const content = node.parsedContent?.regexResult || node.assistantResponse;
+            if (!content) return null;
+            return {
+              id: node.nodeId,
+              content,
+            };
+          })
+          .filter(Boolean) as { id: string; content: string }[];
+        if (!hasUserMessage && processedOpenings.length > 0) {
+          setOpeningMessages(processedOpenings);
+          const activeIndex = processedOpenings.findIndex(
+            (item) => item.id === dialogue.current_nodeId,
+          );
+          setOpeningIndex(activeIndex >= 0 ? activeIndex : 0);
+        } else {
+          setOpeningMessages([]);
+          setOpeningIndex(0);
+        }
+        setOpeningLocked(hasUserMessage);
       } else {
       }
     } catch (err) {
@@ -399,6 +473,32 @@ export default function CharacterPage() {
             dialogue.messages[dialogue.messages.length - 1].parsedContent
               ?.nextPrompts || [],
           );
+          const hasUserMessage = formattedMessages.some((msg) => msg.role === "user");
+          const rootOpenings =
+            dialogue.tree?.nodes?.filter(
+              (node: any) => node.parentNodeId === "root" && !node.userInput,
+            ) || [];
+          const processedOpenings = rootOpenings
+            .map((node: any) => {
+              const content = node.parsedContent?.regexResult || node.assistantResponse;
+              if (!content) return null;
+              return {
+                id: node.nodeId,
+                content,
+              };
+            })
+            .filter(Boolean) as { id: string; content: string }[];
+          if (!hasUserMessage && processedOpenings.length > 0) {
+            setOpeningMessages(processedOpenings);
+            const activeIndex = processedOpenings.findIndex(
+              (item) => item.id === dialogue.current_nodeId,
+            );
+            setOpeningIndex(activeIndex >= 0 ? activeIndex : 0);
+          } else {
+            setOpeningMessages([]);
+            setOpeningIndex(0);
+          }
+          setOpeningLocked(hasUserMessage);
 
           // Ensure minimum loading time has passed
           const elapsedTime = Date.now() - startTime;
@@ -473,7 +573,23 @@ export default function CharacterPage() {
       if (!initData.success) {
         throw new Error(`Failed to initialize dialogue: ${initData}`);
       }
-      if (initData.firstMessage) {
+      const openings = initData.openingMessages || [];
+      if (openings.length > 0) {
+        setOpeningMessages(openings);
+        setOpeningIndex(0);
+        setOpeningLocked(false);
+        setMessages([
+          {
+            id: openings[0].id,
+            role: "assistant",
+            content: openings[0].content,
+          },
+        ]);
+        setSuggestedInputs([]);
+      } else if (initData.firstMessage) {
+        setOpeningMessages([]);
+        setOpeningIndex(0);
+        setOpeningLocked(false);
         setMessages([
           {
             id: initData.nodeId,
@@ -494,6 +610,7 @@ export default function CharacterPage() {
     try {
       setIsSending(true);
       setError("");
+      setOpeningLocked(true);
 
       setSuggestedInputs([]);
       const userMessage = {
@@ -753,6 +870,9 @@ export default function CharacterPage() {
           <CharacterChatPanel
             character={character}
             messages={messages}
+            openingMessages={openingMessages}
+            openingIndex={openingIndex}
+            openingLocked={openingLocked}
             userInput={userInput}
             setUserInput={setUserInput}
             isSending={isSending}
@@ -761,6 +881,7 @@ export default function CharacterPage() {
             onSuggestedInput={handleSuggestedInput}
             onTruncate={truncateMessagesAfter}
             onRegenerate={handleRegenerate}
+            onOpeningNavigate={handleOpeningNavigate}
             fontClass={fontClass}
             serifFontClass={serifFontClass}
             t={t}

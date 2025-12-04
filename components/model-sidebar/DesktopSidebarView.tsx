@@ -175,7 +175,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <div className="mb-1.5 sm:mb-1.5 mb-1">
                   <span className="text-xs sm:text-xs text-[10px] text-[#8a8a8a]">{t("modelSettings.baseUrl") || "Base URL"}:</span>
                   <span className="ml-2 text-xs sm:text-xs text-[10px] text-[#f4e8c1] break-all">
-                    {baseUrl.includes("://") ? "http://api-server/v1" : baseUrl}
+                    {baseUrl.trim() || getBaseUrlPlaceholder(llmType)}
                   </span>
                 </div>
               )}

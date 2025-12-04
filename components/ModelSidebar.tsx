@@ -300,11 +300,12 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
    * Handles both new configurations and updates to existing ones
    * Persists changes to localStorage
    */
+  // === 配置持久化：删除时不能被旧存储反向“复活”，因此直接用当前入参覆盖存储 === //
   const persistConfigs = (nextConfigs: APIConfig[]) => {
-    const merged = mergeConfigsWithStorage(nextConfigs);
-    setConfigs(merged);
-    localStorage.setItem("apiConfigs", JSON.stringify(merged));
-    return merged;
+    const normalized = Array.isArray(nextConfigs) ? nextConfigs : [];
+    setConfigs(normalized);
+    localStorage.setItem("apiConfigs", JSON.stringify(normalized));
+    return normalized;
   };
 
   /**
@@ -316,7 +317,7 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
       return;
     }
     setModel(newModel);
-    const workingConfigs = mergeConfigsWithStorage(Array.isArray(configs) ? configs : []);
+    const workingConfigs = Array.isArray(configs) ? configs : [];
     const updatedConfigs = workingConfigs.map(config => {
       if (config.id === activeConfigId) {
         return { ...config, model: newModel };
