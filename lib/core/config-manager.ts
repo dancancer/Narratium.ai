@@ -5,7 +5,7 @@ export interface LLMConfig {
   model_name: string;
   api_key: string;
   base_url?: string;
-  llm_type: "openai" | "ollama";
+  llm_type: "openai" | "ollama" | "gemini";
   temperature: number;
   max_tokens?: number;
   tavily_api_key?: string;
@@ -56,7 +56,7 @@ export class ConfigManager {
     model?: string;
     apiKey?: string;
     baseUrl?: string;
-    type?: "openai" | "ollama";
+    type?: "openai" | "ollama" | "gemini";
   }): LLMConfig {
     const llmType = overrides?.type || this.config.llm_type;
     const model = overrides?.model || this.config.model_name;
@@ -67,15 +67,15 @@ export class ConfigManager {
       throw new Error("LLM model not configured. Please configure your AI model settings.");
     }
 
-    if (llmType === "openai" && !apiKey) {
-      throw new Error("OpenAI API key not configured. Please configure your API key.");
+    if ((llmType === "openai" || llmType === "gemini") && !apiKey) {
+      throw new Error("Remote LLM API key not configured. Please configure your API key.");
     }
 
     return {
       llm_type: llmType,
       model_name: model,
       api_key: apiKey || "",
-      base_url: baseUrl || (llmType === "ollama" ? "http://localhost:11434" : undefined),
+      base_url: baseUrl || (llmType === "ollama" ? "http://localhost:11434" : (llmType === "gemini" ? process.env.NEXT_PUBLIC_GEMINI_API_BASE_URL : undefined)),
       temperature: this.config.temperature,
       max_tokens: this.config.max_tokens,
       tavily_api_key: this.config.tavily_api_key || "",
@@ -106,23 +106,47 @@ export class ConfigManager {
  */
 export function loadConfigFromLocalStorage(): LLMConfig {
   try {
-    const llmType = localStorage.getItem("llmType") as "openai" | "ollama" | null;
+    const llmType = localStorage.getItem("llmType") as "openai" | "ollama" | "gemini" | null;
     const openaiModel = localStorage.getItem("openaiModel");
     const ollamaModel = localStorage.getItem("ollamaModel");
+    const geminiModel = localStorage.getItem("geminiModel");
     const openaiApiKey = localStorage.getItem("openaiApiKey");
+    const geminiApiKey = localStorage.getItem("geminiApiKey");
     const openaiBaseUrl = localStorage.getItem("openaiBaseUrl");
     const ollamaBaseUrl = localStorage.getItem("ollamaBaseUrl");
+    const geminiBaseUrl = localStorage.getItem("geminiBaseUrl");
     const temperature = localStorage.getItem("temperature");
     const maxTokens = localStorage.getItem("maxTokens");
     const tavilyApiKey = localStorage.getItem("tavilyApiKey");
     const jinaApiKey = localStorage.getItem("jinaApiKey");
     const falApiKey = localStorage.getItem("falApiKey");
 
+    const modelName =
+      llmType === "ollama"
+        ? ollamaModel || ""
+        : llmType === "gemini"
+          ? geminiModel || ""
+          : openaiModel || "";
+
+    const apiKey =
+      llmType === "ollama"
+        ? ""
+        : llmType === "gemini"
+          ? geminiApiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""
+          : openaiApiKey || process.env.OPENAI_API_KEY || "";
+
+    const baseUrl =
+      llmType === "ollama"
+        ? ollamaBaseUrl || ""
+        : llmType === "gemini"
+          ? geminiBaseUrl || process.env.NEXT_PUBLIC_GEMINI_API_BASE_URL || ""
+          : openaiBaseUrl || "";
+
     const config: LLMConfig = {
       llm_type: llmType || "openai",
-      model_name: llmType === "openai" ? openaiModel || "" : ollamaModel || "",
-      api_key: openaiApiKey || process.env.OPENAI_API_KEY || "",
-      base_url: llmType === "openai" ? openaiBaseUrl || "" : ollamaBaseUrl || "",
+      model_name: modelName,
+      api_key: apiKey,
+      base_url: baseUrl,
       temperature: temperature ? parseFloat(temperature) : 0.7,
       max_tokens: maxTokens ? parseInt(maxTokens) : 4000,
       tavily_api_key: tavilyApiKey || process.env.NEXT_PUBLIC_TAVILY_API_KEY || "",
@@ -166,15 +190,16 @@ export function saveConfigToLocalStorage(config: LLMConfig): void {
   try {
     localStorage.setItem("llmType", config.llm_type);
     
-    const modelKey = config.llm_type === "openai" ? "openaiModel" : "ollamaModel";
+    const modelKey = config.llm_type === "openai" ? "openaiModel" : config.llm_type === "gemini" ? "geminiModel" : "ollamaModel";
     localStorage.setItem(modelKey, config.model_name);
     
-    if (config.api_key) {
-      localStorage.setItem("openaiApiKey", config.api_key);
+    if (config.api_key && config.llm_type !== "ollama") {
+      const apiKeyKey = config.llm_type === "gemini" ? "geminiApiKey" : "openaiApiKey";
+      localStorage.setItem(apiKeyKey, config.api_key);
     }
     
     if (config.base_url) {
-      const baseUrlKey = config.llm_type === "openai" ? "openaiBaseUrl" : "ollamaBaseUrl";
+      const baseUrlKey = config.llm_type === "openai" ? "openaiBaseUrl" : config.llm_type === "gemini" ? "geminiBaseUrl" : "ollamaBaseUrl";
       localStorage.setItem(baseUrlKey, config.base_url);
     }
     

@@ -63,6 +63,8 @@ interface Message {
   content: string;
 }
 
+type LLMType = "openai" | "ollama" | "gemini";
+
 /**
  * Main character interaction page component
  *
@@ -121,6 +123,29 @@ export default function CharacterPage() {
     message: "",
   });
   const [isMobile, setIsMobile] = useState(false);
+
+  const readLlmConfig = (): {
+    llmType: LLMType;
+    modelName: string;
+    baseUrl: string;
+    apiKey: string;
+  } => {
+    const storedType = (localStorage.getItem("llmType") as LLMType) || "openai";
+    const keyMap: Record<LLMType, { model: string; baseUrl: string; apiKey: string }> = {
+      openai: { model: "openaiModel", baseUrl: "openaiBaseUrl", apiKey: "openaiApiKey" },
+      ollama: { model: "ollamaModel", baseUrl: "ollamaBaseUrl", apiKey: "" },
+      gemini: { model: "geminiModel", baseUrl: "geminiBaseUrl", apiKey: "geminiApiKey" },
+    };
+    const keys = keyMap[storedType] || keyMap.openai;
+    const apiKey = keys.apiKey ? localStorage.getItem(keys.apiKey) || "" : "";
+
+    return {
+      llmType: storedType,
+      modelName: localStorage.getItem(keys.model) || "",
+      baseUrl: localStorage.getItem(keys.baseUrl) || "",
+      apiKey,
+    };
+  };
 
   const showErrorToast = useCallback((message: string) => {
     setErrorToast({
@@ -433,17 +458,7 @@ export default function CharacterPage() {
       setLoadingPhase(t("characterChat.extractingTemplate"));
       const username = getDisplayUsername();
       const language = localStorage.getItem("language") || "zh";
-      const llmType = localStorage.getItem("llmType") || "openai";
-      const modelName =
-        localStorage.getItem(
-          llmType === "openai" ? "openaiModel" : "ollamaModel",
-        ) || "";
-      const baseUrl =
-        localStorage.getItem(
-          llmType === "openai" ? "openaiBaseUrl" : "ollamaBaseUrl",
-        ) || "";
-      const apiKey =
-        llmType === "openai" ? localStorage.getItem("openaiApiKey") || "" : "";
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
 
       const initData = await initCharacterDialogue({
         username,
@@ -451,7 +466,7 @@ export default function CharacterPage() {
         modelName,
         baseUrl,
         apiKey,
-        llmType: llmType as "openai" | "ollama",
+        llmType,
         language: language as "zh" | "en",
       });
 
@@ -490,17 +505,7 @@ export default function CharacterPage() {
       setMessages((prev) => [...prev, userMessage]);
 
       const language = localStorage.getItem("language") || "zh";
-      const llmType = localStorage.getItem("llmType") || "openai";
-      const modelName =
-        localStorage.getItem(
-          llmType === "openai" ? "openaiModel" : "ollamaModel",
-        ) || "";
-      const baseUrl =
-        localStorage.getItem(
-          llmType === "openai" ? "openaiBaseUrl" : "ollamaBaseUrl",
-        ) || "";
-      const apiKey =
-        llmType === "openai" ? localStorage.getItem("openaiApiKey") || "" : "";
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
       const storedNumber = localStorage.getItem("responseLength");
       const username = getDisplayUsername();
       const responseLength = storedNumber ? parseInt(storedNumber) : 200;

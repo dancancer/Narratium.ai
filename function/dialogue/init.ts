@@ -12,7 +12,7 @@ interface InitCharacterDialogueOptions {
   modelName: string;
   baseUrl: string;
   apiKey: string;
-  llmType: "openai" | "ollama";
+  llmType: "openai" | "ollama" | "gemini";
 }
 
 export async function initCharacterDialogue(options: InitCharacterDialogueOptions) {

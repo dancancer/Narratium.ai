@@ -12,7 +12,7 @@ interface EditDialogueNodeRequest {
   model_name: string;
   api_key: string;
   base_url: string;
-  llm_type: string;
+  llm_type: "openai" | "ollama" | "gemini";
   language: string;
 }
 
@@ -50,7 +50,7 @@ export async function editDialaogueNodeContent(input: EditDialogueNodeRequest) {
       modelName: model_name,
       apiKey: api_key,
       baseUrl: base_url,
-      llmType: llm_type as "openai" | "ollama",
+      llmType: llm_type,
       language: language as "zh" | "en",
     });
     

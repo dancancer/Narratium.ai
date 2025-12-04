@@ -8,6 +8,7 @@ import { RunnablePassthrough } from "@langchain/core/runnables";
 import { getCharacterCompressorPromptZh, getCharacterCompressorPromptEn } from "@/lib/prompts/character-prompts";
 import { CharacterHistory } from "@/lib/core/character-history";
 import { DialogueOptions } from "@/lib/models/character-dialogue-model";
+import { createGeminiRunnable } from "@/lib/core/gemini-client";
 
 export class CharacterDialogue {
   character: Character;
@@ -16,6 +17,7 @@ export class CharacterDialogue {
   dialogueChain: RunnablePassthrough | null = null;
   language: "zh" | "en" = "zh";
   promptAssembler: PromptAssembler;
+  llmType: "openai" | "ollama" | "gemini" = "openai";
 
   constructor(character: Character) {
     this.character = character;
@@ -29,6 +31,9 @@ export class CharacterDialogue {
       if (options?.language) {
         this.language = options.language;
         this.history = new CharacterHistory(options.language);
+      }
+      if (options?.llmType) {
+        this.llmType = options.llmType;
       }
 
       this.promptAssembler = new PromptAssembler({
@@ -63,6 +68,7 @@ export class CharacterDialogue {
     } = options;
 
     const safeModel = modelName && modelName.trim() ? modelName.trim() : "";
+    this.llmType = llmType || "openai";
 
     type LLMSettings = {
       temperature: number;
@@ -149,6 +155,16 @@ export class CharacterDialogue {
         repeatPenalty: llmSettings.repeatPenalty,
         streaming: false,
       });
+    } else if (llmType === "gemini") {
+      this.llm = createGeminiRunnable({
+        apiKey: apiKey || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "",
+        model: safeModel || "gemini-1.5-flash",
+        baseUrl: baseUrl?.trim() || process.env.NEXT_PUBLIC_GEMINI_API_BASE_URL || "",
+        temperature: llmSettings.temperature,
+        maxTokens: llmSettings.maxTokens,
+        topP: llmSettings.topP,
+        topK: llmSettings.topK,
+      });
     }
   }
 
@@ -204,4 +220,3 @@ export class CharacterDialogue {
     }
   }
 }
-

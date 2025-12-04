@@ -42,7 +42,7 @@ export interface CorrectRAGWorkflowParams {
   modelName: string;
   apiKey: string;
   baseUrl?: string;
-  llmType?: "openai" | "ollama";
+  llmType?: "openai" | "ollama" | "gemini";
   temperature?: number;
   maxTokens?: number;
   maxRetries?: number;

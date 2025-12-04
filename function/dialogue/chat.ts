@@ -10,7 +10,7 @@ export async function handleCharacterChatRequest(payload: {
   modelName: string;
   baseUrl: string;
   apiKey: string;
-  llmType?: string;
+  llmType?: "openai" | "ollama" | "gemini";
   streaming?: boolean;
   language?: "zh" | "en";
   number?: number;
@@ -46,7 +46,7 @@ export async function handleCharacterChatRequest(payload: {
         modelName,
         apiKey,
         baseUrl,
-        llmType: llmType as "openai" | "ollama",
+        llmType: llmType as "openai" | "ollama" | "gemini",
         temperature: 0.7,
         streaming: false,
         streamUsage: true, // 确保token usage追踪

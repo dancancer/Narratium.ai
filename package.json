@@ -5,9 +5,10 @@
   "license": "AGPL-3.0",
   "main": "electron/main.js",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 3303",
     "build": "next build",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "lint:fix": "next lint --fix",
     "preview": "serve -s out",
     "test": "vitest",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@fal-ai/client": "^1.5.0",
+    "@google/generative-ai": "^0.21.0",
     "@langchain/core": "^0.3.61",
     "@langchain/langgraph": "^0.3.4",
     "@langchain/ollama": "^0.2.0",

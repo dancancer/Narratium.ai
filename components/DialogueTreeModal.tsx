@@ -66,6 +66,8 @@ interface DialogueTreeModalProps {
   onDialogueEdit?: () => void;
 }
 
+type LLMType = "openai" | "ollama" | "gemini";
+
 /**
  * ELK.js layout calculation interfaces
  * These interfaces define the data structures used by ELK.js for automatic layout generation
@@ -1402,7 +1404,11 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
         const modelName = localStorage.getItem("modelName") || "";
         const apiKey = localStorage.getItem("apiKey") || "";
         const baseUrl = localStorage.getItem("modelBaseUrl") || "";
-        const llmType = localStorage.getItem("llmType") || "openai";
+        const storedLlmType = localStorage.getItem("llmType");
+        const llmType: LLMType =
+          storedLlmType === "openai" || storedLlmType === "ollama" || storedLlmType === "gemini"
+            ? storedLlmType
+            : "openai";
         const language = localStorage.getItem("language") || "zh";
         
         const response = await editDialaogueNodeContent({

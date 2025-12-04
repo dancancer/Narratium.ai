@@ -31,7 +31,7 @@ import { trackButtonClick, trackFormSubmit } from "@/utils/google-analytics";
 /**
  * API Configuration types
  */
-type LLMType = "openai" | "ollama";
+type LLMType = "openai" | "ollama" | "gemini";
 
 interface APIConfig {
   id: string;
@@ -122,6 +122,29 @@ export default function CharacterChatPanel({
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [selectedConfigId, setSelectedConfigId] = useState<string>(""); // For the second level dropdown
   const [currentModel, setCurrentModel] = useState<string>(""); // Current active model
+  // ====== 配置读取：用最新 localStorage 数据防止旧状态覆盖 ====== //
+  const readConfigsFromStorage = (): APIConfig[] => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem("apiConfigs");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Failed to read configs from storage", error);
+      return [];
+    }
+  };
+
+  const mergeConfigsWithStorage = (incoming: APIConfig[]) => {
+    const latest = readConfigsFromStorage();
+    const merged = new Map<string, APIConfig>();
+    latest.forEach((config) => merged.set(config.id, config));
+    incoming.forEach((config) => merged.set(config.id, config));
+    return Array.from(merged.values());
+  };
+
+  const getWorkingConfigs = () =>
+    mergeConfigsWithStorage(Array.isArray(configs) ? configs : []);
 
   useEffect(() => {
     const savedStreaming = localStorage.getItem("streamingEnabled");
@@ -465,24 +488,27 @@ export default function CharacterChatPanel({
   };
 
   const handleConfigSelect = async (configId: string) => {
-    const selectedConfig = configs.find((c) => c.id === configId);
+    const mergedConfigs = getWorkingConfigs();
+    setConfigs(mergedConfigs);
+    const selectedConfig = mergedConfigs.find((c) => c.id === configId);
     if (!selectedConfig) return;
 
     // If config doesn't have availableModels, fetch them
+    let configsWithModels = mergedConfigs;
     if (!selectedConfig.availableModels) {
       const models = await fetchAvailableModels(selectedConfig);
-      selectedConfig.availableModels = models;
-
-      // Update configs with available models
-      const updatedConfigs = configs.map((c) =>
+      configsWithModels = mergedConfigs.map((c) =>
         c.id === configId ? { ...c, availableModels: models } : c,
       );
-      setConfigs(updatedConfigs);
+      setConfigs(configsWithModels);
     }
 
-    if (selectedConfig.availableModels.length === 1) {
+    const configForUse =
+      configsWithModels.find((c) => c.id === configId) || selectedConfig;
+
+    if (configForUse.availableModels?.length === 1) {
       // If only one model available, switch directly
-      handleModelSwitch(configId, selectedConfig.availableModels[0]);
+      handleModelSwitch(configId, configForUse.availableModels[0]);
       setShowApiDropdown(false);
       setShowModelDropdown(false);
     } else {
@@ -494,7 +520,8 @@ export default function CharacterChatPanel({
   };
 
   const handleModelSwitch = (configId: string, modelName?: string) => {
-    const selectedConfig = configs.find((c) => c.id === configId);
+    const mergedConfigs = getWorkingConfigs();
+    const selectedConfig = mergedConfigs.find((c) => c.id === configId);
     if (!selectedConfig) {
       console.error("CharacterChatPanel: Config not found for id", configId);
       return;
@@ -502,38 +529,42 @@ export default function CharacterChatPanel({
 
     // If modelName is provided, update the config's model
     // For "default", use the original configured model or "default" if none exists
+    let updatedConfigs = mergedConfigs;
     if (modelName && modelName !== selectedConfig.model) {
       const actualModelName =
         modelName === "default" ? selectedConfig.model || "default" : modelName;
-      selectedConfig.model = actualModelName;
-      const updatedConfigs = configs.map((c) =>
+      updatedConfigs = mergedConfigs.map((c) =>
         c.id === configId ? { ...c, model: actualModelName } : c,
       );
       setConfigs(updatedConfigs);
       localStorage.setItem("apiConfigs", JSON.stringify(updatedConfigs));
+    } else {
+      setConfigs(updatedConfigs);
     }
 
     setActiveConfigId(configId);
-    setCurrentModel(selectedConfig.model);
+    const configAfterUpdate =
+      updatedConfigs.find((c) => c.id === configId) || selectedConfig;
+    setCurrentModel(configAfterUpdate.model);
     localStorage.setItem("activeConfigId", configId);
 
     // Load configuration values to localStorage
-    localStorage.setItem("llmType", selectedConfig.type);
+    localStorage.setItem("llmType", configAfterUpdate.type);
     localStorage.setItem(
-      selectedConfig.type === "openai" ? "openaiBaseUrl" : "ollamaBaseUrl",
-      selectedConfig.baseUrl,
+      configAfterUpdate.type === "openai" ? "openaiBaseUrl" : "ollamaBaseUrl",
+      configAfterUpdate.baseUrl,
     );
     localStorage.setItem(
-      selectedConfig.type === "openai" ? "openaiModel" : "ollamaModel",
-      selectedConfig.model,
+      configAfterUpdate.type === "openai" ? "openaiModel" : "ollamaModel",
+      configAfterUpdate.model,
     );
-    localStorage.setItem("modelName", selectedConfig.model);
-    localStorage.setItem("modelBaseUrl", selectedConfig.baseUrl);
+    localStorage.setItem("modelName", configAfterUpdate.model);
+    localStorage.setItem("modelBaseUrl", configAfterUpdate.baseUrl);
 
     // Store API key properly
-    if (selectedConfig.type === "openai" && selectedConfig.apiKey) {
-      localStorage.setItem("openaiApiKey", selectedConfig.apiKey);
-      localStorage.setItem("apiKey", selectedConfig.apiKey);
+    if (configAfterUpdate.type === "openai" && configAfterUpdate.apiKey) {
+      localStorage.setItem("openaiApiKey", configAfterUpdate.apiKey);
+      localStorage.setItem("apiKey", configAfterUpdate.apiKey);
     }
 
     // Dispatch custom event to notify other components
@@ -541,9 +572,9 @@ export default function CharacterChatPanel({
       new CustomEvent("modelChanged", {
         detail: {
           configId,
-          config: selectedConfig,
-          modelName: selectedConfig.model,
-          configName: selectedConfig.name,
+          config: configAfterUpdate,
+          modelName: configAfterUpdate.model,
+          configName: configAfterUpdate.name,
         },
       }),
     );

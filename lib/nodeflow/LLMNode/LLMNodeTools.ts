@@ -3,7 +3,8 @@ import { ChatOpenAI } from "@langchain/openai";
 import { ChatOllama } from "@langchain/ollama";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { RunnablePassthrough } from "@langchain/core/runnables";
+import { RunnableLike, RunnablePassthrough } from "@langchain/core/runnables";
+import { createGeminiRunnable } from "@/lib/core/gemini-client";
 
 // 为window对象添加lastTokenUsage属性的类型声明
 declare global {
@@ -20,7 +21,7 @@ export interface LLMConfig {
   modelName: string;
   apiKey: string;
   baseUrl?: string;
-  llmType: "openai" | "ollama";
+  llmType: "openai" | "ollama" | "gemini";
   temperature?: number;
   maxTokens?:number;
   maxRetries?: number,
@@ -33,6 +34,20 @@ export interface LLMConfig {
   streamUsage?: boolean;
   language?: "zh" | "en";
 }
+
+const DEFAULT_LLM_SETTINGS = {
+  temperature: 0.7,
+  maxTokens: undefined,
+  timeout: 1000000000,
+  maxRetries: 0,
+  topP: 0.7,
+  frequencyPenalty: 0,
+  presencePenalty: 0,
+  topK: 40,
+  repeatPenalty: 1.1,
+  streaming: false,
+  streamUsage: true,
+};
 export class LLMNodeTools extends NodeTool {
   protected static readonly toolType: string = "llm";
   protected static readonly version: string = "1.0.0";
@@ -115,41 +130,28 @@ export class LLMNodeTools extends NodeTool {
         }
         
         return aiMessage.content as string;
-      } else {
-        // 对于其他LLM类型，使用原来的chain方式
-        const llm = this.createLLM(config);
-        const dialogueChain = this.createDialogueChain(llm);
-        const response = await dialogueChain.invoke({
-          system_message: systemMessage,
-          user_message: userMessage,
-        });
-        
-        if (!response || typeof response !== "string") {
-          throw new Error("Invalid response from LLM");
-        }
-
-        return response;
       }
+
+      // 对于其他LLM类型，使用通用的 chain 方式
+      const llm = this.createLLM(config);
+      const dialogueChain = this.createDialogueChain(llm);
+      const response = await dialogueChain.invoke({
+        system_message: systemMessage,
+        user_message: userMessage,
+      });
+      
+      if (!response || typeof response !== "string") {
+        throw new Error("Invalid response from LLM");
+      }
+
+      return response;
     } catch (error) {
       this.handleError(error as Error, "invokeLLM");
     }
   }
 
-  private static createLLM(config: LLMConfig): ChatOpenAI | ChatOllama {
+  private static createLLM(config: LLMConfig): ChatOpenAI | ChatOllama | ReturnType<typeof createGeminiRunnable> {
     const safeModel = config.modelName?.trim() || "";
-    const defaultSettings = {
-      temperature: 0.7,
-      maxTokens: undefined,
-      timeout: 1000000000,
-      maxRetries: 0,
-      topP: 0.7,
-      frequencyPenalty: 0,
-      presencePenalty: 0,
-      topK: 40,
-      repeatPenalty: 1.1,
-      streaming: false,
-      streamUsage: true, // 默认启用token usage追踪
-    };
 
     if (config.llmType === "openai") {
       return new ChatOpenAI({
@@ -158,32 +160,42 @@ export class LLMNodeTools extends NodeTool {
         configuration: {
           baseURL: config.baseUrl?.trim() || undefined,
         },
-        temperature: config.temperature ?? defaultSettings.temperature,
-        maxRetries: config.maxRetries ?? defaultSettings.maxRetries,
-        topP: config.topP ?? defaultSettings.topP,
-        frequencyPenalty: config.frequencyPenalty ?? defaultSettings.frequencyPenalty,
-        presencePenalty: config.presencePenalty ?? defaultSettings.presencePenalty,
-        streaming: config.streaming ?? defaultSettings.streaming,
-        streamUsage: config.streamUsage ?? defaultSettings.streamUsage,
+        temperature: config.temperature ?? DEFAULT_LLM_SETTINGS.temperature,
+        maxRetries: config.maxRetries ?? DEFAULT_LLM_SETTINGS.maxRetries,
+        topP: config.topP ?? DEFAULT_LLM_SETTINGS.topP,
+        frequencyPenalty: config.frequencyPenalty ?? DEFAULT_LLM_SETTINGS.frequencyPenalty,
+        presencePenalty: config.presencePenalty ?? DEFAULT_LLM_SETTINGS.presencePenalty,
+        streaming: config.streaming ?? DEFAULT_LLM_SETTINGS.streaming,
+        streamUsage: config.streamUsage ?? DEFAULT_LLM_SETTINGS.streamUsage,
       });
     } else if (config.llmType === "ollama") {
       return new ChatOllama({
         model: safeModel,
         baseUrl: config.baseUrl?.trim() || "http://localhost:11434",
-        temperature: config.temperature ?? defaultSettings.temperature,
-        topK: config.topK ?? defaultSettings.topK,
-        topP: config.topP ?? defaultSettings.topP,
-        frequencyPenalty: config.frequencyPenalty ?? defaultSettings.frequencyPenalty,
-        presencePenalty: config.presencePenalty ?? defaultSettings.presencePenalty,
-        repeatPenalty: config.repeatPenalty ?? defaultSettings.repeatPenalty,
-        streaming: config.streaming ?? defaultSettings.streaming,
+        temperature: config.temperature ?? DEFAULT_LLM_SETTINGS.temperature,
+        topK: config.topK ?? DEFAULT_LLM_SETTINGS.topK,
+        topP: config.topP ?? DEFAULT_LLM_SETTINGS.topP,
+        frequencyPenalty: config.frequencyPenalty ?? DEFAULT_LLM_SETTINGS.frequencyPenalty,
+        presencePenalty: config.presencePenalty ?? DEFAULT_LLM_SETTINGS.presencePenalty,
+        repeatPenalty: config.repeatPenalty ?? DEFAULT_LLM_SETTINGS.repeatPenalty,
+        streaming: config.streaming ?? DEFAULT_LLM_SETTINGS.streaming,
+      });
+    } else if (config.llmType === "gemini") {
+      return createGeminiRunnable({
+        apiKey: config.apiKey,
+        model: safeModel || "gemini-1.5-flash",
+        baseUrl: config.baseUrl,
+        temperature: config.temperature ?? DEFAULT_LLM_SETTINGS.temperature,
+        maxTokens: config.maxTokens ?? DEFAULT_LLM_SETTINGS.maxTokens,
+        topP: config.topP ?? DEFAULT_LLM_SETTINGS.topP,
+        topK: config.topK ?? DEFAULT_LLM_SETTINGS.topK,
       });
     } else {
       throw new Error(`Unsupported LLM type: ${config.llmType}`);
     }
   }
 
-  private static createDialogueChain(llm: ChatOpenAI | ChatOllama): any {
+  private static createDialogueChain(llm: RunnableLike<any, any>): any {
     const dialoguePrompt = ChatPromptTemplate.fromMessages([
       ["system", "{system_message}"],
       ["human", "{user_message}"],

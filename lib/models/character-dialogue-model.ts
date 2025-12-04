@@ -11,11 +11,10 @@ export interface DialogueOptions {
   modelName: string;
   apiKey: string;
   baseUrl: string;
-  llmType: "openai" | "ollama";
+  llmType: "openai" | "ollama" | "gemini";
   temperature?: number;
   maxTokens?: number;
   streaming?: boolean;
   language?: "zh" | "en";
   contextWindow?: number;
 }
-

@@ -76,6 +76,7 @@ export default function CharacterCards() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isDownloadingPresets, setIsDownloadingPresets] = useState(false);
+  const [hasAttemptedPresetDownload, setHasAttemptedPresetDownload] = useState(false);
   
   // ErrorToast state
   const [errorToast, setErrorToast] = useState({
@@ -245,6 +246,7 @@ export default function CharacterCards() {
    * Fetches available characters from GitHub and downloads specific preset characters
    */
   const downloadPresetCharacters = async () => {
+    setHasAttemptedPresetDownload(true);
     setIsDownloadingPresets(true);
     try {
       // Fetch available character files from GitHub
@@ -322,10 +324,16 @@ export default function CharacterCards() {
     // Auto-download preset characters if:
     // 1. It's the first visit, OR
     // 2. Character list is empty (regardless of first visit status)
-    if ((isFirstVisit || characters.length === 0) && characters.length === 0 && !isLoading && !isDownloadingPresets) {
+    if (
+      !hasAttemptedPresetDownload &&
+      (isFirstVisit || characters.length === 0) &&
+      characters.length === 0 &&
+      !isLoading &&
+      !isDownloadingPresets
+    ) {
       downloadPresetCharacters();
     }
-  }, [characters.length, isLoading, isDownloadingPresets]);
+  }, [characters.length, hasAttemptedPresetDownload, isLoading, isDownloadingPresets]);
 
   if (!mounted) return null;
 
