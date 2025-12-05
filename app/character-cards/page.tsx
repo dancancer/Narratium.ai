@@ -23,7 +23,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Aperture, LayoutGrid } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { motion } from "framer-motion";
@@ -132,7 +132,7 @@ export default function CharacterCards() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const fetchCharacters = async () => {
+  const fetchCharacters = useCallback(async () => {
     setIsLoading(true);
     const username = localStorage.getItem("username") || "";
     const language = localStorage.getItem("language") || "zh";
@@ -152,14 +152,14 @@ export default function CharacterCards() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
     
   /**
    * Migrates data structure by deleting all character cards
    * This is a one-time operation triggered by localStorage flag
    * Used when data structure changes from parsed_content to parsedContent
    */
-  const migrateDataStructure = async () => {
+  const migrateDataStructure = useCallback(async () => {
     const migrationFlag = localStorage.getItem("characterCardsDataMigration");
     
     // Check if migration is needed and hasn't been performed yet
@@ -194,7 +194,7 @@ export default function CharacterCards() {
         showErrorToast(t("characterCardsPage.migrationError") || "Error during data migration");
       }
     }
-  };
+  }, [t]);
     
   const handleDeleteCharacter = async (characterId: string) => {
     setIsLoading(true);
@@ -246,7 +246,7 @@ export default function CharacterCards() {
    * Downloads preset character cards for first-time users or when character list is empty
    * Fetches available characters from GitHub and downloads specific preset characters
    */
-  const downloadPresetCharacters = async () => {
+  const downloadPresetCharacters = useCallback(async () => {
     setHasAttemptedPresetDownload(true);
     setIsDownloadingPresets(true);
     try {
@@ -305,7 +305,7 @@ export default function CharacterCards() {
     } finally {
       setIsDownloadingPresets(false);
     }
-  };
+  }, [fetchCharacters, t]);
 
   useEffect(() => {
     const initializeData = async () => {
@@ -316,7 +316,7 @@ export default function CharacterCards() {
     };
     
     initializeData();
-  }, []);
+  }, [fetchCharacters, migrateDataStructure]);
 
   // Check if this is the first visit and auto-download preset characters
   useEffect(() => {
@@ -334,7 +334,7 @@ export default function CharacterCards() {
     ) {
       downloadPresetCharacters();
     }
-  }, [characters.length, hasAttemptedPresetDownload, isLoading, isDownloadingPresets]);
+  }, [characters.length, downloadPresetCharacters, hasAttemptedPresetDownload, isDownloadingPresets, isLoading]);
 
   if (!mounted) return null;
 

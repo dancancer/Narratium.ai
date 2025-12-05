@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { getWorldBookEntries } from "@/function/worldbook/info";
 import { deleteWorldBookEntry } from "@/function/worldbook/delete";
@@ -109,24 +109,24 @@ export default function WorldBookEditor({
     message: "",
   });
 
-  const showErrorToast = (message: string) => {
+  const showErrorToast = useCallback((message: string) => {
     setErrorToast({
       isVisible: true,
       message,
     });
-  };
+  }, []);
 
-  const hideErrorToast = () => {
+  const hideErrorToast = useCallback(() => {
     setErrorToast({
       isVisible: false,
       message: "",
     });
-  };
+  }, []);
 
   const SORT_STORAGE_KEY = `worldbook_sort_${characterId}`;
   const FILTER_STORAGE_KEY = `worldbook_filter_${characterId}`;
 
-  const loadSortPreferences = () => {
+  const loadSortPreferences = useCallback(() => {
     try {
       const stored = localStorage.getItem(SORT_STORAGE_KEY);
       if (stored) {
@@ -143,9 +143,9 @@ export default function WorldBookEditor({
       setSortBy("position");
       setSortOrder("asc");
     }
-  };
+  }, [SORT_STORAGE_KEY, showErrorToast]);
 
-  const loadFilterPreferences = () => {
+  const loadFilterPreferences = useCallback(() => {
     try {
       const stored = localStorage.getItem(FILTER_STORAGE_KEY);
       if (stored) {
@@ -159,7 +159,7 @@ export default function WorldBookEditor({
       showErrorToast("Failed to load filter preferences");
       setFilterBy("all");
     }
-  };
+  }, [FILTER_STORAGE_KEY, showErrorToast]);
 
   const saveSortPreferences = (newSortBy: string, newSortOrder: "asc" | "desc") => {
     try {
@@ -241,23 +241,7 @@ export default function WorldBookEditor({
     }
   };
 
-  useEffect(() => {
-    loadWorldBookData();
-    loadSettings();
-    loadSortPreferences();
-    loadFilterPreferences();
-    cleanupOldSortPreferences();
-    
-    const timer = setTimeout(() => setAnimationComplete(true), 100);
-    return () => clearTimeout(timer);
-  }, [characterId]);
-
-  useEffect(() => {
-    loadSortPreferences();
-    loadFilterPreferences();
-  }, [characterId]);
-
-  const loadWorldBookData = async () => {
+  const loadWorldBookData = useCallback(async () => {
     try {
       setIsLoading(true);
       const result = await getWorldBookEntries(characterId);
@@ -270,9 +254,9 @@ export default function WorldBookEditor({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [characterId, showErrorToast, t]);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const result = await getWorldBookSettings(characterId);
       if (result.success) {
@@ -282,7 +266,23 @@ export default function WorldBookEditor({
       console.error("Failed to load settings:", error);
       showErrorToast("Failed to load settings");
     }
-  };
+  }, [characterId, showErrorToast]);
+
+  useEffect(() => {
+    loadWorldBookData();
+    loadSettings();
+    loadSortPreferences();
+    loadFilterPreferences();
+    cleanupOldSortPreferences();
+    
+    const timer = setTimeout(() => setAnimationComplete(true), 100);
+    return () => clearTimeout(timer);
+  }, [characterId, loadFilterPreferences, loadSettings, loadSortPreferences, loadWorldBookData]);
+
+  useEffect(() => {
+    loadSortPreferences();
+    loadFilterPreferences();
+  }, [characterId, loadFilterPreferences, loadSortPreferences]);
 
   const filterEntries = (entries: WorldBookEntryData[], filterBy: string) => {
     if (filterBy === "all") return entries;

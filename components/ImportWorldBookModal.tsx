@@ -99,13 +99,7 @@ export default function ImportWorldBookModal({
     });
   }, []);
 
-  useEffect(() => {
-    if (activeTab === "global" && isOpen) {
-      loadGlobalWorldBooks();
-    }
-  }, [activeTab, isOpen]);
-
-  const loadGlobalWorldBooks = async () => {
+  const loadGlobalWorldBooks = useCallback(async () => {
     setIsLoadingGlobal(true);
     try {
       const result = await listGlobalWorldBooks();
@@ -120,7 +114,13 @@ export default function ImportWorldBookModal({
     } finally {
       setIsLoadingGlobal(false);
     }
-  };
+  }, [showErrorToast]);
+
+  useEffect(() => {
+    if (activeTab === "global" && isOpen) {
+      loadGlobalWorldBooks();
+    }
+  }, [activeTab, isOpen, loadGlobalWorldBooks]);
 
   const handleImportFromGlobal = async () => {
     if (!selectedGlobalId) {

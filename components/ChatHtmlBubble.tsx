@@ -941,7 +941,7 @@ window.addEventListener('message', function(e) {
       window.removeEventListener("message", handler);
       window.removeEventListener("resize", resizeHandler);
     };
-  }, [showLoader, batchedUpdate]);
+  }, [batchedUpdate, onContentChange, showLoader]);
 
   useEffect(() => {
     if (!onContentChange) return;
@@ -976,12 +976,13 @@ window.addEventListener('message', function(e) {
   useEffect(() => {
     // Clear color cache to ensure new color configuration takes effect
     colorPaletteCache.clear();
+    const queue = renderQueueRef.current;
     
     return () => {
       if (pendingUpdateRef.current) {
         clearTimeout(pendingUpdateRef.current);
       }
-      renderQueueRef.current.clear();
+      queue.clear();
     };
   }, []);
 

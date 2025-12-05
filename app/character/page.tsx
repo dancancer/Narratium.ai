@@ -350,7 +350,7 @@ export default function CharacterPage() {
     }
   };
 
-  const fetchLatestDialogue = async () => {
+  const fetchLatestDialogue = useCallback(async () => {
     if (!characterId) return;
 
     try {
@@ -410,7 +410,58 @@ export default function CharacterPage() {
     } catch (err) {
       console.error("Error refreshing dialogue:", err);
     }
-  };
+  }, [characterId]);
+
+  const initializeNewDialogue = useCallback(async (charId: string) => {
+    try {
+      setLoadingPhase(t("characterChat.extractingTemplate"));
+      const username = getDisplayUsername();
+      const language = localStorage.getItem("language") || "zh";
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
+
+      const initData = await initCharacterDialogue({
+        username,
+        characterId: charId,
+        modelName,
+        baseUrl,
+        apiKey,
+        llmType,
+        language: language as "zh" | "en",
+      });
+
+      if (!initData.success) {
+        throw new Error(`Failed to initialize dialogue: ${initData}`);
+      }
+      const openings = initData.openingMessages || [];
+      if (openings.length > 0) {
+        setOpeningMessages(openings);
+        setOpeningIndex(0);
+        setOpeningLocked(false);
+        setMessages([
+          {
+            id: openings[0].id,
+            role: "assistant",
+            content: openings[0].content,
+          },
+        ]);
+        setSuggestedInputs([]);
+      } else if (initData.firstMessage) {
+        setOpeningMessages([]);
+        setOpeningIndex(0);
+        setOpeningLocked(false);
+        setMessages([
+          {
+            id: initData.nodeId,
+            role: "assistant",
+            content: initData.firstMessage,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error initializing dialogue:", error);
+      throw error;
+    }
+  }, [t]);
 
   useEffect(() => {
     const loadCharacterAndDialogue = async () => {
@@ -551,58 +602,7 @@ export default function CharacterPage() {
     };
 
     loadCharacterAndDialogue();
-  }, [characterId, t]);
-
-  const initializeNewDialogue = async (charId: string) => {
-    try {
-      setLoadingPhase(t("characterChat.extractingTemplate"));
-      const username = getDisplayUsername();
-      const language = localStorage.getItem("language") || "zh";
-      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
-
-      const initData = await initCharacterDialogue({
-        username,
-        characterId: charId,
-        modelName,
-        baseUrl,
-        apiKey,
-        llmType,
-        language: language as "zh" | "en",
-      });
-
-      if (!initData.success) {
-        throw new Error(`Failed to initialize dialogue: ${initData}`);
-      }
-      const openings = initData.openingMessages || [];
-      if (openings.length > 0) {
-        setOpeningMessages(openings);
-        setOpeningIndex(0);
-        setOpeningLocked(false);
-        setMessages([
-          {
-            id: openings[0].id,
-            role: "assistant",
-            content: openings[0].content,
-          },
-        ]);
-        setSuggestedInputs([]);
-      } else if (initData.firstMessage) {
-        setOpeningMessages([]);
-        setOpeningIndex(0);
-        setOpeningLocked(false);
-        setMessages([
-          {
-            id: initData.nodeId,
-            role: "assistant",
-            content: initData.firstMessage,
-          },
-        ]);
-      }
-    } catch (error) {
-      console.error("Error initializing dialogue:", error);
-      throw error;
-    }
-  };
+  }, [characterId, initializeNewDialogue, t]);
 
   const handleSendMessage = async (message: string) => {
     if (!character || isSending) return;
@@ -725,7 +725,7 @@ export default function CharacterPage() {
       window.removeEventListener("closeCharacterSidebar", handleCloseCharacterSidebar);
       window.removeEventListener("displayUsernameChanged", handleDisplayUsernameChanged);
     };
-  }, [characterId]);
+  }, [characterId, fetchLatestDialogue]);
 
   // Show loading animation during any loading phase
   if (isLoading || isInitializing) {

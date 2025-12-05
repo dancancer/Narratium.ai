@@ -136,16 +136,16 @@ function DialogueNodeComponent({ id, data }: NodeProps<DialogueNode["data"]>) {
     .map(step => step.trim())
     .filter(step => step.length > 0);
 
-  const handleNodeClick = () => {
+  const handleNodeClick = useCallback(() => {
     data.onEditClick(id);
-  };
+  }, [data, id]);
 
   const handleToggleExpand = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsExpanded(!isExpanded);
   };
   
-  const handleJumpClick = async (event: React.MouseEvent) => {
+  const handleJumpClick = useCallback(async (event: React.MouseEvent) => {
     event.stopPropagation();
 
     if (id === "root") {
@@ -164,7 +164,7 @@ function DialogueNodeComponent({ id, data }: NodeProps<DialogueNode["data"]>) {
     } finally {
       setIsJumping(false);
     }
-  };
+  }, [data, id, isJumping]);
 
   let borderColor, hoverBorderColor, textColor, expandIconColor, jumpButtonColor;
   
@@ -413,7 +413,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
   const nodesRef = useRef<Node[]>([]);
   const modalRef = useRef<HTMLDivElement>(null);
   const editModalRef = useRef<HTMLDivElement>(null);
-  
+
   const defaultEdgeOptions = useMemo(() => ({
     type: "smoothstep", 
     style: { stroke: "var(--color-danger)", strokeWidth: 3 },
@@ -421,7 +421,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
   }), []);
 
   const reactFlowInstanceRef = useRef<ReactFlowInstance | null>(null);
-  const elk = new ELK();
+  const elk = useMemo(() => new ELK(), []);
   
   /**
    * Layout Calculation Functions
@@ -659,7 +659,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       setNodes(fallbackNodes);
       nodesRef.current = fallbackNodes;
     }
-  }, [characterId, nodes, edges, calculateELKLayout, calculateFallbackLayout]);
+  }, [calculateELKLayout, calculateFallbackLayout, characterId, edges, nodes, setNodes, setUserAdjustedPositions]);
 
   /**
    * Event Handlers and Utility Functions
@@ -765,30 +765,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     } catch (error) {
       console.error("Error updating current path colors:", error);
     }
-  }, []);
-  
-  /**
-   * Initializes ReactFlow instance and sets up viewport
-   * 
-   * @param instance - ReactFlow instance reference
-   */
-  const handleFlowInit = useCallback((instance: ReactFlowInstance) => {
-    reactFlowInstanceRef.current = instance;
-    adjustViewport(instance);
-  }, []);
-
-  /**
-   * Handles node drag completion to save user-adjusted positions
-   * 
-   * @param _ - Unused event parameter
-   * @param node - The dragged node with new position
-   */
-  const handleNodeDragStop = useCallback((_: any, node: Node) => {
-    setUserAdjustedPositions(prev => ({
-      ...prev,
-      [node.id]: { x: node.position.x, y: node.position.y },
-    }));
-  }, []);
+  }, [setEdges, setNodes]);
   
   const adjustViewport = useCallback((instance: ReactFlowInstance) => {
     instance.fitView({ padding: 0.2 });
@@ -809,6 +786,29 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       y: instance.getViewport().y,
       zoom: instance.getViewport().zoom * zoomFactor,
     });
+  }, []);
+
+  /**
+   * Initializes ReactFlow instance and sets up viewport
+   * 
+   * @param instance - ReactFlow instance reference
+   */
+  const handleFlowInit = useCallback((instance: ReactFlowInstance) => {
+    reactFlowInstanceRef.current = instance;
+    adjustViewport(instance);
+  }, [adjustViewport]);
+
+  /**
+   * Handles node drag completion to save user-adjusted positions
+   * 
+   * @param _ - Unused event parameter
+   * @param node - The dragged node with new position
+   */
+  const handleNodeDragStop = useCallback((_: any, node: Node) => {
+    setUserAdjustedPositions(prev => ({
+      ...prev,
+      [node.id]: { x: node.position.x, y: node.position.y },
+    }));
   }, []);
 
   const handleEditNode = useCallback((nodeId: string) => {
@@ -846,7 +846,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     } finally {
       setIsJumpingToNode(false);
     }
-  }, [characterId, onDialogueEdit, isJumpingToNode]);
+  }, [characterId, isJumpingToNode, onDialogueEdit, updateCurrentPathColors]);
 
   useEffect(() => {
     nodesRef.current = nodes;
@@ -858,20 +858,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
         adjustViewport(reactFlowInstanceRef.current!);
       }, 50);
     }
-  }, [dataLoaded, adjustViewport]);
-
-  useEffect(() => {
-    if (isOpen && characterId) {
-      // Use incremental fetch if we have existing nodes, otherwise full fetch
-      if (lastKnownNodeIds.size > 0) {
-        fetchIncrementalDialogueData(characterId);
-      } else {
-        fetchDialogueData(characterId);
-      }
-    } else {
-      setDataLoaded(false);
-    }
-  }, [isOpen, characterId, lastKnownNodeIds.size]);
+  }, [adjustViewport, dataLoaded, nodes.length]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -925,33 +912,6 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
    * @param characterId - ID of character whose dialogue to fetch
    * @returns {Promise<void>} Async operation completion
    */
-  const fetchIncrementalDialogueData = async (characterId: string) => {
-    if (!characterId) {
-      return;
-    }
-
-    try {
-      const incrementalResponse = await getIncrementalDialogue({
-        characterId,
-        lastKnownNodeIds: Array.from(lastKnownNodeIds),
-        lastUpdateTime: lastUpdateTime || undefined,
-      });
-
-      if (!incrementalResponse.success || !incrementalResponse.hasNewData) {
-        setDataLoaded(true);
-        return;
-      }
-
-      // Process incremental data using existing logic
-      await processIncrementalNodes(incrementalResponse, characterId);
-      
-    } catch (error) {
-      console.error("Error fetching incremental dialogue data:", error);
-      // Fallback to full fetch if incremental fails
-      await fetchDialogueData(characterId);
-    }
-  };
-
   /**
    * Performs full dialogue data fetch for initial component load
    * 
@@ -964,7 +924,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
    * @param characterId - ID of character whose dialogue to load
    * @returns {Promise<void>} Async operation completion
    */
-  const fetchDialogueData = async (characterId: string) => {
+  const fetchDialogueData = useCallback(async (characterId: string) => {
     if (!characterId) {
       return;
     }
@@ -1181,7 +1141,20 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       console.error("Error fetching dialogue data:", error);
       setDataLoaded(true);
     }
-  };
+  }, [
+    calculateELKLayout,
+    calculateFallbackLayout,
+    calculateProgressiveLayout,
+    handleEditNode,
+    handleJumpToNode,
+    lastKnownNodeIds,
+    setDataLoaded,
+    setEdges,
+    setLastKnownNodeIds,
+    setLayoutMethod,
+    setNodes,
+    t,
+  ]);
 
   /**
    * Processes incremental node updates and integrates with existing tree
@@ -1196,7 +1169,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
    * @param characterId - ID of character being updated
    * @returns {Promise<void>} Async operation completion
    */
-  const processIncrementalNodes = async (incrementalResponse: any, characterId: string) => {
+  const processIncrementalNodes = useCallback(async (incrementalResponse: any, characterId: string) => {
     try {
       const { newNodes, updatedNodes, deletedNodeIds, currentNodeId } = incrementalResponse;
       
@@ -1384,7 +1357,60 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     } catch (error) {
       console.error("Error processing incremental nodes:", error);
     }
-  };
+  }, [
+    calculateProgressiveLayout,
+    edges,
+    handleEditNode,
+    handleJumpToNode,
+    lastKnownNodeIds,
+    nodes,
+    setEdges,
+    setLastKnownNodeIds,
+    setLastUpdateTime,
+    setNodes,
+    setUserAdjustedPositions,
+    t,
+  ]);
+
+  const fetchIncrementalDialogueData = useCallback(async (characterId: string) => {
+    if (!characterId) {
+      return;
+    }
+
+    try {
+      const incrementalResponse = await getIncrementalDialogue({
+        characterId,
+        lastKnownNodeIds: Array.from(lastKnownNodeIds),
+        lastUpdateTime: lastUpdateTime || undefined,
+      });
+
+      if (!incrementalResponse.success || !incrementalResponse.hasNewData) {
+        setDataLoaded(true);
+        return;
+      }
+
+      // Process incremental data using existing logic
+      await processIncrementalNodes(incrementalResponse, characterId);
+      
+    } catch (error) {
+      console.error("Error fetching incremental dialogue data:", error);
+      // Fallback to full fetch if incremental fails
+      await fetchDialogueData(characterId);
+    }
+  }, [fetchDialogueData, lastKnownNodeIds, lastUpdateTime, processIncrementalNodes]);
+
+  useEffect(() => {
+    if (isOpen && characterId) {
+      // Use incremental fetch if we have existing nodes, otherwise full fetch
+      if (lastKnownNodeIds.size > 0) {
+        fetchIncrementalDialogueData(characterId);
+      } else {
+        fetchDialogueData(characterId);
+      }
+    } else {
+      setDataLoaded(false);
+    }
+  }, [characterId, fetchDialogueData, fetchIncrementalDialogueData, isOpen, lastKnownNodeIds.size, setDataLoaded]);
 
   /**
    * Saves edited dialogue node content and updates the tree

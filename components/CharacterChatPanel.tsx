@@ -20,6 +20,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ChatHtmlBubble from "@/components/ChatHtmlBubble";
 import ThinkBubble from "@/components/ThinkBubble";
@@ -156,33 +157,22 @@ export default function CharacterChatPanel({
 
   useEffect(() => {
     const savedStreaming = localStorage.getItem("streamingEnabled");
-    if (savedStreaming !== null) {
-      const isStreamingEnabled = savedStreaming === "true";
-      if (isStreamingEnabled && messages.length > 0) {
-        setActiveModes((prev) => ({
-          ...prev,
-          streaming: true,
-        }));
-        setStreamingTarget(messages.length);
-      } else {
-        setActiveModes((prev) => ({
-          ...prev,
-          streaming: false,
-        }));
-        setStreamingTarget(-1);
-      }
-    } else {
-      // 默认开启流式传输
-      setActiveModes((prev) => ({
-        ...prev,
-        streaming: true,
-      }));
+    const isStreamingEnabled = savedStreaming !== null ? savedStreaming === "true" : true;
+
+    setActiveModes((prev) => {
+      if (prev.streaming === isStreamingEnabled) return prev;
+      return { ...prev, streaming: isStreamingEnabled };
+    });
+
+    setStreamingTarget(isStreamingEnabled && messages.length > 0 ? messages.length : -1);
+
+    if (savedStreaming === null) {
       localStorage.setItem("streamingEnabled", "true");
     }
 
     // Load display username using helper function
     setCurrentDisplayName(getDisplayUsername());
-  }, []);
+  }, [messages.length, setActiveModes]);
 
   const scrollToBottom = () => {
     const el = scrollRef.current;
@@ -221,252 +211,40 @@ export default function CharacterChatPanel({
     return configs.find((c) => c.id === activeConfigId);
   };
 
-  // Get icon based on configuration name (for first level)
-  const getConfigIcon = (configName: string) => {
-    const name = configName.toLowerCase();
+  const iconConfigs = [
+    { keywords: ["deepseek", "deep-seek"], src: "/api-icons/deepseek.svg", alt: "DeepSeek" },
+    { keywords: ["claude", "anthropic"], src: "/api-icons/claude.svg", alt: "Claude" },
+    { keywords: ["gemini", "google"], src: "/api-icons/gemini.svg", alt: "Gemini" },
+    { keywords: ["gemma"], src: "/api-icons/gemma.svg", alt: "Gemma" },
+    { keywords: ["ollama", "llama", "mistral", "codellama", "dolphin", "vicuna", "alpaca"], src: "/api-icons/ollama.svg", alt: "Ollama" },
+    { keywords: ["qwen", "qwq", "tongyi"], src: "/api-icons/qwen.svg", alt: "Qwen" },
+    { keywords: ["grok", "xai"], src: "/api-icons/grok.svg", alt: "Grok" },
+    { keywords: ["kimi", "moonshot"], src: "/api-icons/kimi.svg", alt: "Kimi" },
+  ];
 
-    if (name.includes("deepseek") || name.includes("deep-seek")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/deepseek.svg"
-            alt="DeepSeek"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("claude") || name.includes("anthropic")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/claude.svg"
-            alt="Claude"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("gemini") || name.includes("google")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/gemini.svg"
-            alt="Gemini"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("gemma")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/gemma.svg"
-            alt="Gemma"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("ollama")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/ollama.svg"
-            alt="Ollama"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (
-      name.includes("qwen") ||
-      name.includes("qwq") ||
-      name.includes("tongyi")
-    ) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/qwen.svg"
-            alt="Qwen"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("grok") || name.includes("xai")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/grok.svg"
-            alt="Grok"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full text-white"
-          />
-        </div>
-      );
-    } else if (name.includes("kimi") || name.includes("moonshot")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/kimi.svg"
-            alt="Kimi"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full text-white"
-          />
-        </div>
-      );
-    } else {
-      // Default OpenAI icon
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/openai.svg"
-            alt="OpenAI"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    }
+  const renderIcon = (src: string, alt: string) => (
+    <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
+      <Image src={src} alt={alt} width={20} height={20} className="object-cover w-full h-full" />
+    </div>
+  );
+
+  const resolveIcon = (name: string) => {
+    const lower = name.toLowerCase();
+    const matched = iconConfigs.find(({ keywords }) =>
+      keywords.some((keyword) => lower.includes(keyword)),
+    );
+    return matched || { src: "/api-icons/openai.svg", alt: "OpenAI" };
+  };
+
+  const getConfigIcon = (configName: string) => {
+    const { src, alt } = resolveIcon(configName);
+    return renderIcon(src, alt);
   };
 
   // Get icon based on model name (for second level)
   const getModelIcon = (modelName: string) => {
-    const name = modelName.toLowerCase();
-
-    if (name.includes("deepseek") || name.includes("deep-seek")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/deepseek.svg"
-            alt="DeepSeek"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("claude") || name.includes("anthropic")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/claude.svg"
-            alt="Claude"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("gemini") || name.includes("google")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/gemini.svg"
-            alt="Gemini"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("gemma")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/gemma.svg"
-            alt="Gemma"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (
-      name.includes("ollama") ||
-      name.includes("llama") ||
-      name.includes("mistral") ||
-      name.includes("codellama") ||
-      name.includes("dolphin") ||
-      name.includes("vicuna") ||
-      name.includes("alpaca")
-    ) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/ollama.svg"
-            alt="Ollama"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (
-      name.includes("qwen") ||
-      name.includes("qwq") ||
-      name.includes("tongyi")
-    ) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/qwen.svg"
-            alt="Qwen"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    } else if (name.includes("grok") || name.includes("xai")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/grok.svg"
-            alt="Grok"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full text-white"
-          />
-        </div>
-      );
-    } else if (name.includes("kimi") || name.includes("moonshot")) {
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/kimi.svg"
-            alt="Kimi"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full text-white"
-          />
-        </div>
-      );
-    } else {
-      // Default OpenAI icon for GPT models and others
-      return (
-        <div className="w-5 h-5 rounded-full overflow-hidden bg-transparent flex items-center justify-center">
-          <img
-            src="/api-icons/openai.svg"
-            alt="OpenAI"
-            width={20}
-            height={20}
-            className="object-cover w-full h-full"
-          />
-        </div>
-      );
-    }
+    const { src, alt } = resolveIcon(modelName);
+    return renderIcon(src, alt);
   };
 
   // Fetch available models for a config
@@ -613,7 +391,7 @@ export default function CharacterChatPanel({
       }));
       localStorage.setItem("fastModelEnabled", "true");
     }
-  }, []);
+  }, [setActiveModes]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

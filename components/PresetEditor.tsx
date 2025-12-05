@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { getAllPresets, getPreset, deletePreset, togglePresetEnabled, getPromptsForDisplay } from "@/function/preset/global";
 import { deletePromptFromPreset, togglePromptEnabled } from "@/function/preset/edit";
@@ -75,24 +75,24 @@ export default function PresetEditor({
     message: "",
   });
 
-  const showErrorToast = (message: string) => {
+  const showErrorToast = useCallback((message: string) => {
     setErrorToast({
       isVisible: true,
       message,
     });
-  };
+  }, []);
 
-  const hideErrorToast = () => {
+  const hideErrorToast = useCallback(() => {
     setErrorToast({
       isVisible: false,
       message: "",
     });
-  };
+  }, []);
 
   const SORT_STORAGE_KEY = `preset_sort_${characterId || "global"}`;
   const FILTER_STORAGE_KEY = `preset_filter_${characterId || "global"}`;
 
-  const loadSortPreferences = () => {
+  const loadSortPreferences = useCallback(() => {
     try {
       const stored = localStorage.getItem(SORT_STORAGE_KEY);
       if (stored) {
@@ -108,9 +108,9 @@ export default function PresetEditor({
       setSortBy("name");
       setSortOrder("asc");
     }
-  };
+  }, [SORT_STORAGE_KEY]);
 
-  const loadFilterPreferences = () => {
+  const loadFilterPreferences = useCallback(() => {
     try {
       const stored = localStorage.getItem(FILTER_STORAGE_KEY);
       if (stored) {
@@ -123,7 +123,9 @@ export default function PresetEditor({
       console.error("Failed to load filter preferences:", error);
       setFilterBy("all");
     }
-  };
+  }, [FILTER_STORAGE_KEY]);
+
+  const initRef = useRef(false);
 
   const saveSortPreferences = (newSortBy: string, newSortOrder: "asc" | "desc") => {
     try {
@@ -166,60 +168,7 @@ export default function PresetEditor({
     }
   };
 
-  useEffect(() => {
-    loadSortPreferences();
-    loadFilterPreferences();
-    
-    loadPresetData().then(async () => {
-      const activatePresetId = sessionStorage.getItem("activate_preset_id");
-      const activatePresetName = sessionStorage.getItem("activate_preset_name");
-    
-      if (activatePresetId) {
-        try {
-          const preset = await getPreset(activatePresetId);
-          if (preset.success && preset.data) {
-            await handleTogglePreset(activatePresetId, true);
-            toast.success(t("preset.presetEnabledExclusiveSuccess"));
-          }
-        } catch (error) {
-          console.error("Error activating preset by ID:", error);
-        }
-        sessionStorage.removeItem("activate_preset_id");
-      } else if (activatePresetName) {
-        try {
-          const allPresets = await getAllPresets();
-          if (allPresets.success && allPresets.data) {
-            const matchingPresets = allPresets.data.filter(p => 
-              p.name && p.name.toLowerCase().includes(activatePresetName.toLowerCase()),
-            );
-          
-            if (matchingPresets.length > 0 && matchingPresets[0].id) {
-              await handleTogglePreset(matchingPresets[0].id, true);
-              toast.success(t("preset.presetEnabledExclusiveSuccess"));
-
-              setPresets(prevPresets =>
-                prevPresets.map(preset => ({
-                  ...preset,
-                  enabled: preset.id === matchingPresets[0].id,
-                })),
-              );
-            } else {
-              showErrorToast(`No preset found matching "${activatePresetName}"`);
-            }
-          }
-        } catch (error) {
-          console.error("Error activating preset by name:", error);
-          showErrorToast("Failed to activate preset");
-        }
-        sessionStorage.removeItem("activate_preset_name");
-      }
-    });
-    
-    const timer = setTimeout(() => setAnimationComplete(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const loadPresetData = async () => {
+  const loadPresetData = useCallback(async () => {
     setIsLoading(true);
     try {
       const result = await getAllPresets();
@@ -244,7 +193,7 @@ export default function PresetEditor({
       showErrorToast(t("preset.loadFailed") || "Failed to load presets");
       setIsLoading(false);
     }
-  };
+  }, [showErrorToast, t]);
 
   const filterPresets = (presets: PresetData[], filterBy: string) => {
     switch (filterBy) {
@@ -524,7 +473,7 @@ export default function PresetEditor({
     }
   };
 
-  const handleTogglePreset = async (presetId: string, enableState: boolean) => {
+  const handleTogglePreset = useCallback(async (presetId: string, enableState: boolean) => {
     setPresets(prevPresets => 
       prevPresets.map(preset => {
         if (preset.id === presetId) {
@@ -642,7 +591,63 @@ export default function PresetEditor({
       console.error("Toggle preset failed:", error);
       showErrorToast(t("preset.togglePresetFailed") || "Failed to toggle preset");
     }
-  };
+  }, [presets, selectedPreset, showErrorToast, t]);
+
+  useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+
+    loadSortPreferences();
+    loadFilterPreferences();
+    
+    loadPresetData().then(async () => {
+      const activatePresetId = sessionStorage.getItem("activate_preset_id");
+      const activatePresetName = sessionStorage.getItem("activate_preset_name");
+    
+      if (activatePresetId) {
+        try {
+          const preset = await getPreset(activatePresetId);
+          if (preset.success && preset.data) {
+            await handleTogglePreset(activatePresetId, true);
+            toast.success(t("preset.presetEnabledExclusiveSuccess"));
+          }
+        } catch (error) {
+          console.error("Error activating preset by ID:", error);
+        }
+        sessionStorage.removeItem("activate_preset_id");
+      } else if (activatePresetName) {
+        try {
+          const allPresets = await getAllPresets();
+          if (allPresets.success && allPresets.data) {
+            const matchingPresets = allPresets.data.filter(p => 
+              p.name && p.name.toLowerCase().includes(activatePresetName.toLowerCase()),
+            );
+          
+            if (matchingPresets.length > 0 && matchingPresets[0].id) {
+              await handleTogglePreset(matchingPresets[0].id, true);
+              toast.success(t("preset.presetEnabledExclusiveSuccess"));
+
+              setPresets(prevPresets =>
+                prevPresets.map(preset => ({
+                  ...preset,
+                  enabled: preset.id === matchingPresets[0].id,
+                })),
+              );
+            } else {
+              showErrorToast(`No preset found matching "${activatePresetName}"`);
+            }
+          }
+        } catch (error) {
+          console.error("Error activating preset by name:", error);
+          showErrorToast("Failed to activate preset");
+        }
+        sessionStorage.removeItem("activate_preset_name");
+      }
+    });
+    
+    const timer = setTimeout(() => setAnimationComplete(true), 100);
+    return () => clearTimeout(timer);
+  }, [handleTogglePreset, loadFilterPreferences, loadPresetData, loadSortPreferences, showErrorToast, t]);
 
   if (isLoading) {
     return (

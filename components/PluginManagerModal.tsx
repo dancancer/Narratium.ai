@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, 
@@ -351,7 +352,7 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
                           {/* 插件信息 */}
                           <div className="flex items-start space-x-4 flex-1">
                             {/* 插件图标 */}
-                            <div className="w-12 h-12 bg-gradient-to-br from-ink/40 to-overlay/60 rounded-xl flex items-center justify-center overflow-hidden group-hover:from-cream/20 group-hover:to-amber/20 transition-all duration-300">
+                            <div className="w-12 h-12 bg-gradient-to-br from-ink/40 to-overlay/60 rounded-xl flex items-center justify-center overflow-hidden relative group-hover:from-cream/20 group-hover:to-amber/20 transition-all duration-300">
                               {plugin.manifest.icon ? (
                                 // Check if icon is a URL or emoji/text
                                 plugin.manifest.icon.startsWith("http") || plugin.manifest.icon.startsWith("/") ? (
@@ -361,11 +362,13 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
                                     <BarChart3 className="h-6 w-6 text-cream" />
                                   ) : (
                                     // Regular image files
-                                    <img
+                                    <Image
                                       src={plugin.manifest.icon}
                                       alt={plugin.manifest.name}
-                                      className="w-8 h-8 rounded object-cover"
-                                      onError={(e) => {
+                                      fill
+                                      sizes="48px"
+                                      className="rounded object-cover"
+                                      onError={() => {
                                         console.log("Icon failed to load:", plugin.manifest.icon);
                                       }}
                                     />

@@ -27,7 +27,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "@/app/styles/fantasy-ui.css";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
@@ -128,6 +128,116 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
   const [modelListEmpty, setModelListEmpty] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const handleLlmTypeChange = useCallback((type: LLMType) => {
+    setLlmType(type);
+    if (type === "gemini") {
+      setBaseUrl("");
+    }
+    setAvailableModels([]);
+    setModelListEmpty(false);
+  }, []);
+
+  const handleGetModelList = useCallback(async (type: LLMType, targetBaseUrl: string, targetApiKey: string) => {
+    if (type === "ollama") return;
+
+    setGetModelListError(false);
+    setGetModelListSuccess(false);
+    setModelListEmpty(false);
+
+    if (type === "openai" && (!targetBaseUrl || !targetApiKey)) {
+      setAvailableModels([]);
+      setGetModelListError(true);
+      setModelListEmpty(true);
+      setTimeout(() => setGetModelListError(false), 2000);
+      return;
+    }
+
+    if (type === "gemini" && !targetApiKey) {
+      setAvailableModels([]);
+      setGetModelListError(true);
+      setModelListEmpty(true);
+      setTimeout(() => setGetModelListError(false), 2000);
+      return;
+    }
+    
+    try {
+      let modelList: string[] = [];
+
+      if (type === "openai") {
+        const response = await fetch(`${targetBaseUrl}/models`, {
+          headers: {
+            "Authorization": `Bearer ${targetApiKey}`,
+          },
+        });
+        const data = await response.json();
+        modelList = data.data?.map((item: any) => item.id) || [];
+      } else if (type === "gemini") {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${targetApiKey}`);
+        const data = await response.json();
+        modelList = Array.isArray(data.models)
+          ? data.models
+            .map((item: any) => {
+              if (item?.name) {
+                return item.name.replace(/^models\//, "");
+              }
+              return "";
+            })
+            .filter(Boolean)
+          : [];
+      }
+  
+      setAvailableModels(modelList);
+      setModelListEmpty(modelList.length === 0);
+  
+      setGetModelListSuccess(true);
+      setTimeout(() => setGetModelListSuccess(false), 2000);
+    } catch (error) {
+      setAvailableModels([]);
+      setGetModelListError(true);
+      setModelListEmpty(true);
+      setTimeout(() => setGetModelListError(false), 2000);
+    }
+  }, []);
+
+  /**
+   * Loads a configuration into the form fields
+   * @param {APIConfig} config - The configuration to load
+   */
+  const loadConfigToForm = useCallback((config: APIConfig) => {
+    handleLlmTypeChange(config.type);
+    const normalizedBaseUrl = config.type === "gemini" ? "" : config.baseUrl;
+    setBaseUrl(normalizedBaseUrl);
+    setModel(config.model);
+    setApiKey(config.apiKey || "");
+    setAvailableModels(config.availableModels || []);
+    setModelListEmpty(false);
+    
+    const keys = getStorageKeys(config.type);
+    localStorage.setItem("llmType", config.type);
+    if (config.type !== "gemini") {
+      localStorage.setItem(keys.baseUrl, normalizedBaseUrl);
+      localStorage.setItem("modelBaseUrl", normalizedBaseUrl);
+    } else {
+      localStorage.removeItem(keys.baseUrl);
+      localStorage.setItem("modelBaseUrl", "");
+    }
+    localStorage.setItem(keys.model, config.model);
+    localStorage.setItem("modelName", config.model);
+    
+    if (config.type !== "ollama" && config.apiKey) {
+      if (keys.apiKey) {
+        localStorage.setItem(keys.apiKey, config.apiKey);
+      }
+      localStorage.setItem("apiKey", config.apiKey);
+    }
+    
+    if (config.type === "openai" && normalizedBaseUrl && config.apiKey) {
+      handleGetModelList("openai", normalizedBaseUrl, config.apiKey);
+    } else if (config.type === "gemini" && config.apiKey) {
+      handleGetModelList("gemini", "", config.apiKey);
+    }
+  }, [handleGetModelList, handleLlmTypeChange]);
+
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
@@ -176,7 +286,7 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
     if (mergedConfigs.length > 0) {
       loadConfigToForm(mergedConfigs.find((c) => c.id === activeIdCandidate)!);
     }
-  }, []);
+  }, [loadConfigToForm]);
 
   // Listen for model changes from other components
   useEffect(() => {
@@ -204,56 +314,7 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
     return () => {
       window.removeEventListener("modelChanged", handleModelChanged as EventListener);
     };
-  }, [activeConfigId, model, llmType]); // Removed 'configs' from dependencies
-
-  const handleLlmTypeChange = (type: LLMType) => {
-    setLlmType(type);
-    if (type === "gemini") {
-      setBaseUrl("");
-    }
-    setAvailableModels([]);
-    setModelListEmpty(false);
-  };
-
-  /**
-   * Loads a configuration into the form fields
-   * @param {APIConfig} config - The configuration to load
-   */
-  const loadConfigToForm = (config: APIConfig) => {
-    handleLlmTypeChange(config.type);
-    const normalizedBaseUrl = config.type === "gemini" ? "" : config.baseUrl;
-    setBaseUrl(normalizedBaseUrl);
-    setModel(config.model);
-    setApiKey(config.apiKey || "");
-    setAvailableModels(config.availableModels || []);
-    setModelListEmpty(false);
-    
-    // Update localStorage with the selected configuration
-    const keys = getStorageKeys(config.type);
-    localStorage.setItem("llmType", config.type);
-    if (config.type !== "gemini") {
-      localStorage.setItem(keys.baseUrl, normalizedBaseUrl);
-      localStorage.setItem("modelBaseUrl", normalizedBaseUrl);
-    } else {
-      localStorage.removeItem(keys.baseUrl);
-      localStorage.setItem("modelBaseUrl", "");
-    }
-    localStorage.setItem(keys.model, config.model);
-    localStorage.setItem("modelName", config.model);
-    
-    if (config.type !== "ollama" && config.apiKey) {
-      if (keys.apiKey) {
-        localStorage.setItem(keys.apiKey, config.apiKey);
-      }
-      localStorage.setItem("apiKey", config.apiKey);
-    }
-    
-    if (config.type === "openai" && normalizedBaseUrl && config.apiKey) {
-      handleGetModelList("openai", normalizedBaseUrl, config.apiKey);
-    } else if (config.type === "gemini" && config.apiKey) {
-      handleGetModelList("gemini", "", config.apiKey);
-    }
-  };
+  }, [activeConfigId, loadConfigToForm, model, llmType]); // Removed 'configs' from dependencies
 
   /**
    * Generates a unique ID for new configurations
@@ -525,73 +586,6 @@ export default function ModelSidebar({ isOpen, toggleSidebar }: ModelSidebarProp
       }));
     } else {
       console.error("ModelSidebar: Config not found for id", id);
-    }
-  };
-
-  /**
-   * Fetches the list of available models from the OpenAI API
-   * @param {string} baseUrl - The base URL for the API
-   * @param {string} apiKey - The API key for authentication
-   */
-  const handleGetModelList = async (type: LLMType, targetBaseUrl: string, targetApiKey: string) => {
-    if (type === "ollama") return;
-
-    setGetModelListError(false);
-    setGetModelListSuccess(false);
-    setModelListEmpty(false);
-
-    if (type === "openai" && (!targetBaseUrl || !targetApiKey)) {
-      setAvailableModels([]);
-      setGetModelListError(true);
-      setModelListEmpty(true);
-      setTimeout(() => setGetModelListError(false), 2000);
-      return;
-    }
-
-    if (type === "gemini" && !targetApiKey) {
-      setAvailableModels([]);
-      setGetModelListError(true);
-      setModelListEmpty(true);
-      setTimeout(() => setGetModelListError(false), 2000);
-      return;
-    }
-    
-    try {
-      let modelList: string[] = [];
-
-      if (type === "openai") {
-        const response = await fetch(`${targetBaseUrl}/models`, {
-          headers: {
-            "Authorization": `Bearer ${targetApiKey}`,
-          },
-        });
-        const data = await response.json();
-        modelList = data.data?.map((item: any) => item.id) || [];
-      } else if (type === "gemini") {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${targetApiKey}`);
-        const data = await response.json();
-        modelList = Array.isArray(data.models)
-          ? data.models
-            .map((item: any) => {
-              if (item?.name) {
-                return item.name.replace(/^models\//, "");
-              }
-              return "";
-            })
-            .filter(Boolean)
-          : [];
-      }
-  
-      setAvailableModels(modelList);
-      setModelListEmpty(modelList.length === 0);
-  
-      setGetModelListSuccess(true);
-      setTimeout(() => setGetModelListSuccess(false), 2000);
-    } catch (error) {
-      setAvailableModels([]);
-      setGetModelListError(true);
-      setModelListEmpty(true);
-      setTimeout(() => setGetModelListError(false), 2000);
     }
   };
 

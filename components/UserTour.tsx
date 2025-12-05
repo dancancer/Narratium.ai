@@ -28,7 +28,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
     if (currentStep > 0 && steps[0]?.isLanguageSelection) {
       setCurrentStep(1);
     }
-  }, [language]);
+  }, [currentStep, language, steps]);
   const overlayRef = useRef<HTMLDivElement>(null);
   const originalScrollPos = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {
@@ -107,7 +107,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
       window.removeEventListener("resize", updateTargetPosition);
       cancelAnimationFrame(rafId);
     };
-  }, [currentStep, steps, isVisible]);
+  }, [currentStep, isVisible, steps, targetRect]);
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {

@@ -29,6 +29,7 @@
 
 "use client";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import NextImage from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { handleCharacterUpload } from "@/function/character/import";
 import { useLanguage } from "@/app/i18n";
@@ -269,7 +270,7 @@ export default function DownloadCharacterModal({ isOpen, onClose, onImport }: Do
     for (const batch of batches) {
       const promises = batch.map(file => {
         return new Promise<void>((resolve) => {
-          const img = new Image();
+          const img = new window.Image();
           img.onload = () => {
             setImageCache(file.name, true);
             setImageLoadingStates(prev => ({ ...prev, [file.name]: true }));
@@ -373,7 +374,7 @@ export default function DownloadCharacterModal({ isOpen, onClose, onImport }: Do
     };
 
     loadCharacters();
-  }, [isOpen, getCachedData, setCachedData, preloadImages, t]);
+  }, [getCachedData, getImageCache, isOpen, preloadImages, setCachedData, t]);
 
   const handleDownloadAndImport = async (file: GithubFile) => {
     setImporting(file.name);
@@ -677,7 +678,7 @@ export default function DownloadCharacterModal({ isOpen, onClose, onImport }: Do
                     >
                       {/* Character Image */}
                       <div className={`relative rounded-lg overflow-hidden ${
-                        isMobile ? "w-20 h-20 flex-shrink-0" : "mb-3"
+                        isMobile ? "w-20 h-20 flex-shrink-0" : "h-56 mb-3"
                       }`}>
                         {!isImageLoaded && (
                           <div className="absolute inset-0 bg-deep flex items-center justify-center">
@@ -686,12 +687,14 @@ export default function DownloadCharacterModal({ isOpen, onClose, onImport }: Do
                             }`}></div>
                           </div>
                         )}
-                        <img 
-                          src={RAW_BASE_URL + file.name} 
-                          alt={file.name} 
+                        <NextImage
+                          src={RAW_BASE_URL + file.name}
+                          alt={file.name}
+                          fill
+                          sizes={isMobile ? "80px" : "(min-width:1280px) 200px, (min-width:1024px) 180px, (min-width:640px) 160px, 120px"}
                           className={`object-cover transition-all duration-300 ${
                             isImageLoaded ? "opacity-100" : "opacity-0"
-                          } ${isMobile ? "w-full h-full" : "w-full h-56"}`}
+                          }`}
                           loading="lazy"
                           onLoad={() => handleImageLoad(file.name)}
                           onError={() => handleImageError(file.name)}

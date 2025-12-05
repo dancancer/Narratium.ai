@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLanguage } from "@/app/i18n";
 import { RegexScript, RegexScriptSettings } from "@/lib/models/regex-script-model";
 import { trackButtonClick } from "@/utils/google-analytics";
@@ -42,22 +42,7 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
   const scriptRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    loadScriptsAndSettings();
-    
-    const timer = setTimeout(() => setAnimationComplete(true), 100);
-    return () => {
-      clearTimeout(timer);
-      // Clean up refs and timeouts on unmount
-      scriptRefs.current.clear();
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-        scrollTimeoutRef.current = null;
-      }
-    };
-  }, [characterId]);
-
-  const loadScriptsAndSettings = async () => {
+  const loadScriptsAndSettings = useCallback(async () => {
     setIsLoading(true);
     try {
       const [scriptsData, settingsData] = await Promise.all([
@@ -72,7 +57,24 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [characterId]);
+
+  useEffect(() => {
+    loadScriptsAndSettings();
+    
+    const timer = setTimeout(() => setAnimationComplete(true), 100);
+    const scriptsMap = scriptRefs.current;
+    return () => {
+      clearTimeout(timer);
+      // Clean up refs and timeouts on unmount
+      scriptsMap.clear();
+      const timeoutId = scrollTimeoutRef.current;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        scrollTimeoutRef.current = null;
+      }
+    };
+  }, [characterId, loadScriptsAndSettings]);
 
   const handleSaveScript = async (script: Partial<RegexScript & { scriptKey?: string }>) => {
     setIsSaving(true);

@@ -14,8 +14,9 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import gsap from "gsap";
 import { useSoundContext } from "@/contexts/SoundContext";
 
@@ -91,88 +92,9 @@ export default function LoadingTransition({
     };
   }, [logoShown, autoRedirect, redirectUrl, onAnimationComplete, router]);
 
-  useEffect(() => {
-    if (!soundsLoaded) return;
-    
-    pathsRef.current = Array.from(document.querySelectorAll(".loading_icon path"));
-
-    startAnimation();
-
-    if (autoRedirect && redirectUrl) {
-    }
-  }, [soundsLoaded, autoRedirect, redirectUrl]);
-
-  const startAnimation = () => {
-    if (soundEnabled && soundsLoaded && movementSoundRef.current) {
-      movementSoundRef.current.muted = true;
-      movementSoundRef.current.currentTime = 0;
-      const playPromise = movementSoundRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          if (movementSoundRef.current) {
-            movementSoundRef.current.muted = false;
-            movementSoundRef.current.volume = 0.8;
-          }
-        }).catch(e => {
-          console.log("Movement sound failed:", e);
-        });
-      }
-    }
-    
-    gsap.to(pathsRef.current, {
-      stroke: "var(--color-amber-bright)",
-      strokeWidth: (i: number) => i === 0 ? 2 : 4,
-      duration: 0.3,
-      ease: "power1.in",
-    });
-
-    const timeline = gsap.timeline()
-      .fromTo(
-        pathsRef.current,
-        {
-          strokeDashoffset: (i: number) => {
-            if (i === 0) return 0;
-            else return 480;
-          },
-        },
-        {
-          strokeDashoffset: (i: number) => {
-            if (i === 0) return -275;
-            else return 205;
-          },
-          duration: 0.8,
-          ease: "power2.inOut",
-          onComplete: () => {
-            finishAnimation();
-          },
-        },
-      );
-
-    gsap.to(progressBarFillRef.current, {
-      width: "100%",
-      duration: timeline.duration(),
-      ease: "power2.inOut",
-    });
-
-    gsap.to(progressBarFillRef.current, {
-      background: "linear-gradient(90deg, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.8) 50%, rgba(255,215,0,0.4) 100%)",
-      boxShadow: "0 0 8px rgba(255,215,0,0.6)",
-      duration: timeline.duration(),
-      ease: "power2.inOut",
-    });
-
-    gsap.to(textRef.current, {
-      opacity: 1,
-      duration: 0.5,
-      delay: 0.3,
-      ease: "power1.out",
-    });
-  };
-
-  const finishAnimation = () => {
+  const finishAnimation = useCallback(() => {
     if (soundEnabled && movementSoundRef.current) {
-      const fadeOutMovement = gsap.to(movementSoundRef.current, {
+      gsap.to(movementSoundRef.current, {
         volume: 0,
         duration: 0.5,
         onComplete: () => {
@@ -250,7 +172,84 @@ export default function LoadingTransition({
           }
         },
       }, "<0.3");
-  };
+  }, [autoRedirect, onAnimationComplete, soundEnabled]);
+
+  const startAnimation = useCallback(() => {
+    if (!soundsLoaded) return;
+    if (soundEnabled && soundsLoaded && movementSoundRef.current) {
+      movementSoundRef.current.muted = true;
+      movementSoundRef.current.currentTime = 0;
+      const playPromise = movementSoundRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          if (movementSoundRef.current) {
+            movementSoundRef.current.muted = false;
+            movementSoundRef.current.volume = 0.8;
+          }
+        }).catch(e => {
+          console.log("Movement sound failed:", e);
+        });
+      }
+    }
+    
+    gsap.to(pathsRef.current, {
+      stroke: "var(--color-amber-bright)",
+      strokeWidth: (i: number) => i === 0 ? 2 : 4,
+      duration: 0.3,
+      ease: "power1.in",
+    });
+
+    const timeline = gsap.timeline()
+      .fromTo(
+        pathsRef.current,
+        {
+          strokeDashoffset: (i: number) => {
+            if (i === 0) return 0;
+            else return 480;
+          },
+        },
+        {
+          strokeDashoffset: (i: number) => {
+            if (i === 0) return -275;
+            else return 205;
+          },
+          duration: 0.8,
+          ease: "power2.inOut",
+          onComplete: () => {
+            finishAnimation();
+          },
+        },
+      );
+
+    gsap.to(progressBarFillRef.current, {
+      width: "100%",
+      duration: timeline.duration(),
+      ease: "power2.inOut",
+    });
+
+    gsap.to(progressBarFillRef.current, {
+      background: "linear-gradient(90deg, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.8) 50%, rgba(255,215,0,0.4) 100%)",
+      boxShadow: "0 0 8px rgba(255,215,0,0.6)",
+      duration: timeline.duration(),
+      ease: "power2.inOut",
+    });
+
+    gsap.to(textRef.current, {
+      opacity: 1,
+      duration: 0.5,
+      delay: 0.3,
+      ease: "power1.out",
+    });
+  }, [finishAnimation, soundEnabled, soundsLoaded]);
+
+  useEffect(() => {
+    if (!soundsLoaded) return;
+    
+    pathsRef.current = Array.from(document.querySelectorAll(".loading_icon path"));
+
+    startAnimation();
+  }, [startAnimation, soundsLoaded]);
 
   const fadeOut = () => {
     if (containerRef.current) {
@@ -319,11 +318,13 @@ export default function LoadingTransition({
           ref={circleRef}
           className="loading_circle absolute w-[min(10rem,25vw)] h-[min(10rem,25vw)] rounded-full bg-[rgba(251,165,61,0.1)] border-2 border-[var(--color-amber-bright)] shadow-[0_0_15px_rgba(251,146,60,0.5)] opacity-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         ></div>
-        <img 
+        <Image 
           ref={logoRef}
           src="/logo-narratium.png" 
-          className="logo absolute w-[min(10rem,25vw)] opacity-0 z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" 
           alt="Narratium Logo"
+          fill
+          sizes="(min-width:1024px) 240px, 200px"
+          className="logo absolute w-[min(10rem,25vw)] opacity-0 z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain" 
         />
         <div
           ref={progressBarRef}

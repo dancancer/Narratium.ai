@@ -1,8 +1,14 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { FlatCompat } from "@eslint/eslintrc";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import next from "@next/eslint-plugin-next";
 
-export default [
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const compat = new FlatCompat({ baseDirectory: __dirname });
+const config = [
+  ...compat.extends("next/core-web-vitals"),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     ignores: ["node_modules", ".next", "dist"],
@@ -14,8 +20,8 @@ export default [
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint,
       "@next/next": next,
+      "@typescript-eslint": tseslint,
     },
     rules: {
       "semi": ["error", "always"],
@@ -28,3 +34,4 @@ export default [
     },
   },
 ];
+export default config;
