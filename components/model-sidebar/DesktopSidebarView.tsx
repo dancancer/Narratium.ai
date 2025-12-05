@@ -66,15 +66,15 @@ export function DesktopSidebarView(props: SidebarViewProps) {
 
   return (
     <div
-      className={`h-full magic-border border-l border-[#534741] breathing-bg text-[#d0d0d0] transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-0"
+      className={`h-full magic-border border-l border-ink breathing-bg text-text transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-0"
       }`}
     >
       <div className={`w-64 h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-y-auto fantasy-scrollbar`}>
-        <div className="flex justify-between items-center p-3 border-b border-[#534741] bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a]">
+        <div className="flex justify-between items-center p-3 border-b border-ink bg-gradient-to-r from-canvas to-input">
           <h1 className={`text-base magical-text ${serifFontClass}`}>{t("modelSettings.title")}</h1>
           <button
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
-            className="w-6 h-6 flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-md border border-[#333333] shadow-inner transition-all duration-300 hover:bg-[#252525] hover:border-[#444444] hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+            className="w-6 h-6 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300">
               <path d="M9 18l6-6-6-6" />
@@ -84,12 +84,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
         <div className="p-3 sm:p-3 p-2">
           <div className="mb-3 sm:mb-3 mb-2">
             <div className="flex justify-between items-center mb-2 sm:mb-2 mb-1">
-              <label className={`text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium ${fontClass}`}>
+              <label className={`text-cream text-xs sm:text-xs text-2xs font-medium ${fontClass}`}>
                 {t("modelSettings.configurations") || "API Configurations"}
               </label>
               <button 
                 onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
-                className="text-xs sm:text-xs text-[10px] text-[#d1a35c] hover:text-[#f4e8c1] transition-all duration-200 px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 rounded border border-[#534741] hover:border-[#d1a35c] hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
+                className="text-xs sm:text-xs text-2xs text-amber hover:text-cream transition-all duration-200 px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 rounded border border-ink hover:border-amber hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-2.5 sm:h-2.5 w-2 h-2">
                   <path d="M12 5v14M5 12h14" />
@@ -101,7 +101,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
             
             {!showNewConfigForm && configs.length > 0 && (
               <div className="mb-1.5 sm:mb-1.5 mb-1">
-                <p className={`text-xs sm:text-xs text-[10px] italic transition-colors duration-200 ${isConfigHovered ? "text-[#d1a35c]" : "text-[#8a8a8a]"}`}>
+                <p className={`text-xs sm:text-xs text-2xs italic transition-colors duration-200 ${isConfigHovered ? "text-amber" : "text-text-muted"}`}>
                   {t("modelSettings.doubleClickToEditName") || "Double-click configuration name to edit"}
                 </p>
               </div>
@@ -114,8 +114,8 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                     key={config.id} 
                     className={`flex items-center justify-between p-1.5 sm:p-1.5 p-1 rounded-md cursor-pointer text-sm sm:text-sm text-xs transition-all duration-200 group ${
                       activeConfigId === config.id 
-                        ? "bg-[#3a3632] border border-[#d1a35c] shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
-                        : "bg-[#292929] hover:bg-[#333333] border border-transparent hover:border-[#534741]"
+                        ? "bg-muted-surface border border-amber shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
+                        : "bg-card hover:bg-stroke border border-transparent hover:border-ink"
                     }`}
                     onClick={() => handleSwitchConfig(config.id)}
                     onMouseEnter={() => setIsConfigHovered(true)}
@@ -129,32 +129,32 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                           onChange={(e) => setEditingName(e.target.value)}
                           onBlur={handleSaveName}
                           onKeyDown={handleKeyDown}
-                          className="bg-[#1c1c1c] border border-[#534741] rounded py-0.5 px-1 sm:py-0.5 sm:px-1 py-0 px-0.5 text-xs sm:text-xs text-[10px] text-[#f4e8c1] w-full focus:border-[#d1a35c] focus:outline-none"
+                          className="bg-surface border border-ink rounded py-0.5 px-1 sm:py-0.5 sm:px-1 py-0 px-0.5 text-xs sm:text-xs text-2xs text-cream w-full focus:border-amber focus:outline-none"
                           onClick={e => e.stopPropagation()}
                           autoFocus
                         />
                       ) : (
                         <>
                           <span 
-                            className="text-xs sm:text-xs text-[10px] truncate cursor-text hover:text-[#f4e8c1] transition-colors" 
+                            className="text-xs sm:text-xs text-2xs truncate cursor-text hover:text-cream transition-colors" 
                             onDoubleClick={(e) => handleStartEditName(config, e)}
                           >
                             {config.name}
                           </span>
                           {showEditHint && configs.length > 1 && (
                             <span
-                              className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-6"} left-0 z-[9999] bg-[#2a2522] text-[#d1a35c] text-[10px] sm:text-[10px] text-[8px] px-2 py-1 sm:px-2 sm:py-1 px-1 py-0.5 rounded border border-[#d1a35c] whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_rgba(209,163,92,0.2)]`}
+                              className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-6"} left-0 z-[9999] bg-overlay text-amber text-2xs sm:text-2xs text-3xs px-2 py-1 sm:px-2 sm:py-1 px-1 py-0.5 rounded border border-amber whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_color-mix(in srgb,var(--color-amber) 20%,transparent)]`}
                             >
                               {t("modelSettings.doubleClickToEditName")}
                             </span>
                           )}
-                          <span className="ml-2 text-xs sm:text-xs text-[8px] text-[#8a8a8a] px-1.5 py-0.5 sm:px-1.5 sm:py-0.5 px-1 py-0 rounded bg-[#1c1c1c] border border-[#333333] flex-shrink-0">{config.type}</span>
+                          <span className="ml-2 text-xs sm:text-xs text-3xs text-text-muted px-1.5 py-0.5 sm:px-1.5 sm:py-0.5 px-1 py-0 rounded bg-surface border border-stroke flex-shrink-0">{config.type}</span>
                         </>
                       )}
                     </div>
                     <button 
                       onClick={(e) => { trackButtonClick("ModelSidebar", "删除配置"); e.stopPropagation(); handleDeleteConfig(config.id); }}
-                      className="text-red-400 hover:text-red-300 text-xs sm:text-xs text-[10px] p-1 sm:p-1 p-0.5 transition-colors ml-1 flex-shrink-0"
+                      className="text-red-400 hover:text-red-300 text-xs sm:text-xs text-2xs p-1 sm:p-1 p-0.5 transition-colors ml-1 flex-shrink-0"
                     >
                       ×
                     </button>
@@ -166,33 +166,32 @@ export function DesktopSidebarView(props: SidebarViewProps) {
           </div>
 
           {!showNewConfigForm && activeConfigId && (
-            <div className="border border-[#534741] rounded-md p-2.5 sm:p-2.5 p-2 mb-3 sm:mb-3 mb-2 bg-[#1c1c1c] bg-opacity-50 backdrop-blur-sm">
+            <div className="border border-ink rounded-md p-2.5 sm:p-2.5 p-2 mb-3 sm:mb-3 mb-2 bg-surface bg-opacity-50 backdrop-blur-sm">
               <div className="mb-1.5 sm:mb-1.5 mb-1">
-                <span className="text-xs sm:text-xs text-[10px] text-[#8a8a8a]">{t("modelSettings.llmType") || "API Type"}:</span>
-                <span className="ml-2 text-xs sm:text-xs text-[10px] text-[#f4e8c1]">{describeLlmType(llmType)}</span>
+                <span className="text-xs sm:text-xs text-2xs text-text-muted">{t("modelSettings.llmType") || "API Type"}:</span>
+                <span className="ml-2 text-xs sm:text-xs text-2xs text-cream">{describeLlmType(llmType)}</span>
               </div>
               {llmType !== "gemini" && (
                 <div className="mb-1.5 sm:mb-1.5 mb-1">
-                  <span className="text-xs sm:text-xs text-[10px] text-[#8a8a8a]">{t("modelSettings.baseUrl") || "Base URL"}:</span>
-                  <span className="ml-2 text-xs sm:text-xs text-[10px] text-[#f4e8c1] break-all">
+                  <span className="text-xs sm:text-xs text-2xs text-text-muted">{t("modelSettings.baseUrl") || "Base URL"}:</span>
+                  <span className="ml-2 text-xs sm:text-xs text-2xs text-cream break-all">
                     {baseUrl.trim() || getBaseUrlPlaceholder(llmType)}
                   </span>
                 </div>
               )}
               {llmType !== "ollama" && (
                 <div className="mb-1.5 sm:mb-1.5 mb-1">
-                  <span className="text-xs sm:text-xs text-[10px] text-[#8a8a8a]">{t("modelSettings.apiKey") || "API Key"}:</span>
-                  <span className="ml-2 text-xs sm:text-xs text-[10px] text-[#f4e8c1]">{"•".repeat(Math.min(10, apiKey.length))}</span>
+                  <span className="text-xs sm:text-xs text-2xs text-text-muted">{t("modelSettings.apiKey") || "API Key"}:</span>
+                  <span className="ml-2 text-xs sm:text-xs text-2xs text-cream">{"•".repeat(Math.min(10, apiKey.length))}</span>
                 </div>
               )}
               <div className="mb-1.5 sm:mb-1.5 mb-1">
-                <label className="text-xs sm:text-xs text-[10px] text-[#8a8a8a] mr-2">{t("modelSettings.model") || "Model"}:</label>
+                <label className="text-xs sm:text-xs text-2xs text-text-muted mr-2">{t("modelSettings.model") || "Model"}:</label>
                 {llmType !== "ollama" && !modelListEmpty && availableModels.length > 0 ? (
                   <select
                     value={model}
                     onChange={(e) => handleInlineModelChange(e.target.value)}
-                    className="bg-[#292929] border border-[#534741] rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-[#f4e8c1] text-xs sm:text-xs text-[10px] max-w-[200px] sm:max-w-[200px] max-w-[150px] truncate focus:border-[#d1a35c] focus:outline-none transition-colors"
-                    style={{ textOverflow: "ellipsis" }}
+                    className="bg-card border border-ink rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] truncate focus:border-amber focus:outline-none transition-colors"
                   >
                     <option value="" disabled className="truncate">{t("modelSettings.selectModel") || "Select a model..."}</option>
                     {availableModels.map((option) => (
@@ -204,7 +203,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                     type="text"
                     value={model}
                     onChange={(e) => handleInlineModelChange(e.target.value)}
-                    className="bg-[#292929] border border-[#534741] rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-[#f4e8c1] text-xs sm:text-xs text-[10px] max-w-[200px] sm:max-w-[200px] max-w-[150px] focus:border-[#d1a35c] focus:outline-none transition-colors"
+                    className="bg-card border border-ink rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] focus:border-amber focus:outline-none transition-colors"
                     placeholder={getModelPlaceholder(llmType)}
                   />
                 )}
@@ -215,12 +214,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
           {showNewConfigForm && (
             <div className="mb-4 sm:mb-4 mb-3">
               <div className="mb-4 sm:mb-4 mb-3">
-                <label className={`block text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
+                <label className={`block text-cream text-xs sm:text-xs text-2xs font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
                   {t("modelSettings.configName")}
                 </label>
                 <input
                   type="text"
-                  className="bg-[#292929] border border-[#534741] rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] text-[#d0d0d0] leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                  className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
                   placeholder={t("modelSettings.configNamePlaceholder")}
                   value={newConfigName}
                   onChange={(e) => setNewConfigName(e.target.value)}
@@ -228,7 +227,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </div>
 
               <div className="mb-4 sm:mb-4 mb-3">
-                <label className={`block text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
+                <label className={`block text-cream text-xs sm:text-xs text-2xs font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
                   {t("modelSettings.llmType") || "API Type"}
                 </label>
                 <select
@@ -236,7 +235,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   onChange={(e) => {
                     setLlmType(e.target.value as LLMType);
                   }}
-                  className="w-full bg-[#292929] border border-[#534741] rounded py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] text-[#d0d0d0] leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                  className="w-full bg-card border border-ink rounded py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
                 >
                   <option value="openai">OpenAI API</option>
                   <option value="ollama">Ollama API</option>
@@ -246,13 +245,13 @@ export function DesktopSidebarView(props: SidebarViewProps) {
 
               {llmType !== "gemini" && (
                 <div className="mb-4 sm:mb-4 mb-3">
-                  <label htmlFor="baseUrl" className={`block text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
+                  <label htmlFor="baseUrl" className={`block text-cream text-xs sm:text-xs text-2xs font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
                     {t("modelSettings.baseUrl")}
                   </label>
                   <input
                     type="text"
                     id="baseUrl"
-                    className="bg-[#292929] border border-[#534741] rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] text-[#d0d0d0] leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                    className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
                     placeholder={getBaseUrlPlaceholder(llmType)}
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
@@ -262,13 +261,13 @@ export function DesktopSidebarView(props: SidebarViewProps) {
 
               {llmType !== "ollama" && (
                 <div className="mb-4 sm:mb-4 mb-3">
-                  <label htmlFor="apiKey" className={`block text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
+                  <label htmlFor="apiKey" className={`block text-cream text-xs sm:text-xs text-2xs font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
                     {t("modelSettings.apiKey") || "API Key"}
                   </label>
                   <input
                     type="text"
                     id="apiKey"
-                    className="bg-[#292929] border border-[#534741] rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] text-[#d0d0d0] leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                    className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
                     placeholder="sk-..."
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
@@ -280,18 +279,18 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <div className="relative">
                   {llmType !== "ollama" && (
                     <button 
-                      className={`bg-[#3e3a3a] hover:bg-[#534741] text-[#f4e8c1] font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] rounded-md border border-[#d1a35c] w-full transition-colors magical-text ${fontClass}`} 
+                      className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-colors magical-text ${fontClass}`} 
                       onClick={() => handleGetModelList(llmType, baseUrl, apiKey)}
                     >{t("modelSettings.getModelList") || "Get Model List"}</button>
                   )}
                   
                   {getModelListSuccess && (
-                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#333333] bg-opacity-80 rounded transition-opacity">
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity">
                       <div className="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-4 sm:w-4 h-3 w-3 text-green-500 mr-2 sm:mr-2 mr-1 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
-                        <span className={`text-white text-xs sm:text-xs text-[10px] ${fontClass}`}>
+                        <span className={`text-white text-xs sm:text-xs text-2xs ${fontClass}`}>
                           {t("modelSettings.getModelListSuccess") || "Get Model List Success"}
                         </span>
                       </div>
@@ -299,12 +298,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   )}
                   
                   {getModelListError && (
-                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#333333] bg-opacity-80 rounded transition-opacity">
+                    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity">
                       <div className="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-4 sm:w-4 h-3 w-3 text-red-500 mr-2 sm:mr-2 mr-1 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
-                        <span className={`text-white text-xs sm:text-xs text-[10px] ${fontClass}`}>
+                        <span className={`text-white text-xs sm:text-xs text-2xs ${fontClass}`}>
                           {t("modelSettings.getModelListError") || "Get Model List Error"}
                         </span>
                       </div>
@@ -314,19 +313,19 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </div>
 
               <div className="mb-4 sm:mb-4 mb-3">
-                <label htmlFor="model" className={`block text-[#f4e8c1] text-xs sm:text-xs text-[10px] font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
+                <label htmlFor="model" className={`block text-cream text-xs sm:text-xs text-2xs font-medium mb-2 sm:mb-2 mb-1 ${fontClass}`}>
                   {t("modelSettings.model")}
                 </label>
                 <input
                   type="text"
                   id="model"
-                  className="bg-[#292929] border border-[#534741] rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] text-[#d0d0d0] leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                  className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
                   placeholder={getModelPlaceholder(llmType)}
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
                 />
                 {llmType !== "ollama" && availableModels.length > 0 && (
-                  <div className="mt-2 text-xs sm:text-xs text-[10px] text-[#8a8a8a]">
+                  <div className="mt-2 text-xs sm:text-xs text-2xs text-text-muted">
                     <p className={`mb-1 sm:mb-1 mb-0.5 ${fontClass}`}>{t("modelSettings.modelList") || "Model List"}</p>
                     <select
                       value={model}
@@ -334,16 +333,16 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                         trackButtonClick("ModelSidebar", t("modelSettings.selectModel") || "Select a model...");
                         setModel(e.target.value);
                       }}
-                      className="w-full bg-[#292929] border border-[#534741] rounded py-2 px-3 sm:py-2 sm:px-3 py-1.5 px-2 text-[#d0d0d0] text-sm sm:text-sm text-xs leading-tight focus:outline-none focus:border-[#d1a35c] transition-colors"
+                      className="w-full bg-card border border-ink rounded py-2 px-3 sm:py-2 sm:px-3 py-1.5 px-2 text-text text-sm sm:text-sm text-xs leading-tight focus:outline-none focus:border-amber transition-colors"
                     >
-                      <option value="" disabled className="text-[#8a8a8a]">
+                      <option value="" disabled className="text-text-muted">
                         {t("modelSettings.selectModel") || "Select a model..."}
                       </option>
                       {availableModels.map((option) => (
                         <option
                           key={option}
                           value={option}
-                          className="bg-[#292929] text-[#d0d0d0]"
+                          className="bg-card text-text"
                         >
                           {option}
                         </option>
@@ -356,14 +355,14 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <div className="flex gap-2 sm:gap-2 gap-1">
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建配置"); e.stopPropagation(); handleSave();}}
-                  className={`flex-1 bg-[#3e3a3a] hover:bg-[#534741] text-[#f4e8c1] font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] rounded border border-[#d1a35c] transition-colors magical-text ${fontClass}`}
+                  className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-amber transition-colors magical-text ${fontClass}`}
                 >
                   <span className="sm:block hidden">{t("modelSettings.createConfig") || "Create Configuration"}</span>
                   <span className="sm:hidden block">Create</span>
                 </button>
                 <button
                   onClick={() => {trackButtonClick("cancel_create_config_btn", "取消创建配置"); handleCancelCreate();}}
-                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 bg-[#292929] text-xs sm:text-xs text-[10px] text-[#d0d0d0] rounded border border-[#534741] hover:bg-[#333333] transition-colors ${fontClass}`}
+                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 bg-card text-xs sm:text-xs text-2xs text-text rounded border border-ink hover:bg-stroke transition-colors ${fontClass}`}
                 >
                   {t("common.cancel") || "Cancel"}
                 </button>
@@ -376,18 +375,18 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <div className="relative">
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "保存配置"); e.stopPropagation(); handleSave();}}
-                  className={`bg-[#3e3a3a] hover:bg-[#534741] text-[#f4e8c1] font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] rounded-md border border-[#d1a35c] w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                 >
                   {t("modelSettings.saveSettings") || "Save Settings"}
                 </button>
 
                 {saveSuccess && (
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#333333] bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                     <div className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-4 sm:w-4 h-3 w-3 text-green-500 mr-1.5 sm:mr-1.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
-                      <span className={`text-white text-xs sm:text-xs text-[10px] ${fontClass}`}>
+                      <span className={`text-white text-xs sm:text-xs text-2xs ${fontClass}`}>
                         {t("modelSettings.settingsSaved") || "Settings Saved"}
                       </span>
                     </div>
@@ -399,11 +398,11 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "测试模型"); e.stopPropagation(); handleTestModel();}}
                   disabled={isTesting || (!baseUrl && llmType !== "gemini") || !model}
-                  className={`bg-[#3e3a3a] hover:bg-[#534741] text-[#f4e8c1] font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] rounded-md border border-[#d1a35c] w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isTesting ? (
                     <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-3 w-3 sm:h-3 sm:w-3 h-2.5 w-2.5 text-[#f4e8c1]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin -ml-1 mr-2 h-3 w-3 sm:h-3 sm:w-3 h-2.5 w-2.5 text-cream" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -416,12 +415,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 </button>
 
                 {testModelSuccess && (
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#333333] bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                     <div className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-4 sm:w-4 h-3 w-3 text-green-500 mr-1.5 sm:mr-1.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
-                      <span className={`text-white text-xs sm:text-xs text-[10px] ${fontClass}`}>
+                      <span className={`text-white text-xs sm:text-xs text-2xs ${fontClass}`}>
                         {t("modelSettings.testSuccess") || "Model test successful"}
                       </span>
                     </div>
@@ -429,12 +428,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 )}
 
                 {testModelError && (
-                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#333333] bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                     <div className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-4 sm:w-4 h-3 w-3 text-red-500 mr-1.5 sm:mr-1.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                       </svg>
-                      <span className={`text-white text-xs sm:text-xs text-[10px] ${fontClass}`}>
+                      <span className={`text-white text-xs sm:text-xs text-2xs ${fontClass}`}>
                         {t("modelSettings.testError") || "Model test failed"}
                       </span>
                     </div>
@@ -446,12 +445,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
 
           {configs.length === 0 && !showNewConfigForm && (
             <div className="flex flex-col items-center justify-center py-3 sm:py-3 py-2">
-              <p className="text-xs sm:text-xs text-[10px] text-[#8a8a8a] mb-2 sm:mb-2 mb-1">
+              <p className="text-xs sm:text-xs text-2xs text-text-muted mb-2 sm:mb-2 mb-1">
                 {t("modelSettings.noConfigs")}
               </p>
               <button
                 onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
-                className={`bg-[#3e3a3a] hover:bg-[#534741] text-[#f4e8c1] font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-[10px] rounded border border-[#d1a35c] transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
+                className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-amber transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-2.5 sm:h-2.5 w-2 h-2">
                   <path d="M12 5v14M5 12h14" />

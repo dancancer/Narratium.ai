@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { CheckCircle2, TriangleAlert, X, XCircle } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 
 export type ToastType = "success" | "warning" | "error";
@@ -53,9 +54,7 @@ export function Toast({
         messageColor: "text-green-200",
         defaultTitle: t("toast.success") || "Success",
         icon: (
-          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
+          <CheckCircle2 className="h-5 w-5" />
         ),
       };
     case "warning":
@@ -66,23 +65,19 @@ export function Toast({
         messageColor: "text-yellow-200",
         defaultTitle: t("toast.warning") || "Warning",
         icon: (
-          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
+          <TriangleAlert className="h-5 w-5" />
         ),
       };
     case "error":
     default:
       return {
-        borderColor: "border-[#a18d6f]",
-        iconColor: "text-[#c0a480]",
-        titleColor: "text-[#f4e8c1]",
-        messageColor: "text-[#c0a480]",
+        borderColor: "border-ink-soft",
+        iconColor: "text-amber-soft",
+        titleColor: "text-cream",
+        messageColor: "text-amber-soft",
         defaultTitle: t("characterChat.requestFailed") || "Error",
         icon: (
-          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
+          <XCircle className="h-5 w-5" />
         ),
       };
     }
@@ -92,7 +87,7 @@ export function Toast({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className={`bg-[#252220] ${config.borderColor} border rounded-lg shadow-lg p-4 max-w-sm mx-4`}>
+      <div className={`bg-muted-surface ${config.borderColor} border rounded-lg shadow-lg p-4 max-w-sm mx-4`}>
         <div className="flex items-start">
           <div className="flex-shrink-0">
             <div className={config.iconColor}>
@@ -110,11 +105,9 @@ export function Toast({
           <div className="ml-4 flex-shrink-0 flex">
             <button
               onClick={onClose}
-              className="inline-flex text-[#a18d6f] hover:text-[#c0a480] focus:outline-none"
+              className="inline-flex text-ink-soft hover:text-amber-soft focus:outline-none"
             >
-              <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>

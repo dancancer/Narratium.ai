@@ -75,7 +75,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
       thinking: { color: "text-amber-400", label: t("agentProgress.thinking") || "Thinking", icon: <Brain size={14} />, pulse: true },
       executing: { color: "text-amber-400", label: t("agentProgress.executing") || "Executing", icon: <Zap size={14} />, pulse: true },
       waiting_user: { color: "text-amber-400", label: t("agentProgress.waitingUser") || "Awaiting Input", icon: <User size={14} />, pulse: true },
-      completed: { color: "text-[#f4e8c1]", label: t("agentProgress.completed") || "Completed", icon: <Award size={14} /> },
+      completed: { color: "text-cream", label: t("agentProgress.completed") || "Completed", icon: <Award size={14} /> },
       failed: { color: "text-rose-400", label: t("agentProgress.failed") || "Failed", icon: <AlertCircle size={14} /> },
     };
     return statusMap[status] || { color: "text-slate-400", label: t("agentProgress.unknown") || "Unknown", icon: <Clock size={14} /> };
@@ -100,10 +100,10 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
     <div className="bg-black/40 border border-amber-500/20 rounded-lg p-3 space-y-3">
       {/* Compact Header */}
       <div className="text-center">
-        <h3 className={`text-sm font-semibold text-[#f4e8c1] ${serifFontClass} magical-text`}>
+        <h3 className={`text-sm font-semibold text-cream ${serifFontClass} magical-text`}>
           {t("agentProgress.title") || "创作进度"}
         </h3>
-        <p className={`text-[11px] text-[#c0a480]/60 mt-0.5 ${fontClass}`}>
+        <p className={`text-2xs-plus text-amber-soft/60 mt-0.5 ${fontClass}`}>
           {t("agentProgress.subtitle") || "AI创作监控"}
         </p>
       </div>
@@ -120,7 +120,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
             </div>
           </div>
           {(status === "thinking" || status === "executing") && (
-            <Loader2 className="w-3.5 h-3.5 text-[#c0a480]/50 animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 text-amber-soft/50 animate-spin" />
           )}
         </div>
       </div>
@@ -131,13 +131,13 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
           onClick={() => setIsStatsExpanded(!isStatsExpanded)}
           className="w-full flex items-center justify-between p-1.5 rounded-md hover:bg-black/30 transition-colors"
         >
-          <span className={`text-xs font-medium text-[#c0a480] ${fontClass}`}>
+          <span className={`text-xs font-medium text-amber-soft ${fontClass}`}>
             {t("agentProgress.statistics") || "统计信息"}
           </span>
           {isStatsExpanded ? (
-            <ChevronUp className="w-3.5 h-3.5 text-[#c0a480]/70" />
+            <ChevronUp className="w-3.5 h-3.5 text-amber-soft/70" />
           ) : (
-            <ChevronDown className="w-3.5 h-3.5 text-[#c0a480]/70" />
+            <ChevronDown className="w-3.5 h-3.5 text-amber-soft/70" />
           )}
         </button>
         
@@ -152,27 +152,27 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
             >
               <div className="space-y-1.5 px-1.5 pb-1">
                 <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-[#c0a480]/80">
+                  <div className="flex items-center gap-1.5 text-amber-soft/80">
                     <CheckCircle className="w-3 h-3" />
                     <span className={fontClass}>{t("agentProgress.completed") || "已完成"}</span>
                   </div>
-                  <span className={`font-semibold text-[#f4e8c1] ${fontClass}`}>{progress.completedTasks}</span>
+                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.completedTasks}</span>
                 </div>
         
                 <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-[#c0a480]/80">
+                  <div className="flex items-center gap-1.5 text-amber-soft/80">
                     <Activity className="w-3 h-3" />
                     <span className={fontClass}>{t("agentProgress.iterations") || "迭代次数"}</span>
                   </div>
-                  <span className={`font-semibold text-[#f4e8c1] ${fontClass}`}>{progress.totalIterations}</span>
+                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.totalIterations}</span>
                 </div>
         
                 <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-[#c0a480]/80">
+                  <div className="flex items-center gap-1.5 text-amber-soft/80">
                     <Database className="w-3 h-3" />
                     <span className={fontClass}>{t("agentProgress.knowledgeBase") || "知识库"}</span>
                   </div>
-                  <span className={`font-semibold text-[#f4e8c1] ${fontClass}`}>{progress.knowledgeBaseSize}</span>
+                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.knowledgeBaseSize}</span>
                 </div>
               </div>
             </motion.div>
@@ -189,14 +189,14 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-amber-400 fantasy-glow" />
-              <span className={`text-xs font-medium text-[#c0a480] ${fontClass}`}>
+              <span className={`text-xs font-medium text-amber-soft ${fontClass}`}>
                 {t("agentProgress.results") || "生成结果"}
               </span>
             </div>
             {isResultsExpanded ? (
-              <ChevronUp className="w-3.5 h-3.5 text-[#c0a480]/70" />
+              <ChevronUp className="w-3.5 h-3.5 text-amber-soft/70" />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5 text-[#c0a480]/70" />
+              <ChevronDown className="w-3.5 h-3.5 text-amber-soft/70" />
             )}
           </button>
           
@@ -212,13 +212,13 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
                 <div className="space-y-1.5 px-1.5 pb-1">
                   {/* Character Card */}
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-[#c0a480]">
+                    <div className="flex items-center gap-2 text-amber-soft">
                       <User className="w-3 h-3 text-amber-400" />
                       <span className={fontClass}>{t("agentProgress.characterCard") || "角色卡"}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.character_data ? "bg-[#f4e8c1]" : "bg-slate-600"
+                        result.character_data ? "bg-cream" : "bg-slate-600"
                       }`} />
                       {result.character_data && (
                         <button
@@ -226,7 +226,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
                           disabled={isExporting}
                           className="p-0.5 rounded hover:bg-black/30 transition-colors"
                         >
-                          <Download className="w-3 h-3 text-[#c0a480]/80 hover:text-[#f4e8c1]" />
+                          <Download className="w-3 h-3 text-amber-soft/80 hover:text-cream" />
                         </button>
                       )}
                     </div>
@@ -234,13 +234,13 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
             
                   {/* Status System */}
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-[#c0a480]">
+                    <div className="flex items-center gap-2 text-amber-soft">
                       <FileText className="w-3 h-3 text-amber-400" />
                       <span className={fontClass}>{t("agentProgress.statusSystem") || "状态系统"}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.status_data ? "bg-[#f4e8c1]" : "bg-slate-600"
+                        result.status_data ? "bg-cream" : "bg-slate-600"
                       }`} />
                       {result.status_data && (
                         <button
@@ -248,7 +248,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
                           disabled={isExporting}
                           className="p-0.5 rounded hover:bg-black/30 transition-colors"
                         >
-                          <Download className="w-3 h-3 text-[#c0a480]/80 hover:text-[#f4e8c1]" />
+                          <Download className="w-3 h-3 text-amber-soft/80 hover:text-cream" />
                         </button>
                       )}
                     </div>
@@ -256,13 +256,13 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
             
                   {/* World Data */}
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-[#c0a480]">
+                    <div className="flex items-center gap-2 text-amber-soft">
                       <Database className="w-3 h-3 text-amber-400" />
                       <span className={fontClass}>{t("agentProgress.worldData") || "世界数据"}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.world_data ? "bg-[#f4e8c1]" : "bg-slate-600"
+                        result.world_data ? "bg-cream" : "bg-slate-600"
                       }`} />
                       {result.world_data && (
                         <button
@@ -270,7 +270,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
                           disabled={isExporting}
                           className="p-0.5 rounded hover:bg-black/30 transition-colors"
                         >
-                          <Download className="w-3 h-3 text-[#c0a480]/80 hover:text-[#f4e8c1]" />
+                          <Download className="w-3 h-3 text-amber-soft/80 hover:text-cream" />
                         </button>
                       )}
                     </div>

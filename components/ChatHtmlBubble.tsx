@@ -137,57 +137,57 @@ function detectHtmlTags(str: string) {
 const SEMANTIC_COLOR_GROUPS = {
   // Communication & dialogue tags
   communication: [
-    "#e5d7b5",
+    "var(--color-sand)",
   ],
   // Status & state tags  
   status: [
-    "#d4c4a8", // Muted gold - similar brightness to #f4e8c1
+    "var(--color-sand)", // Muted gold - similar brightness to var(--color-cream)
   ],
   // Emotion & feeling tags
   emotion: [
-    "#e8c8b0", // Soft peach - similar brightness to #f4e8c1
+    "var(--color-sand)", // Soft peach - similar brightness to var(--color-cream)
   ],
   // Action & movement tags
   action: [
-    "#c8d4b0", // Muted sage - similar brightness to #f4e8c1
+    "var(--color-sand)", // Muted sage - similar brightness to var(--color-cream)
   ],
   // Thought & mental tags
   thought: [
-    "#d0c8e0", // Soft lavender - similar brightness to #f4e8c1
+    "var(--color-info)", // Soft lavender - similar brightness to var(--color-cream)
   ],
   // Narrative & description tags
   narrative: [
-    "#f4e8c1", // Default narrative color - same as base text
+    "var(--color-cream)", // Default narrative color - same as base text
   ],
   // Emphasis & attention tags
   emphasis: [
-    "#e0b8a8", // Muted coral - similar brightness to #f4e8c1
+    "var(--color-sand)", // Muted coral - similar brightness to var(--color-cream)
   ],
   // Mystical & special tags
   mystical: [
-    "#d8c0e8", // Soft violet - similar brightness to #f4e8c1
+    "var(--color-info)", // Soft violet - similar brightness to var(--color-cream)
   ],
 };
 
-// Simplified color palette with similar brightness to #f4e8c1
+// Simplified color palette with similar brightness to var(--color-cream)
 const OPTIMIZED_COLOR_PALETTE = [
-  // Warm colors with similar brightness to #f4e8c1
-  "#e5d7b5", // Warm beige
-  "#d4c4a8", // Muted gold
-  "#e8c8b0", // Soft peach
-  "#e0b8a8", // Muted coral
+  // Warm colors with similar brightness to var(--color-cream)
+  "var(--color-sand)", // Warm beige
+  "var(--color-sand)", // Muted gold
+  "var(--color-sand)", // Soft peach
+  "var(--color-sand)", // Muted coral
   
-  // Cool colors with similar brightness to #f4e8c1
-  "#c8d4b0", // Muted sage
-  "#d0c8e0", // Soft lavender
-  "#d8c0e8", // Soft violet
-  "#c0d8e0", // Soft blue-gray
+  // Cool colors with similar brightness to var(--color-cream)
+  "var(--color-sand)", // Muted sage
+  "var(--color-info)", // Soft lavender
+  "var(--color-info)", // Soft violet
+  "color-mix(in srgb, var(--color-sky) 60%, var(--color-cream))", // Soft blue-gray
   
-  // Neutral colors with similar brightness to #f4e8c1
-  "#d8d0c0", // Warm gray
-  "#e0d8c8", // Light beige
-  "#d0c8c0", // Muted taupe
-  "#e8e0d0", // Cream
+  // Neutral colors with similar brightness to var(--color-cream)
+  "color-mix(in srgb, var(--color-cream) 80%, var(--color-ink-soft))", // Warm gray
+  "var(--color-cream-soft)", // Light beige
+  "color-mix(in srgb, var(--color-cream) 70%, var(--color-ink-soft))", // Muted taupe
+  "var(--color-cream)", // Cream
 ];
 
 // Smart tag categorization for semantic color assignment
@@ -666,7 +666,7 @@ export default memo(function ChatHtmlBubble({
 
   const initialContent = enableStreaming ? "" : iframeSafeHtml;
 
-  const srcDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*,*::before,*::after{box-sizing:border-box;max-width:100%}html,body{margin:0;padding:0;color:#f4e8c1;font:16px/${1.5} serif;background:transparent;word-wrap:break-word;overflow-wrap:break-word;hyphens:auto;white-space:pre-wrap;overflow:hidden;}img,video,iframe{max-width:100%;height:auto;display:block;margin:0 auto}table{width:100%;border-collapse:collapse;overflow-x:auto;display:block}code,pre{font-family:monospace;font-size:0.9rem;white-space:pre-wrap;background:rgba(40,40,40,0.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);}pre{background:rgba(40,40,40,0.8);padding:12px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);margin:8px 0;}blockquote{margin:8px 0;padding:8px 12px;border-left:4px solid #93c5fd;background:rgba(147,197,253,0.08);border-radius:0 4px 4px 0;font-style:italic;color:#93c5fd;}strong{color:#fb7185;font-weight:bold;}em{color:#c4b5fd;font-style:italic;}.dialogue{color:#fda4af;}a{color:#93c5fd}.tag-styled{white-space:inherit;}${SLASH_RUNNER_STYLES}</style></head><body><div id="content-wrapper">${initialContent}</div><script>
+  const srcDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*,*::before,*::after{box-sizing:border-box;max-width:100%}html,body{margin:0;padding:0;color:var(--color-cream);font:16px/${1.5} serif;background:transparent;word-wrap:break-word;overflow-wrap:break-word;hyphens:auto;white-space:pre-wrap;overflow:hidden;}img,video,iframe{max-width:100%;height:auto;display:block;margin:0 auto}table{width:100%;border-collapse:collapse;overflow-x:auto;display:block}code,pre{font-family:monospace;font-size:0.9rem;white-space:pre-wrap;background:color-mix(in srgb, var(--color-deep) 80%, transparent);padding:4px 8px;border-radius:4px;border:1px solid color-mix(in srgb, var(--color-cream) 10%, transparent);}pre{background:color-mix(in srgb, var(--color-deep) 80%, transparent);padding:12px;border-radius:6px;border:1px solid color-mix(in srgb, var(--color-cream) 10%, transparent);margin:8px 0;}blockquote{margin:8px 0;padding:8px 12px;border-left:4px solid var(--color-sky);background:color-mix(in srgb, var(--color-sky) 8%, transparent);border-radius:0 4px 4px 0;font-style:italic;color:var(--color-sky);}strong{color:var(--color-amber-bright);font-weight:bold;}em{color:var(--color-info);font-style:italic;}.dialogue{color:var(--color-amber-soft);}a{color:var(--color-sky)}.tag-styled{white-space:inherit;}${SLASH_RUNNER_STYLES}</style></head><body><div id="content-wrapper">${initialContent}</div><script>
 // Virtual queue integration for performance optimization
 const virtualQueue = {
   tasks: [],
@@ -988,7 +988,7 @@ window.addEventListener('message', function(e) {
   if (showLoader) {
     return (
       <div className="flex flex-col items-center justify-center py-6 px-4">
-        <div className={`text-[15px] text-gray-400 font-medium leading-relaxed text-center ${serifFontClass}`}>
+        <div className={`text-sm-plus text-gray-400 font-medium leading-relaxed text-center ${serifFontClass}`}>
           No response received. Please check your network connection or API configuration.
         </div>
       </div>
@@ -997,7 +997,7 @@ window.addEventListener('message', function(e) {
 
   console.log(srcDoc);
   return (
-    <div className="chat-bubble-container" style={{ maxWidth: "calc(100% - 10px)", margin: "0 auto" }}>
+    <div className="chat-bubble-container max-w-[calc(100%-10px)] mx-auto">
       <style jsx>{`
         .chat-bubble-container {
           width: 100%;
@@ -1019,13 +1019,7 @@ window.addEventListener('message', function(e) {
           ref={frameRef}
           sandbox="allow-scripts allow-same-origin"
           srcDoc={srcDoc}
-          style={{ 
-            width: "100%", 
-            border: 0, 
-            overflow: "hidden", 
-            height: "150px",
-            background: "transparent",
-          }}
+          className="w-full border-0 overflow-hidden h-[150px] bg-transparent"
         />
       </div>
     </div>

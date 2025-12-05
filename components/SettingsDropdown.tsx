@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/app/i18n";
 import { useSoundContext } from "@/contexts/SoundContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { useTour } from "@/hooks/useTour";
 import { exportDataToFile, importDataFromFile, generateExportFilename, downloadFile } from "@/function/data/export-import";
 import { backupToGoogle, getFolderList, getGoogleCodeByUrl, getGoogleLoginUrl, getBackUpFile } from "@/function/data/google-control";
@@ -18,6 +19,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
   const { soundEnabled, toggleSound } = useSoundContext();
+  const { theme, toggleTheme } = useTheme();
   const { resetTour } = useTour();
 
   useEffect(() => {
@@ -133,7 +135,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
       <button
         onClick={() => setIsOpen(!isOpen)}
         data-tour="settings-button"
-        className="w-8 h-8 flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 hover:bg-[#252525] hover:border-[#444444] hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+        className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
         aria-label={t("common.settings")}
         aria-expanded={isOpen}
       >
@@ -144,11 +146,11 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#1c1c1c] border border-[#333333] z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-surface border border-stroke z-50 overflow-hidden">
           <div className="py-1">
             <button
               onClick={toggleLanguage}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M5 8l6 6"></path>
@@ -160,10 +162,28 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
               </svg>
               {language === "zh" ? t("common.switchToEnglish") : t("common.switchToChinese")}
             </button>
-            
+
+            <button
+              onClick={toggleTheme}
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+              </svg>
+              {theme === "dark" ? (t("common.switchToLight") ?? "切换至浅色") : (t("common.switchToDark") ?? "切换至深色")}
+            </button>
+
             <button
               onClick={openModelSettings}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -175,7 +195,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
             
             <button
               onClick={openPluginManager}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <rect width="7" height="9" x="3" y="3" rx="1"/>
@@ -188,7 +208,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
             
             <button
               onClick={toggleSound}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 {soundEnabled ? (
@@ -214,7 +234,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
                 setIsOpen(false);
                 window.location.reload();
               }}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
@@ -225,11 +245,11 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
               {t("tour.resetTour")}
             </button>
             
-            <div className="border-t border-[#333333] my-1"></div>
+            <div className="border-t border-stroke my-1"></div>
             
             <button
               onClick={handleExportData}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -241,7 +261,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
 
             <button
               onClick={handleImportData}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -253,7 +273,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
 
             <button
               onClick={handleExportDataToGoogle}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -265,7 +285,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
 
             <button
               onClick={handleImportDataFromGoogle}
-              className="flex items-center w-full px-4 py-2 text-sm text-[#f4e8c1] hover:bg-[#252525] transition-colors"
+              className="flex items-center w-full px-4 py-2 text-sm text-cream hover:bg-muted-surface transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>

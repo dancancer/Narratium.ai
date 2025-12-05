@@ -99,21 +99,21 @@ export default function RegexScriptEntryEditor({
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div 
         ref={modalRef}
-        className="bg-gradient-to-br from-[#1a1816] via-[#252220] to-[#1a1816] rounded-xl p-5 w-full max-w-2xl border border-[#534741]/60 shadow-2xl shadow-black/30 relative overflow-hidden"
+        className="bg-gradient-to-br from-deep via-muted-surface to-deep rounded-xl p-5 w-full max-w-2xl border border-ink/60 shadow-2xl shadow-black/30 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/3 via-transparent to-amber-500/3 opacity-50"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
         
         <div className="relative z-10">
           <div className="flex justify-between items-center mb-5">
-            <h2 className={`text-lg text-[#eae6db] ${serifFontClass} font-medium`}>
+            <h2 className={`text-lg text-cream-soft ${serifFontClass} font-medium`}>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-300 to-yellow-400">
                 {editingScript?.id ? t("regexScriptEditor.editScript") : t("regexScriptEditor.newScript")}
               </span>
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center text-[#a18d6f] hover:text-[#f4e8c1] transition-all duration-300 rounded-lg hover:bg-[#333]/50 group"
+              className="w-8 h-8 flex items-center justify-center text-ink-soft hover:text-cream transition-all duration-300 rounded-lg hover:bg-stroke/50 group"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -123,49 +123,49 @@ export default function RegexScriptEntryEditor({
 
           <div className="space-y-4">
             <div>
-              <label className={`block text-xs text-[#a18d6f] mb-1.5 font-medium ${fontClass}`}>
+              <label className={`block text-xs text-ink-soft mb-1.5 font-medium ${fontClass}`}>
                 {t("regexScriptEditor.scriptName")} <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
                 value={localScript.scriptName || ""}
                 onChange={(e) => updateScript({ scriptName: e.target.value })}
-                className="w-full px-3 py-2 bg-gradient-to-br from-[#1a1816] to-[#252220] border border-[#534741]/60 rounded-lg text-[#f4e8c1] 
+                className="w-full px-3 py-2 bg-gradient-to-br from-deep to-muted-surface border border-ink/60 rounded-lg text-cream 
                   focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300
-                  placeholder-[#a18d6f]/70 hover:border-[#534741] text-sm"
+                  placeholder-ink-soft/70 hover:border-ink text-sm"
                 placeholder={t("regexScriptEditor.scriptNamePlaceholder")}
               />
             </div>
 
             <div>
-              <label className={`block text-xs text-[#a18d6f] mb-1.5 font-medium ${fontClass}`}>
+              <label className={`block text-xs text-ink-soft mb-1.5 font-medium ${fontClass}`}>
                 {t("regexScriptEditor.findRegex")} <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
                 value={localScript.findRegex || ""}
                 onChange={(e) => updateScript({ findRegex: e.target.value })}
-                className="w-full px-3 py-2 bg-gradient-to-br from-[#1a1816] to-[#252220] border border-[#534741]/60 rounded-lg text-[#f9c86d] 
+                className="w-full px-3 py-2 bg-gradient-to-br from-deep to-muted-surface border border-ink/60 rounded-lg text-amber-bright 
                   focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300
-                  placeholder-[#a18d6f]/70 hover:border-[#534741] font-mono text-sm"
+                  placeholder-ink-soft/70 hover:border-ink font-mono text-sm"
                 placeholder={t("regexScriptEditor.findRegexPlaceholder")}
               />
             </div>
 
             <div>
-              <label className={`block text-xs text-[#a18d6f] mb-1.5 font-medium ${fontClass}`}>
-                {t("regexScriptEditor.replaceString")} <span className="text-[#a18d6f] text-[10px]">({t("regexScriptEditor.optional") || "optional"})</span>
+              <label className={`block text-xs text-ink-soft mb-1.5 font-medium ${fontClass}`}>
+                {t("regexScriptEditor.replaceString")} <span className="text-ink-soft text-2xs">({t("regexScriptEditor.optional") || "optional"})</span>
               </label>
               <input
                 type="text"
                 value={localScript.replaceString || ""}
                 onChange={(e) => updateScript({ replaceString: e.target.value })}
-                className="w-full px-3 py-2 bg-gradient-to-br from-[#1a1816] to-[#252220] border border-[#534741]/60 rounded-lg text-[#93c5fd] 
+                className="w-full px-3 py-2 bg-gradient-to-br from-deep to-muted-surface border border-ink/60 rounded-lg text-sky 
                   focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300
-                  placeholder-[#a18d6f]/70 hover:border-[#534741] font-mono text-sm"
+                  placeholder-ink-soft/70 hover:border-ink font-mono text-sm"
                 placeholder={t("regexScriptEditor.replaceStringPlaceholder") || "Leave empty to remove matched text"}
               />
-              <div className={`mt-1 text-[10px] text-[#a18d6f]/80 ${fontClass}`}>
+              <div className={`mt-1 text-2xs text-ink-soft/80 ${fontClass}`}>
                 {(localScript.replaceString || "").length === 0 ? 
                   <span className="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -180,16 +180,16 @@ export default function RegexScriptEntryEditor({
 
             <div className="flex items-end space-x-4">
               <div className="flex-shrink-0">
-                <label className={`block text-xs text-[#a18d6f] mb-1.5 font-medium ${fontClass}`}>
+                <label className={`block text-xs text-ink-soft mb-1.5 font-medium ${fontClass}`}>
                   {t("regexScriptEditor.priority")}
                 </label>
                 <input
                   type="number"
                   value={localScript.placement?.[0] || 999}
                   onChange={(e) => updateScript({ placement: [parseInt(e.target.value) || 999] })}
-                  className="w-20 px-3 py-2 bg-gradient-to-br from-[#1a1816] to-[#252220] border border-[#534741]/60 rounded-lg text-[#f4e8c1] 
+                  className="w-20 px-3 py-2 bg-gradient-to-br from-deep to-muted-surface border border-ink/60 rounded-lg text-cream 
                     focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300
-                    hover:border-[#534741] text-sm text-center"
+                    hover:border-ink text-sm text-center"
                   min="0"
                   max="999"
                 />
@@ -205,7 +205,7 @@ export default function RegexScriptEntryEditor({
                   <div className={`w-5 h-5 rounded border-2 transition-all duration-300 flex items-center justify-center ${
                     localScript.disabled 
                       ? "bg-gradient-to-br from-orange-600 to-orange-700 border-orange-500/60" 
-                      : "bg-gradient-to-br from-[#1a1816] to-[#252220] border-[#534741]/60 group-hover:border-amber-500/40"
+                      : "bg-gradient-to-br from-deep to-muted-surface border-ink/60 group-hover:border-amber-500/40"
                   }`}>
                     {localScript.disabled && (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,18 +214,18 @@ export default function RegexScriptEntryEditor({
                     )}
                   </div>
                 </div>
-                <span className={`text-xs text-[#f4e8c1] font-medium ${fontClass} group-hover:text-amber-200 transition-colors`}>
+                <span className={`text-xs text-cream font-medium ${fontClass} group-hover:text-amber-200 transition-colors`}>
                   {t("regexScriptEditor.disabled")}
                 </span>
               </label>
             </div>
 
-            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-[#534741]/30">
+            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-ink/30">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-gradient-to-br from-[#252220] to-[#1a1816] hover:from-[#342f25] hover:to-[#252220] 
-                  text-[#f4e8c1] rounded-lg border border-[#534741]/60 transition-all duration-300 text-sm font-medium
-                  hover:border-[#534741] hover:shadow-lg group"
+                className="px-4 py-2 bg-gradient-to-br from-muted-surface to-deep hover:from-muted-surface hover:to-muted-surface 
+                  text-cream rounded-lg border border-ink/60 transition-all duration-300 text-sm font-medium
+                  hover:border-ink hover:shadow-lg group"
               >
                 <span className={`${serifFontClass} group-hover:scale-105 transition-transform inline-block`}>
                   {t("regexScriptEditor.cancel")}
@@ -235,13 +235,13 @@ export default function RegexScriptEntryEditor({
                 onClick={handleSave}
                 disabled={isSaving}
                 className="px-4 py-2 bg-gradient-to-br from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 
-                  text-[#1a1816] rounded-lg font-medium transition-all duration-300 text-sm
+                  text-deep rounded-lg font-medium transition-all duration-300 text-sm
                   disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-amber-500/25 group
                   disabled:hover:shadow-none"
               >
                 <span className={`${serifFontClass} flex items-center group-hover:scale-105 transition-transform ${isSaving ? "" : "group-hover:text-white"}`}>
                   {isSaving && (
-                    <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-[#1a1816]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-deep" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>

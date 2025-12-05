@@ -649,30 +649,30 @@ export default function PresetEditor({
       <div className="h-full flex items-center justify-center breathing-bg">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-2 border-t-[#f9c86d] border-r-[#c0a480] border-b-[#a18d6f] border-l-transparent animate-spin"></div>
-            <div className="absolute inset-2 rounded-full border-2 border-t-[#a18d6f] border-r-[#f9c86d] border-b-[#c0a480] border-l-transparent animate-spin-slow"></div>
+            <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+            <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
           </div>
-          <p className="mt-4 text-[#c0a480] magical-text">{t("preset.loading")}</p>
+          <p className="mt-4 text-amber-soft magical-text">{t("preset.loading")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col breathing-bg text-[#eae6db]">
-      <div className="p-2 sm:p-3 border-b border-[#534741] bg-[#252220] relative overflow-hidden">
+    <div className="h-full flex flex-col breathing-bg text-cream-soft">
+      <div className="p-2 sm:p-3 border-b border-ink bg-muted-surface relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-50"></div>
         <div className="relative z-10 flex justify-between items-center min-h-[2rem]">
           <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
-            <h2 className="text-base sm:text-lg font-medium text-[#eae6db] flex-shrink-0">
+            <h2 className="text-base sm:text-lg font-medium text-cream-soft flex-shrink-0">
               <span className={`bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300 ${serifFontClass}`}>
                 {t("preset.title")}
               </span>
               {characterName && (
-                <span className={`ml-1 sm:ml-2 text-xs sm:text-sm text-[#a18d6f] ${serifFontClass} inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom`} title={characterName}>- {characterName}</span>
+                <span className={`ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft ${serifFontClass} inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom`} title={characterName}>- {characterName}</span>
               )}
             </h2>
-            <div className={`hidden md:flex items-center space-x-2 text-xs text-[#a18d6f] ${serifFontClass} flex-shrink-0`}>
+            <div className={`hidden md:flex items-center space-x-2 text-xs text-ink-soft ${serifFontClass} flex-shrink-0`}>
               <span className="whitespace-nowrap">{t("preset.total")}: {presets.length}</span>
               <span>•</span>
               <span className="text-amber-400 whitespace-nowrap">{t("preset.active_status")}: {presets.filter(p => p.totalPrompts > 0).length}</span>
@@ -685,8 +685,8 @@ export default function PresetEditor({
                 </>
               )}
             </div>
-            <div className={`md:hidden flex items-center space-x-1 text-[10px] sm:text-xs text-[#a18d6f] ${serifFontClass} flex-shrink-0`}>
-              <span className="bg-[#1a1816] px-1.5 sm:px-2 py-1 rounded border border-[#534741] whitespace-nowrap">
+            <div className={`md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft ${serifFontClass} flex-shrink-0`}>
+              <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-ink whitespace-nowrap">
                 {presets.length} / {presets.filter(p => p.totalPrompts > 0).length} / {presets.filter(p => p.totalPrompts === 0).length}
                 {filterBy !== "all" && ` (${filteredPresets.length})`}
               </span>
@@ -694,7 +694,7 @@ export default function PresetEditor({
           </div>
           <button
             onClick={onClose}
-            className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#a18d6f] hover:text-[#eae6db] transition-colors duration-300 rounded-md hover:bg-[#333] group flex-shrink-0 ml-2"
+            className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group flex-shrink-0 ml-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -704,12 +704,12 @@ export default function PresetEditor({
         </div>
       </div>
       
-      <div className="p-2 sm:p-3 border-b border-[#534741] bg-[#1a1816]">
+      <div className="p-2 sm:p-3 border-b border-ink bg-deep">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
           <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
             <button
               onClick={handleCreatePreset}
-              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-[#1f1c1a] to-[#13100e] hover:from-[#282521] hover:to-[#1a1613] text-[#e9c08d] hover:text-[#f6daae] rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-[#f8b758]/20 group flex-shrink-0 border border-[#403a33]"
+              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 group flex-shrink-0 border border-ink"
             >
               <span className={`flex items-center ${serifFontClass}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110">
@@ -723,7 +723,7 @@ export default function PresetEditor({
             
             <button
               onClick={() => setIsImportModalOpen(true)}
-              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-[#1a1f1c] to-[#0e1310] hover:from-[#212821] hover:to-[#131a16] text-[#8de9c0] hover:text-[#aef6da] rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-[#58f8b7]/20 group flex-shrink-0 border border-[#33403a]"
+              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-success/20 group flex-shrink-0 border border-ink"
             >
               <span className={`flex items-center ${serifFontClass}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110">
@@ -742,14 +742,14 @@ export default function PresetEditor({
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="sticky top-0 z-20 bg-[#1a1816] border-b border-[#534741]/40 p-2 sm:p-3">
+        <div className="sticky top-0 z-20 bg-deep border-b border-ink/40 p-2 sm:p-3">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-1 sm:gap-2">
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400/80">
                   <path d="M3 6h18M7 12h10m-7 6h4"></path>
                 </svg>
-                <label className={`text-[10px] sm:text-xs text-[#a18d6f] font-medium ${serifFontClass}`}>
+                <label className={`text-2xs sm:text-xs text-ink-soft font-medium ${serifFontClass}`}>
                   {t("preset.sortBy")}
                 </label>
               </div>
@@ -758,19 +758,19 @@ export default function PresetEditor({
                 <select
                   value={sortBy}
                   onChange={(e) => handleSortByChange(e.target.value)}
-                  className={`appearance-none bg-gradient-to-br from-[#1a1816] via-[#252220] to-[#1a1816] 
-                    text-[#eae6db] px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-[#534741]/60 
+                  className={`appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep 
+                    text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-ink/60 
                     focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 
-                    transition-all duration-300 hover:border-[#534741] backdrop-blur-sm
-                    shadow-inner text-[10px] sm:text-xs font-medium ${serifFontClass}
+                    transition-all duration-300 hover:border-ink backdrop-blur-sm
+                    shadow-inner text-2xs sm:text-xs font-medium ${serifFontClass}
                     hover:shadow-lg hover:shadow-amber-500/5`}
                 >
-                  <option value="name" className="bg-[#1a1816] text-[#eae6db]">{t("preset.name")}</option>
-                  <option value="promptCount" className="bg-[#1a1816] text-[#eae6db]">{t("preset.promptCount")}</option>
-                  <option value="lastUpdated" className="bg-[#1a1816] text-[#eae6db]">{t("preset.lastUpdated")}</option>
+                  <option value="name" className="bg-deep text-cream-soft">{t("preset.name")}</option>
+                  <option value="promptCount" className="bg-deep text-cream-soft">{t("preset.promptCount")}</option>
+                  <option value="lastUpdated" className="bg-deep text-cream-soft">{t("preset.lastUpdated")}</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#a18d6f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft">
                     <path d="M6 9l6 6 6-6"></path>
                   </svg>
                 </div>
@@ -778,15 +778,15 @@ export default function PresetEditor({
             </div>
             
             <div className="flex items-center gap-1 sm:gap-1.5">
-              <span className={`text-[10px] sm:text-xs text-[#a18d6f] font-medium ${serifFontClass}`}>
+              <span className={`text-2xs sm:text-xs text-ink-soft font-medium ${serifFontClass}`}>
                 {t("preset.sortOrder")}:
               </span>
               <button
                 onClick={handleSortOrderChange}
                 className={`group relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md 
-                  bg-gradient-to-br from-[#1a1816] via-[#252220] to-[#1a1816] 
-                  border border-[#534741]/60 hover:border-amber-500/40 
-                  text-[#eae6db] hover:text-amber-200 
+                  bg-gradient-to-br from-deep via-muted-surface to-deep 
+                  border border-ink/60 hover:border-amber-500/40 
+                  text-cream-soft hover:text-amber-200 
                   transition-all duration-300 backdrop-blur-sm
                   hover:shadow-lg hover:shadow-amber-500/10 
                   focus:outline-none focus:ring-2 focus:ring-amber-500/20 ${serifFontClass}`}
@@ -797,11 +797,11 @@ export default function PresetEditor({
       ? "from-amber-500/20 to-amber-600/30 text-amber-400" 
       : "from-blue-500/20 to-blue-600/30 text-blue-400"} 
                   transition-all duration-300 group-hover:scale-110`}>
-                  <span className="text-[8px] sm:text-xs font-bold">
+                  <span className="text-3xs sm:text-xs font-bold">
                     {sortOrder === "asc" ? "↑" : "↓"}
                   </span>
                 </div>
-                <span className="text-[10px] sm:text-xs font-medium">
+                <span className="text-2xs sm:text-xs font-medium">
                   {sortOrder === "asc" ? t("preset.asc") : t("preset.desc")}
                 </span>
               </button>
@@ -812,7 +812,7 @@ export default function PresetEditor({
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400/80">
                   <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                 </svg>
-                <label className={`text-[10px] sm:text-xs text-[#a18d6f] font-medium ${serifFontClass}`}>
+                <label className={`text-2xs sm:text-xs text-ink-soft font-medium ${serifFontClass}`}>
                   {t("preset.filterBy")}
                 </label>
               </div>
@@ -821,19 +821,19 @@ export default function PresetEditor({
                 <select
                   value={filterBy}
                   onChange={(e) => handleFilterByChange(e.target.value)}
-                  className={`appearance-none bg-gradient-to-br from-[#1a1816] via-[#252220] to-[#1a1816] 
-                    text-[#eae6db] px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-[#534741]/60 
+                  className={`appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep 
+                    text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-ink/60 
                     focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
-                    transition-all duration-300 hover:border-[#534741] backdrop-blur-sm
-                    shadow-inner text-[10px] sm:text-xs font-medium ${serifFontClass}
+                    transition-all duration-300 hover:border-ink backdrop-blur-sm
+                    shadow-inner text-2xs sm:text-xs font-medium ${serifFontClass}
                     hover:shadow-lg hover:shadow-blue-500/5`}
                 >
-                  <option value="all" className="bg-[#1a1816] text-[#eae6db]">{t("preset.all")}</option>
-                  <option value="active" className="bg-[#1a1816] text-[#eae6db]">{t("preset.active")}</option>
-                  <option value="empty" className="bg-[#1a1816] text-[#eae6db]">{t("preset.empty")}</option>
+                  <option value="all" className="bg-deep text-cream-soft">{t("preset.all")}</option>
+                  <option value="active" className="bg-deep text-cream-soft">{t("preset.active")}</option>
+                  <option value="empty" className="bg-deep text-cream-soft">{t("preset.empty")}</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#a18d6f]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft">
                     <path d="M6 9l6 6 6-6"></path>
                   </svg>
                 </div>
@@ -844,31 +844,27 @@ export default function PresetEditor({
         <div className="h-full overflow-y-auto fantasy-scrollbar pb-15">
 
           <table className="w-full table-fixed">
-            <thead className="sticky top-0 bg-[#252220] border-b border-[#534741] z-10">
+            <thead className="sticky top-0 bg-muted-surface border-b border-ink z-10">
               <tr>
-                <th className={`w-12 sm:w-16 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.toggle")}</th>
-                <th className={`w-24 sm:w-24 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.status")}</th>
-                <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.name")}</th>
-                <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.prompts")}</th>
-                <th className={`w-20 sm:w-20 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.updated")}</th>
-                <th className={`w-16 sm:w-20 p-1.5 sm:p-3 text-left text-[10px] sm:text-xs font-medium text-[#a18d6f] uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.actions")}</th>
+                <th className={`w-12 sm:w-16 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.toggle")}</th>
+                <th className={`w-24 sm:w-24 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.status")}</th>
+                <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.name")}</th>
+                <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.prompts")}</th>
+                <th className={`w-20 sm:w-20 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.updated")}</th>
+                <th className={`w-16 sm:w-20 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>{t("preset.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {sortedPresets.map((preset, index) => (
                 <React.Fragment key={preset.id}>
                   <tr 
-                    className="border-b border-[#534741] hover:bg-[#252220] transition-all duration-300 group"
-                    style={{
-                      opacity: animationComplete ? 1 : 0,
-                      transform: animationComplete ? "translateY(0)" : "translateY(20px)",
-                      transitionDelay: `${index * 50}ms`,
-                    }}
+                    className={`border-b border-ink hover:bg-muted-surface transition-all duration-300 group ${animationComplete ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
+                    style={{ transitionDelay: `${index * 50}ms` }}
                   >
                     <td className="p-1.5 sm:p-3">
                       <button
                         onClick={() => handleTogglePreset(preset.id, preset.enabled === false)}
-                        className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1a1816] backdrop-blur-sm ${
+                        className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-deep backdrop-blur-sm ${
                           preset.enabled !== false 
                             ? "bg-gradient-to-r from-slate-700/80 via-amber-800/60 to-slate-700/80 border border-amber-600/40 focus:ring-amber-500/50" 
                             : "bg-gradient-to-r from-slate-700/60 via-stone-600/40 to-slate-700/60 border border-stone-500/30 focus:ring-stone-400/50"
@@ -887,7 +883,7 @@ export default function PresetEditor({
                     
                     <td className="p-1.5 sm:p-3">
                       <div className="flex items-center space-x-1 sm:space-x-2">
-                        <span className={`inline-flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium whitespace-nowrap transition-all duration-300 backdrop-blur-sm border ${
+                        <span className={`inline-flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-2xs sm:text-xs font-medium whitespace-nowrap transition-all duration-300 backdrop-blur-sm border ${
                           preset.enabled !== false 
                             ? preset.totalPrompts > 0
                               ? "bg-gradient-to-br from-slate-800/60 via-amber-900/40 to-slate-800/60 text-amber-200/90 border-amber-600/30"
@@ -915,7 +911,7 @@ export default function PresetEditor({
                         
                         <button
                           onClick={() => toggleRowExpansion(preset.id)}
-                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[#a18d6f] hover:text-[#eae6db] transition-colors duration-300 rounded hover:bg-[#333] ml-1 sm:ml-2"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke ml-1 sm:ml-2"
                           title={expandedRows.has(preset.id) ? t("preset.collapseDetails") : t("preset.expandDetails")}
                         >
                           <svg 
@@ -935,16 +931,16 @@ export default function PresetEditor({
                         </button>
                       </div>
                     </td>
-                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-[#eae6db] max-w-xs">
+                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-cream-soft max-w-xs">
                       <span className="block truncate" title={preset.name}>
                         {preset.name.length > 8 ? `${preset.name.substring(0, 8)}...` : preset.name}
                       </span>
                     </td>
-                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-[#c0a480]">
+                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">
                       <span className="text-amber-400">{preset.enabledPrompts}</span>
-                      <span className="text-[#a18d6f]"> / {preset.totalPrompts}</span>
+                      <span className="text-ink-soft"> / {preset.totalPrompts}</span>
                     </td>
-                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-[#c0a480]">
+                    <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">
                       <span className="hidden sm:inline">
                         {new Date(preset.lastUpdated).toLocaleDateString()}
                       </span>
@@ -956,7 +952,7 @@ export default function PresetEditor({
                       <div className="flex items-center space-x-0.5 sm:space-x-1">
                         <button
                           onClick={() => handleEditPresetName(preset)}
-                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[#a18d6f] hover:text-[#eae6db] transition-colors duration-300 rounded hover:bg-[#333] group"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke group"
                           title={t("preset.editPresetName")}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
@@ -967,7 +963,7 @@ export default function PresetEditor({
                         
                         <button
                           onClick={() => handleCopyPreset(preset)}
-                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[#8db4e9] hover:text-[#aec7f6] transition-colors duration-300 rounded hover:bg-[#333] group"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-sky hover:text-sky/80 transition-colors duration-300 rounded hover:bg-stroke group"
                           title={t("preset.copyPreset")}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
@@ -978,7 +974,7 @@ export default function PresetEditor({
                        
                         <button
                           onClick={() => handleDeletePreset(preset.id)}
-                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-red-400 hover:text-red-300 transition-colors duration-300 rounded hover:bg-[#333] group"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-red-400 hover:text-red-300 transition-colors duration-300 rounded hover:bg-stroke group"
                           title={t("preset.deletePreset")}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
@@ -991,11 +987,11 @@ export default function PresetEditor({
                   </tr>
 
                   {expandedRows.has(preset.id) && selectedPreset && selectedPreset.id === preset.id && (
-                    <tr className="border-b border-[#534741] bg-gradient-to-b from-[#1a1816] to-[#15120f] transition-all duration-300 animate-fadeIn">
+                    <tr className="border-b border-ink bg-gradient-to-b from-deep to-coal transition-all duration-300 animate-fadeIn">
                       <td colSpan={6} className="p-2 sm:p-4">
                         <div className="space-y-2 sm:space-y-3">
                           <div className="flex justify-between items-center">
-                            <h4 className="text-xs sm:text-sm font-medium text-[#a18d6f] flex items-center">
+                            <h4 className="text-xs sm:text-sm font-medium text-ink-soft flex items-center">
                               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5 sm:mr-2">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 2-2V8z"></path>
                                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -1005,7 +1001,7 @@ export default function PresetEditor({
                               </svg>
                               {t("preset.promptsTitle")} ({selectedPreset.prompts.length})
                               {selectedPreset.enabled === false && (
-                                <span className="ml-1 sm:ml-2 inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-red-900/40 text-red-200/90 border border-red-600/30">
+                                <span className="ml-1 sm:ml-2 inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-2xs sm:text-xs font-medium bg-red-900/40 text-red-200/90 border border-red-600/30">
                                   {t("preset.disabled")}
                                 </span>
                               )}
@@ -1013,26 +1009,24 @@ export default function PresetEditor({
                           </div>
                           
                           {selectedPreset.prompts.length === 0 ? (
-                            <div className="text-center text-[#a18d6f] py-4 sm:py-8">
+                            <div className="text-center text-ink-soft py-4 sm:py-8">
                               <p className="text-xs sm:text-sm">{t("preset.noPromptsInPreset")}</p>
                             </div>
                           ) : (
                             <div className="space-y-1.5 sm:space-y-2">
                               {selectedPreset.prompts.map((prompt: any) => (
-                                <div key={prompt.identifier} className="border border-[#534741] rounded p-2 sm:p-3 bg-[#252220]">
+                                <div key={prompt.identifier} className="border border-ink rounded p-2 sm:p-3 bg-muted-surface">
                                   <div className="flex justify-between items-start mb-1.5 sm:mb-2">
                                     <div className="flex items-center space-x-1 sm:space-x-2">
                                       <button
                                         onClick={() => handleTogglePrompt(selectedPreset.id, prompt.identifier, prompt.enabled === false)}
-                                        className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium cursor-pointer transition-all duration-300 ${
+                                        className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-2xs sm:text-xs font-medium cursor-pointer transition-all duration-300 ${
                                           prompt.enabled !== false
                                             ? "bg-amber-900/40 text-amber-200/90 border border-amber-600/30 hover:bg-amber-800/50"
                                             : "bg-stone-700/40 text-stone-300/90 border border-stone-500/30 hover:bg-stone-600/50"
                                         }`}
                                       >
-                                        <div className="relative mr-1 sm:mr-2 w-6 sm:w-8 h-3 sm:h-4 rounded-full transition-all duration-300" 
-                                          style={{ backgroundColor: prompt.enabled !== false ? "rgba(217, 119, 6, 0.4)" : "rgba(87, 83, 78, 0.4)" }}
-                                        >
+                                        <div className={`relative mr-1 sm:mr-2 w-6 sm:w-8 h-3 sm:h-4 rounded-full transition-all duration-300 ${prompt.enabled !== false ? "bg-amber-500/40" : "bg-stone-500/40"}`}>
                                           <div className={`absolute top-0.5 w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                                             prompt.enabled !== false ? "left-3 sm:left-4 bg-amber-400" : "left-0.5 bg-gray-400"
                                           }`}></div>
@@ -1045,7 +1039,7 @@ export default function PresetEditor({
                                         </span>
                                       </button>
                                       {prompt.system_prompt && (
-                                        <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium bg-blue-900/40 text-blue-200/90 border border-blue-600/30">
+                                        <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-2xs sm:text-xs font-medium bg-blue-900/40 text-blue-200/90 border border-blue-600/30">
                                           <span className="hidden sm:inline">{t("preset.system")}</span>
                                           <span className="sm:hidden">SYS</span>
                                         </span>
@@ -1054,7 +1048,7 @@ export default function PresetEditor({
                                     <div className="flex items-center space-x-1 sm:space-x-4">
                                       <button
                                         onClick={() => handleEditPrompt(prompt)}
-                                        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[#a18d6f] hover:text-[#eae6db] transition-colors duration-300 rounded hover:bg-[#333] group"
+                                        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke group"
                                         title={t("preset.edit")}
                                       >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
@@ -1064,7 +1058,7 @@ export default function PresetEditor({
                                       </button>
                                       <button
                                         onClick={() => handleDeletePrompt(selectedPreset.id, prompt.identifier)}
-                                        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-red-400 hover:text-red-300 transition-colors duration-300 rounded hover:bg-[#333] group"
+                                        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-red-400 hover:text-red-300 transition-colors duration-300 rounded hover:bg-stroke group"
                                         title={t("preset.deletePrompt")}
                                       >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
@@ -1074,10 +1068,10 @@ export default function PresetEditor({
                                       </button>
                                     </div>
                                   </div>
-                                  <h5 className="text-xs sm:text-sm font-medium text-[#eae6db] mb-1.5 sm:mb-2 truncate">{prompt.name}</h5>
+                                  <h5 className="text-xs sm:text-sm font-medium text-cream-soft mb-1.5 sm:mb-2 truncate">{prompt.name}</h5>
                                   {prompt.content && (
                                     <div
-                                      className="bg-[#1a1816] border border-[#534741] rounded p-1.5 sm:p-2 text-[10px] sm:text-xs text-[#c0a480] max-h-16 sm:max-h-20 overflow-y-auto cursor-pointer hover:bg-[#1f1d1b] transition-colors duration-200"
+                                      className="bg-deep border border-ink rounded p-1.5 sm:p-2 text-2xs sm:text-xs text-amber-soft max-h-16 sm:max-h-20 overflow-y-auto cursor-pointer hover:bg-ember transition-colors duration-200"
                                       onClick={() => handleEditPrompt(prompt)}
                                     >
                                       {prompt.content.substring(0, 150)}
@@ -1098,7 +1092,7 @@ export default function PresetEditor({
           </table>
           
           {presets.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-64 text-[#a18d6f]">
+            <div className="flex flex-col items-center justify-center h-64 text-ink-soft">
               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>

@@ -69,7 +69,7 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative z-10 w-full max-w-md mx-4 bg-gradient-to-br from-[#1a1a1a] via-[#1e1e1e] to-[#1a1a1a] rounded-2xl shadow-2xl border border-[#3a3a3a]/50 overflow-hidden backdrop-filter backdrop-blur-sm"
+            className="relative z-10 w-full max-w-md mx-4 bg-gradient-to-br from-canvas via-surface to-canvas rounded-2xl shadow-2xl border border-muted-surface/50 overflow-hidden backdrop-filter backdrop-blur-sm"
           >
             {/* Animated background */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5 opacity-60" />
@@ -80,7 +80,7 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className={`text-xl font-bold text-white mb-2 flex items-center ${titleFontClass}`}>
-                    <Download className="w-5 h-5 mr-2 text-[#f8d36a]" />
+                    <Download className="w-5 h-5 mr-2 text-amber-bright" />
                     {t("appDownload.title")}
                   </h3>
                   <p className={`text-gray-300 text-sm ${langFontClass}`}>

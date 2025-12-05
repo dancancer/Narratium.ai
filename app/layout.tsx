@@ -5,6 +5,7 @@ import "./styles/fonts.css";
 import MainLayout from "@/components/MainLayout";
 import { LanguageProvider } from "@/app/i18n/LanguageProvider";
 import { SoundProvider } from "@/contexts/SoundContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -13,7 +14,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#000000",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "var(--color-canvas)" },
+    { media: "(prefers-color-scheme: dark)", color: "var(--color-canvas)" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -85,17 +89,18 @@ export default function RootLayout({
   children,
 }: { children: React.ReactNode }) {
   return (
-    <html lang="zh" className="h-full">
-      <body className="h-full bg-[#171717] text-white">
-        <GoogleAnalytics />
-        <SoundProvider>
-          <LanguageProvider>
-            <MainLayout>{children}</MainLayout>
-          </LanguageProvider>
-        </SoundProvider>
-        <Analytics />
+    <html lang="zh" className="h-full" data-theme="dark">
+      <body className="h-full bg-canvas text-text font-sans antialiased">
+        <ThemeProvider>
+          <GoogleAnalytics />
+          <SoundProvider>
+            <LanguageProvider>
+              <MainLayout>{children}</MainLayout>
+            </LanguageProvider>
+          </SoundProvider>
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-

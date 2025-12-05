@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Loader2, Palette, Plus, Save } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { SketchPicker } from "react-color";
 import { useSymbolColorStore } from "@/contexts/SymbolColorStore";
@@ -87,13 +88,7 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
       <div className="relative z-10">
         <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
           <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/30 flex items-center justify-center border border-amber-500/30 shadow-lg shadow-amber-500/10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
-              <circle cx="13.5" cy="6.5" r=".5"></circle>
-              <circle cx="17.5" cy="10.5" r=".5"></circle>
-              <circle cx="8.5" cy="7.5" r=".5"></circle>
-              <circle cx="6.5" cy="12.5" r=".5"></circle>
-              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
-            </svg>
+            <Palette className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400" />
           </div>
           <h3 className={`text-base sm:text-lg font-semibold ${serifFontClass} bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300`}>
             {t("characterChat.tagColorEditor")}
@@ -108,19 +103,16 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
               value={newSymbol}
               onChange={(e) => setNewSymbol(e.target.value)}
               placeholder={t("characterChat.enterSymbol")}
-              className="relative z-10 w-full px-3 py-2 bg-gradient-to-br from-[#1a1816] via-[#252220] to-[#1a1816] text-[#eae6db] rounded-lg border border-[#534741]/60 focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 hover:border-[#534741] backdrop-blur-sm shadow-inner text-sm sm:text-base"
+              className="relative z-10 w-full px-3 py-2 bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft rounded-lg border border-ink/60 focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 hover:border-ink backdrop-blur-sm shadow-inner text-sm sm:text-base"
             />
           </div>
           <button
             onClick={handleAddSymbol}
-            className="relative group px-3 sm:px-4 py-2 bg-gradient-to-r from-[#1f1c1a] to-[#13100e] hover:from-[#282521] hover:to-[#1a1613] text-[#e9c08d] hover:text-[#f6daae] rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-[#f8b758]/20 border border-[#403a33]"
+            className="relative group px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 border border-ink"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span className="relative z-10 flex items-center space-x-1.5 sm:space-x-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
+              <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5 transition-transform duration-300 group-hover:scale-110" />
               <span>{t("characterChat.add")}</span>
             </span>
           </button>
@@ -136,7 +128,7 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
             >
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10 mb-2 sm:mb-0">
-                <span className={`${serifFontClass} text-base sm:text-lg text-[#eae6db]`}>{symbol}</span>
+                <span className={`${serifFontClass} text-base sm:text-lg text-cream-soft`}>{symbol}</span>
               </div>
               <div className="relative z-10 flex items-center gap-2 sm:gap-3">
                 <div className="flex gap-1.5 sm:gap-2">
@@ -193,21 +185,14 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className={`relative group mt-4 sm:mt-6 w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-[#1f1c1a] to-[#13100e] hover:from-[#282521] hover:to-[#1a1613] text-[#e9c08d] hover:text-[#f6daae] rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-[#f8b758]/20 border border-[#403a33] ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`relative group mt-4 sm:mt-6 w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 border border-ink ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <span className="relative z-10 flex items-center justify-center space-x-1.5 sm:space-x-2">
             {isSaving ? (
-              <svg className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-[#e9c08d]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <Loader2 className="h-3 w-3 animate-spin sm:h-4 sm:w-4 text-amber-soft" />
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                <polyline points="7 3 7 8 15 8"></polyline>
-              </svg>
+              <Save className="h-3 w-3 transition-transform duration-300 group-hover:scale-110 sm:h-3.5 sm:w-3.5" />
             )}
             <span>{isSaving ? t("characterChat.saving") : t("characterChat.saveChanges")}</span>
           </span>

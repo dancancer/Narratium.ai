@@ -732,15 +732,15 @@ export default function CharacterPage() {
     return (
       <div className="flex flex-col justify-center items-center h-full fantasy-bg">
         <div className="relative w-12 h-12 flex items-center justify-center mb-4">
-          <div className="absolute inset-0 rounded-full border-2 border-t-[#f9c86d] border-r-[#c0a480] border-b-[#a18d6f] border-l-transparent animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-2 border-t-[#a18d6f] border-r-[#f9c86d] border-b-[#c0a480] border-l-transparent animate-spin-slow"></div>
+          <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
         </div>
-        <p className={`text-[#f4e8c1] ${serifFontClass} text-center mb-2`}>
+        <p className={`text-cream ${serifFontClass} text-center mb-2`}>
           {loadingPhase}
         </p>
         {isInitializing && (
           <p
-            className={`text-[#a18d6f] text-xs mt-4 max-w-xs text-center ${fontClass}`}
+            className={`text-ink-soft text-xs mt-4 max-w-xs text-center ${fontClass}`}
           >
             {t("characterChat.loadingTimeHint")}
           </p>
@@ -752,15 +752,15 @@ export default function CharacterPage() {
   if (error || !character) {
     return (
       <div className="flex flex-col items-center justify-center h-full fantasy-bg">
-        <h1 className="text-2xl text-[#f4e8c1] mb-4">
+        <h1 className="text-2xl text-cream mb-4">
           {t("characterChat.error")}
         </h1>
-        <p className="text-[#c0a480] mb-6">
+        <p className="text-amber-soft mb-6">
           {error || t("characterChat.characterNotFound")}
         </p>
         <a
           href="/character-cards"
-          className="bg-[#252220] hover:bg-[#342f25] text-[#f4e8c1] font-medium py-2 px-4 rounded border border-[#534741]"
+          className="bg-muted-surface hover:bg-muted-surface text-cream font-medium py-2 px-4 rounded border border-ink"
         >
           {t("characterChat.backToCharacters")}
         </a>
@@ -834,10 +834,7 @@ export default function CharacterPage() {
 
   return (
     <div
-      className="flex h-full relative fantasy-bg overflow-hidden "
-      style={{
-        left: "var(--app-sidebar-width, 0)",
-      }}
+      className="flex h-full relative fantasy-bg overflow-hidden [left:var(--app-sidebar-width,0)]"
     >
       <CharacterSidebar
         character={character}

@@ -121,7 +121,7 @@ export default function LoadingTransition({
     }
     
     gsap.to(pathsRef.current, {
-      stroke: "#fba53d",
+      stroke: "var(--color-amber-bright)",
       strokeWidth: (i: number) => i === 0 ? 2 : 4,
       duration: 0.3,
       ease: "power1.in",
@@ -265,27 +265,13 @@ export default function LoadingTransition({
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: "#242020FF", overflow: "hidden" }}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden [background-color:var(--color-layer)]"
     >
       <div
-        className="absolute inset-0 z-0 opacity-35"
-        style={{
-          backgroundImage: "url('/loading_yellow.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+        className="absolute inset-0 z-0 opacity-35 bg-[url('/loading_yellow.png')] bg-cover bg-center bg-no-repeat"
       />
       <div
-        className="absolute inset-0 z-1 opacity-45"
-        style={{
-          backgroundImage: "url('/loading_red.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          mixBlendMode: "multiply",
-        }}
+        className="absolute inset-0 z-1 opacity-45 bg-[url('/loading_red.png')] bg-cover bg-center bg-no-repeat mix-blend-multiply"
       />
       <audio  
         ref={movementSoundRef} 
@@ -299,20 +285,8 @@ export default function LoadingTransition({
         preload="auto"
         playsInline
       />
-      <div className="loading" style={{ 
-        position: "relative", 
-        width: "min(35rem, 90vw)", 
-        height: "min(35rem, 90vw)", 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        transform: "translateY(-5%)", 
-      }}>
-        <svg viewBox="0 0 100 50" className="loading_icon" style={{ 
-          position: "absolute", 
-          width: "60%",
-          maxWidth: "300px",
-        }}>
+      <div className="loading relative flex items-center justify-center w-[min(35rem,90vw)] h-[min(35rem,90vw)] -translate-y-[5%]">
+        <svg viewBox="0 0 100 50" className="loading_icon absolute w-[60%] max-w-[300px]">
           <path 
             d="M50,25c0-12.14,9.84-21.99,21.99-21.99S93.98,12.86,93.98,25s-9.84,21.99-21.99,21.99S50,37.21,50,25.06
             S40.16,3.01,28.01,3.01S6.02,12.86,6.02,25s9.84,21.99,21.99,21.99S50,37.14,50,25c0-8.14,4.42-15.24,10.99-19.05
@@ -343,82 +317,26 @@ export default function LoadingTransition({
         </svg>
         <div 
           ref={circleRef}
-          className="loading_circle"
-          style={{
-            position: "absolute",
-            width: "min(10rem, 25vw)",
-            height: "min(10rem, 25vw)",
-            borderRadius: "100%",
-            background: "rgba(251, 165, 61, 0.1)",
-            border: "2px solid #fba53d",
-            boxShadow: "0 0 15px rgba(251, 146, 60, 0.5)",
-            opacity: 0,
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
+          className="loading_circle absolute w-[min(10rem,25vw)] h-[min(10rem,25vw)] rounded-full bg-[rgba(251,165,61,0.1)] border-2 border-[var(--color-amber-bright)] shadow-[0_0_15px_rgba(251,146,60,0.5)] opacity-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         ></div>
         <img 
           ref={logoRef}
           src="/logo-narratium.png" 
-          className="logo" 
+          className="logo absolute w-[min(10rem,25vw)] opacity-0 z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" 
           alt="Narratium Logo"
-          style={{
-            position: "absolute",
-            width: "min(10rem, 25vw)",
-            opacity: 0,
-            zIndex: 10,
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
         />
         <div
           ref={progressBarRef}
-          style={{
-            position: "absolute",
-            bottom: "25%",
-            width: "70%",
-            height: "min(8px, 2vw)",
-            background: "rgba(251, 165, 61, 0.2)",
-            borderRadius: "4px",
-            overflow: "hidden",
-            transform: "translate(-50%, -50%)",
-            left: "50%",
-            zIndex: 11,
-          }}
+          className="absolute bottom-[25%] w-[70%] h-[min(8px,2vw)] bg-[rgba(251,165,61,0.2)] rounded overflow-hidden left-1/2 z-[11] -translate-x-1/2 -translate-y-1/2"
         >
           <div
             ref={progressBarFillRef}
-            style={{
-              width: "0%",
-              height: "100%",
-              background: "linear-gradient(90deg, rgba(251,146,60,0.4) 0%, rgba(251,146,60,0.8) 50%, rgba(251,146,60,0.4) 100%)",
-              boxShadow: "0 0 8px rgba(251,146,60,0.6)",
-              borderRadius: "4px",
-            }}
+            className="w-0 h-full bg-[linear-gradient(90deg,rgba(251,146,60,0.4)_0%,rgba(251,146,60,0.8)_50%,rgba(251,146,60,0.4)_100%)] shadow-[0_0_8px_rgba(251,146,60,0.6)] rounded"
           ></div>
         </div>
         <p
           ref={textRef}
-          style={{
-            position: "absolute",
-            bottom: "5%",
-            color: "#ffd76a",
-            fontSize: "clamp(0.8rem, 3vw, 1.2rem)",
-            fontFamily: "var(--font-cinzel)",
-            textAlign: "center",
-            opacity: 0,
-            zIndex: 11,
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            whiteSpace: "nowrap",
-            textShadow: "0 0 5px rgba(255,215,0,0.7)",
-            padding: "0 1rem",
-            maxWidth: "90vw",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
+          className="absolute bottom-[5%] text-[var(--color-amber-bright)] text-[clamp(0.8rem,3vw,1.2rem)] font-[var(--font-cinzel)] text-center opacity-0 z-[11] left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap [text-shadow:0_0_5px_rgba(255,215,0,0.7)] px-4 max-w-[90vw] overflow-hidden text-ellipsis"
         >
           To build a time machine takes only two steps: dream it, then do it.
         </p>

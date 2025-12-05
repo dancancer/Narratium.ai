@@ -26,8 +26,9 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useLanguage } from "@/app/i18n";
 import { motion, AnimatePresence } from "framer-motion";
+import { UserRound, X } from "lucide-react";
+import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { updateCharacter } from "@/function/dialogue/update";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
@@ -151,27 +152,14 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="relative w-full max-w-4xl bg-[#1a1816] border border-[#534741] rounded-lg shadow-xl z-10 overflow-hidden"
+            className="relative w-full max-w-4xl bg-deep border border-ink rounded-lg shadow-xl z-10 overflow-hidden"
           >
             <div className="absolute top-2 right-2 z-20">
               <button
                 onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
-                className="text-[#a18d6f] hover:text-[#eae6db] transition-colors bg-[#1a1816] rounded-full p-1"
+                className="text-ink-soft hover:text-cream-soft transition-colors bg-deep rounded-full p-1"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="h-6 w-6" />
               </button>
             </div>
 
@@ -181,20 +169,18 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                   {characterData.avatar_path ? (
                     <CharacterAvatarBackground avatarPath={characterData.avatar_path} />
                   ) : (
-                    <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-[#252220]">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-32 w-32 text-[#534741]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                    <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-muted-surface">
+                      <UserRound className="h-32 w-32 text-ink" strokeWidth={1.5} />
                     </div>
                   )}
-                  <div className={`absolute bottom-4 w-full text-center text-[#eae6db] ${serifFontClass} text-xl magical-text`}>
+                  <div className={`absolute bottom-4 w-full text-center text-cream-soft ${serifFontClass} text-xl magical-text`}>
                     {name || characterData.name}
                   </div>
                 </div>
               </div>
               
-              <div className="md:w-3/5 lg:w-2/3 bg-[#1a1816] p-6">
-                <h2 className={`text-xl font-semibold text-[#eae6db] magical-text mb-6 ${serifFontClass}`}>
+              <div className="md:w-3/5 lg:w-2/3 bg-deep p-6">
+                <h2 className={`text-xl font-semibold text-cream-soft magical-text mb-6 ${serifFontClass}`}>
                   {t("editCharacterModal.title")}
                 </h2>
                 
@@ -202,7 +188,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                   <div>
                     <label
                       htmlFor="character-name"
-                      className={`block text-sm font-medium text-[#c0a480] mb-2 ${fontClass}`}
+                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
                     >
                       {t("editCharacterModal.name")}
                     </label>
@@ -211,7 +197,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       id="character-name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className={`w-full bg-[#252220] border border-[#534741] rounded p-3 text-[#eae6db] focus:outline-none focus:ring-1 focus:ring-[#c0a480] ${fontClass}`}
+                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
                       required
                     />
                   </div>
@@ -219,7 +205,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                   <div>
                     <label
                       htmlFor="character-personality"
-                      className={`block text-sm font-medium text-[#c0a480] mb-2 ${fontClass}`}
+                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
                     >
                       {t("editCharacterModal.personality")}
                     </label>
@@ -228,14 +214,14 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       value={personality}
                       onChange={(e) => setPersonality(e.target.value)}
                       rows={3}
-                      className={`w-full bg-[#252220] border border-[#534741] rounded p-3 text-[#eae6db] focus:outline-none focus:ring-1 focus:ring-[#c0a480] ${fontClass}`}
+                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
                     />
                   </div>
               
                   <div>
                     <label
                       htmlFor="character-scenario"
-                      className={`block text-sm font-medium text-[#c0a480] mb-2 ${fontClass}`}
+                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
                     >
                       {t("editCharacterModal.scenario")}
                     </label>
@@ -244,14 +230,14 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       value={scenario}
                       onChange={(e) => setScenario(e.target.value)}
                       rows={3}
-                      className={`w-full bg-[#252220] border border-[#534741] rounded p-3 text-[#eae6db] focus:outline-none focus:ring-1 focus:ring-[#c0a480] ${fontClass}`}
+                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
                     />
                   </div>
               
                   <div>
                     <label
                       htmlFor="character-first-message"
-                      className={`block text-sm font-medium text-[#c0a480] mb-2 ${fontClass}`}
+                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
                     >
                       {t("editCharacterModal.firstMessage")}
                     </label>
@@ -260,14 +246,14 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       value={firstMessage}
                       onChange={(e) => setFirstMessage(e.target.value)}
                       rows={3}
-                      className={`w-full bg-[#252220] border border-[#534741] rounded p-3 text-[#eae6db] focus:outline-none focus:ring-1 focus:ring-[#c0a480] ${fontClass}`}
+                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
                     />
                   </div>
               
                   <div>
                     <label
                       htmlFor="character-creator-comment"
-                      className={`block text-sm font-medium text-[#c0a480] mb-2 ${fontClass}`}
+                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
                     >
                       {t("editCharacterModal.creatorComment")}
                     </label>
@@ -276,7 +262,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       value={creatorComment}
                       onChange={(e) => setCreatorComment(e.target.value)}
                       rows={3}
-                      className={`w-full bg-[#252220] border border-[#534741] rounded p-3 text-[#eae6db] focus:outline-none focus:ring-1 focus:ring-[#c0a480] ${fontClass}`}
+                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
                     />
                   </div>
 
@@ -284,7 +270,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                     <button
                       type="button"
                       onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
-                      className={`text-[#8a8a8a] hover:text-[#f4e8c1] transition-colors duration-300 ${serifFontClass}`}
+                      className={`text-text-muted hover:text-cream transition-colors duration-300 ${serifFontClass}`}
                     >
                       {t("editCharacterModal.cancel")}
                     </button>
@@ -295,7 +281,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
                       className={`text-amber-400 hover:text-amber-300 transition-colors duration-300 ${serifFontClass}`}
                     >
                       {isLoading ? (
-                        <div className="h-5 w-5 border-2 border-[#1a1816] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="h-5 w-5 border-2 border-deep border-t-transparent rounded-full animate-spin"></div>
                       ) : (
                         t("editCharacterModal.save")
                       )}

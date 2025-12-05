@@ -43,8 +43,8 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
           <ArrowRight className="w-4 h-4" />
         </div>
         <div className="flex-1">
-          <h4 className="text-[#c0a480] font-medium text-sm mb-2">Agent is asking for input:</h4>
-          <p className="text-[#c0a480] text-sm whitespace-pre-wrap">{question}</p>
+          <h4 className="text-amber-soft font-medium text-sm mb-2">Agent is asking for input:</h4>
+          <p className="text-amber-soft text-sm whitespace-pre-wrap">{question}</p>
         </div>
       </div>
 
@@ -57,7 +57,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               className={`px-3 py-1 rounded-full transition-colors ${
                 inputMode === "options"
                   ? "bg-amber-500/20 text-amber-400"
-                  : "bg-black/20 text-[#c0a480]/60 hover:text-[#c0a480]"
+                  : "bg-black/20 text-amber-soft/60 hover:text-amber-soft"
               }`}
             >
               Choose from options
@@ -67,7 +67,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               className={`px-3 py-1 rounded-full transition-colors ${
                 inputMode === "custom"
                   ? "bg-amber-500/20 text-amber-400"
-                  : "bg-black/20 text-[#c0a480]/60 hover:text-[#c0a480]"
+                  : "bg-black/20 text-amber-soft/60 hover:text-amber-soft"
               }`}
             >
               Custom input
@@ -85,8 +85,8 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
                   onClick={() => setSelectedOption(option)}
                   className={`text-left p-3 rounded-lg border transition-all ${
                     selectedOption === option
-                      ? "bg-amber-500/20 border-amber-500/40 text-[#c0a480]"
-                      : "bg-black/20 border-amber-500/20 text-[#c0a480]/80 hover:bg-black/30 hover:border-amber-500/30"
+                      ? "bg-amber-500/20 border-amber-500/40 text-amber-soft"
+                      : "bg-black/20 border-amber-500/20 text-amber-soft/80 hover:bg-black/30 hover:border-amber-500/30"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -111,7 +111,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               onChange={(e) => setCustomInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your response..."
-              className="w-full bg-black/20 border border-amber-500/20 rounded-lg p-3 text-[#c0a480] text-sm placeholder-[#c0a480]/40 resize-none min-h-[80px] max-h-[160px] focus:outline-none focus:border-amber-500/40"
+              className="w-full bg-black/20 border border-amber-500/20 rounded-lg p-3 text-amber-soft text-sm placeholder-amber-soft/40 resize-none min-h-[80px] max-h-[160px] focus:outline-none focus:border-amber-500/40"
               disabled={isLoading}
             />
           </div>

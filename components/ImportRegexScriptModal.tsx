@@ -28,6 +28,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { Check, FileText, Globe2, Trash2, X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/i18n";
 import { importRegexScriptFromJson } from "@/function/regex/import";
@@ -288,39 +289,33 @@ export default function ImportRegexScriptModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-      <div className="relative bg-gradient-to-br from-[#1a1816]/95 via-[#252220]/95 to-[#1a1816]/95 backdrop-blur-xl border border-[#534741]/60 rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] overflow-hidden">
+      <div className="relative bg-gradient-to-br from-deep/95 via-muted-surface/95 to-deep/95 backdrop-blur-xl border border-ink/60 rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse"></div>
 
-        <div className="relative p-3 border-b border-[#534741]/40 bg-gradient-to-r from-[#252220]/80 via-[#1a1816]/60 to-[#252220]/80 backdrop-blur-sm">
+        <div className="relative p-3 border-b border-ink/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
           <div className="flex justify-between items-center">
-            <h2 className={`text-base font-semibold text-[#eae6db] ${serifFontClass} bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent`}>
+            <h2 className={`text-base font-semibold text-cream-soft ${serifFontClass} bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent`}>
               {t("regexScriptEditor.importRegexScript")}
             </h2>
             <button
               onClick={handleClose}
-              className="w-7 h-7 flex items-center justify-center text-[#a18d6f] hover:text-[#eae6db] transition-all duration-300 rounded-lg hover:bg-[#333]/50 group"
+              className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-lg hover:bg-stroke/50 group"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
             </button>
           </div>
 
-          <div className="flex mt-2 space-x-0.5 bg-[#1a1816]/60 backdrop-blur-sm rounded-lg p-0.5 border border-[#534741]/30">
+          <div className="flex mt-2 space-x-0.5 bg-deep/60 backdrop-blur-sm rounded-lg p-0.5 border border-ink/30">
             <button
               onClick={() => setActiveTab("file")}
               className={`relative flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-300 ${
                 activeTab === "file"
                   ? "bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-white shadow-lg shadow-amber-500/20"
-                  : "text-[#a18d6f] hover:text-[#eae6db] hover:bg-[#252220]/50"
+                  : "text-ink-soft hover:text-cream-soft hover:bg-muted-surface/50"
               } ${serifFontClass}`}
             >
               <span className="relative z-10 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                </svg>
+                <FileText className="mr-1 h-3 w-3" />
                 {t("regexScriptEditor.importFromJson")}
               </span>
               {activeTab === "file" && (
@@ -332,15 +327,11 @@ export default function ImportRegexScriptModal({
               className={`relative flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-300 ${
                 activeTab === "global"
                   ? "bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-white shadow-lg shadow-blue-500/20"
-                  : "text-[#a18d6f] hover:text-[#eae6db] hover:bg-[#252220]/50"
+                  : "text-ink-soft hover:text-cream-soft hover:bg-muted-surface/50"
               } ${serifFontClass}`}
             >
               <span className="relative z-10 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                  <path d="M2 12h20"></path>
-                </svg>
+                <Globe2 className="mr-1 h-3 w-3" />
                 {t("regexScriptEditor.importFromGlobal")}
               </span>
               {activeTab === "global" && (
@@ -349,14 +340,14 @@ export default function ImportRegexScriptModal({
             </button>
           </div>
         </div>
-        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-[#1a1816] scrollbar-thumb-[#534741] hover:scrollbar-thumb-[#6b5b4f]">
+        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink hover:scrollbar-thumb-ink">
           {activeTab === "file" ? (
             <div className="space-y-3">
               <div
                 className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-300 cursor-pointer group ${
                   isDragging
                     ? "border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-500/20"
-                    : "border-[#534741]/60 hover:border-[#6b5b4f]/80 hover:bg-[#252220]/30"
+                    : "border-ink/60 hover:border-ink/80 hover:bg-muted-surface/30"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -366,19 +357,13 @@ export default function ImportRegexScriptModal({
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative flex flex-col items-center space-y-2">
                   <div className="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#a18d6f] group-hover:text-amber-400 transition-colors duration-300">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
+                    <FileText className="h-8 w-8 text-ink-soft group-hover:text-amber-400 transition-colors duration-300" strokeWidth={1.5} />
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
                   </div>
                   <div>
-                    <p className={`text-[#eae6db] font-medium text-sm ${serifFontClass}`}>{t("regexScriptEditor.dragDropJson")}</p>
-                    <p className="text-[#a18d6f] text-xs mt-0.5">{t("regexScriptEditor.jsonFileOnly")}</p>
-                    <p className="text-[#a18d6f] text-xs mt-0.5 font-medium">✨ Supports multiple files selection</p>
+                    <p className={`text-cream-soft font-medium text-sm ${serifFontClass}`}>{t("regexScriptEditor.dragDropJson")}</p>
+                    <p className="text-ink-soft text-xs mt-0.5">{t("regexScriptEditor.jsonFileOnly")}</p>
+                    <p className="text-ink-soft text-xs mt-0.5 font-medium">✨ Supports multiple files selection</p>
                   </div>
                 </div>
                 <input
@@ -391,7 +376,7 @@ export default function ImportRegexScriptModal({
                 />
               </div>
 
-              <div className="bg-gradient-to-br from-[#252220]/60 via-[#1a1816]/40 to-[#252220]/60 backdrop-blur-sm border border-[#534741]/40 rounded-lg p-3">
+              <div className="bg-gradient-to-br from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm border border-ink/40 rounded-lg p-3">
                 <label className="flex items-center space-x-2 cursor-pointer group">
                   <div className="relative">
                     <input
@@ -403,23 +388,21 @@ export default function ImportRegexScriptModal({
                     <div className={`w-4 h-4 rounded border-2 transition-all duration-300 ${
                       saveAsGlobal 
                         ? "bg-gradient-to-br from-amber-500 to-amber-600 border-amber-500 shadow-lg shadow-amber-500/30" 
-                        : "border-[#534741] group-hover:border-[#6b5b4f]"
+                        : "border-ink group-hover:border-ink"
                     }`}>
                       {saveAsGlobal && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="absolute inset-0">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
+                        <Check className="absolute inset-0 h-3 w-3 text-white" strokeWidth={3} />
                       )}
                     </div>
                   </div>
-                  <span className={`text-[#eae6db] text-sm font-medium ${serifFontClass}`}>
+                  <span className={`text-cream-soft text-sm font-medium ${serifFontClass}`}>
                     {t("regexScriptEditor.saveAsGlobalRegexScript")}
                   </span>
                 </label>
                 
                 {saveAsGlobal && (
                   <div className="mt-2 animate-in slide-in-from-top-2 duration-300">
-                    <p className="text-xs text-[#a18d6f]">
+                    <p className="text-xs text-ink-soft">
                       {t("regexScriptEditor.willUseEachFileName")}
                     </p>
                   </div>
@@ -436,34 +419,31 @@ export default function ImportRegexScriptModal({
                       <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
                       <div className="absolute inset-0 w-4 h-4 border-2 border-transparent border-r-blue-400 rounded-full animate-spin animate-reverse"></div>
                     </div>
-                    <span className={`text-[#a18d6f] text-sm ${serifFontClass}`}>{t("regexScriptEditor.loading")}</span>
+                    <span className={`text-ink-soft text-sm ${serifFontClass}`}>{t("regexScriptEditor.loading")}</span>
                   </div>
                 </div>
               ) : globalRegexScripts.length === 0 ? (
                 <div className="text-center py-6">
                   <div className="relative inline-block">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 text-[#a18d6f]/50">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
+                    <FileText className="mx-auto mb-3 h-8 w-8 text-ink-soft/50" strokeWidth={1} />
                     <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-blue-400/50 to-blue-600/50 rounded-full animate-pulse"></div>
                   </div>
-                  <p className={`text-[#a18d6f] text-sm ${serifFontClass}`}>{t("regexScriptEditor.noGlobalRegexScripts")}</p>
-                  <p className="text-[#a18d6f]/70 text-xs mt-1">{t("regexScriptEditor.createGlobalRegexScriptFirst")}</p>
+                  <p className={`text-ink-soft text-sm ${serifFontClass}`}>{t("regexScriptEditor.noGlobalRegexScripts")}</p>
+                  <p className="text-ink-soft/70 text-xs mt-1">{t("regexScriptEditor.createGlobalRegexScriptFirst")}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <h3 className={`text-xs font-medium text-[#a18d6f] mb-2 ${serifFontClass}`}>
+                  <h3 className={`text-xs font-medium text-ink-soft mb-2 ${serifFontClass}`}>
                     {t("regexScriptEditor.selectGlobalRegexScript")}
                   </h3>
-                  <div className="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-[#1a1816] scrollbar-thumb-[#534741]">
+                  <div className="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink">
                     {globalRegexScripts.map((globalBook) => (
                       <label
                         key={globalBook.id}
                         className={`relative block p-2.5 border rounded-lg cursor-pointer transition-all duration-300 group ${
                           selectedGlobalId === globalBook.id
                             ? "border-blue-500/60 bg-gradient-to-br from-blue-500/10 via-blue-400/5 to-blue-500/10 shadow-lg shadow-blue-500/10"
-                            : "border-[#534741]/60 hover:border-[#6b5b4f]/80 hover:bg-[#252220]/30"
+                            : "border-ink/60 hover:border-ink/80 hover:bg-muted-surface/30"
                         }`}
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -477,11 +457,11 @@ export default function ImportRegexScriptModal({
                         />
                         <div className="relative flex items-start justify-between">
                           <div className="flex-1 min-w-0">
-                            <h4 className={`text-[#eae6db] font-medium text-sm truncate ${serifFontClass}`}>{globalBook.name}</h4>
+                            <h4 className={`text-cream-soft font-medium text-sm truncate ${serifFontClass}`}>{globalBook.name}</h4>
                             {globalBook.description && (
-                              <p className="text-[#a18d6f] text-xs mt-0.5 line-clamp-2">{globalBook.description}</p>
+                              <p className="text-ink-soft text-xs mt-0.5 line-clamp-2">{globalBook.description}</p>
                             )}
-                            <div className="flex items-center space-x-3 mt-1.5 text-xs text-[#a18d6f]/80">
+                            <div className="flex items-center space-x-3 mt-1.5 text-xs text-ink-soft/80">
                               <span className="flex items-center">
                                 <span className="w-1.5 h-1.5 bg-blue-400/60 rounded-full mr-1"></span>
                                 {globalBook.scriptCount}
@@ -502,23 +482,19 @@ export default function ImportRegexScriptModal({
                             <button
                               onClick={(e) => handleDeleteGlobalScript(globalBook.id, e)}
                               disabled={isDeleting === globalBook.id}
-                              className="w-6 h-6 flex items-center justify-center text-[#a18d6f]/70 hover:text-red-400 transition-all duration-300 rounded-full hover:bg-red-500/10 group-hover:opacity-100 opacity-0"
+                              className="w-6 h-6 flex items-center justify-center text-ink-soft/70 hover:text-red-400 transition-all duration-300 rounded-full hover:bg-red-500/10 group-hover:opacity-100 opacity-0"
                               title={t("regexScriptEditor.deleteGlobalScript")}
                             >
                               {isDeleting === globalBook.id ? (
                                 <div className="w-3 h-3 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
                               ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d="M3 6h18"></path>
-                                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                </svg>
+                                <Trash2 className="h-3.5 w-3.5" />
                               )}
                             </button>
                             <div className={`relative w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
                               selectedGlobalId === globalBook.id
                                 ? "border-blue-500 bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30"
-                                : "border-[#534741] group-hover:border-[#6b5b4f]"
+                                : "border-ink group-hover:border-ink"
                             }`}>
                               {selectedGlobalId === globalBook.id && (
                                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
@@ -535,8 +511,8 @@ export default function ImportRegexScriptModal({
           )}
 
           {importResult && (
-            <div className="mt-3 p-2.5 bg-gradient-to-br from-[#252220]/60 via-[#1a1816]/40 to-[#252220]/60 backdrop-blur-sm border border-[#534741]/40 rounded-lg animate-in slide-in-from-bottom-2 duration-300">
-              <h3 className={`text-xs font-medium text-[#eae6db] mb-1.5 ${serifFontClass}`}>
+            <div className="mt-3 p-2.5 bg-gradient-to-br from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm border border-ink/40 rounded-lg animate-in slide-in-from-bottom-2 duration-300">
+              <h3 className={`text-xs font-medium text-cream-soft mb-1.5 ${serifFontClass}`}>
                 {t("regexScriptEditor.importResults")}
               </h3>
               <div className="space-y-1 text-xs">
@@ -607,10 +583,10 @@ export default function ImportRegexScriptModal({
             </div>
           )}
         </div>
-        <div className="relative p-3 border-t border-[#534741]/40 bg-gradient-to-r from-[#252220]/80 via-[#1a1816]/60 to-[#252220]/80 backdrop-blur-sm flex justify-end space-x-2">
+        <div className="relative p-3 border-t border-ink/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm flex justify-end space-x-2">
           <button
             onClick={handleClose}
-            className={`px-3 py-1.5 text-xs text-[#a18d6f] hover:text-[#eae6db] transition-all duration-300 rounded-md hover:bg-[#333]/30 ${serifFontClass}`}
+            className={`px-3 py-1.5 text-xs text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-md hover:bg-stroke/30 ${serifFontClass}`}
           >
             {t("common.cancel")}
           </button>

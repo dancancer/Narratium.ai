@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2, Copy, LogOut, X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -136,7 +137,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md mx-4 bg-gradient-to-br from-[#1a1a1a] via-[#1e1e1e] to-[#1a1a1a] rounded-2xl shadow-2xl border border-[#3a3a3a]/50 overflow-hidden"
+            className="relative w-full max-w-md mx-4 bg-gradient-to-br from-canvas via-surface to-canvas rounded-2xl shadow-2xl border border-muted-surface/50 overflow-hidden"
           >
             {/* Animated background */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5 opacity-60" />
@@ -146,15 +147,12 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             <div className="relative p-6 pb-4">
               <button 
                 onClick={onClose}
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-[#888] hover:text-[#f4e8c1] transition-colors duration-200 rounded-lg hover:bg-white/5"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-text-muted hover:text-cream transition-colors duration-200 rounded-lg hover:bg-white/5"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                <X className="h-3.5 w-3.5" />
               </button>
               
-              <h2 className={`text-xl font-bold text-[#f4e8c1] mb-2 ${serifFontClass}`}>
+              <h2 className={`text-xl font-bold text-cream mb-2 ${serifFontClass}`}>
                 {t("account.title")}
               </h2>
               
@@ -172,13 +170,13 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                 {/* Avatar */}
                 <div className="relative">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 p-[2px] shadow-lg">
-                    <div className="w-full h-full rounded-full bg-[#1a1a1a] flex items-center justify-center text-2xl font-bold text-amber-300">
+                    <div className="w-full h-full rounded-full bg-canvas flex items-center justify-center text-2xl font-bold text-amber-300">
                       {user.username.charAt(0).toUpperCase()}
                     </div>
                   </div>
                   
                   {/* Online indicator */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#1a1a1a] p-1">
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-canvas p-1">
                     <div className="w-full h-full rounded-full bg-green-500"></div>
                   </div>
                 </div>
@@ -187,7 +185,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                 <div className="flex-1 pt-2">
                   {/* Username */}
                   <div className="mb-3">
-                    <label className={`block text-xs font-medium text-[#a18d6f] mb-2 ${fontClass}`}>
+                    <label className={`block text-xs font-medium text-ink-soft mb-2 ${fontClass}`}>
                       {t("account.username")}
                     </label>
                     {isEditing ? (
@@ -197,7 +195,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                             type="text"
                             value={editedUsername}
                             onChange={(e) => setEditedUsername(e.target.value)}
-                            className="flex-1 bg-[#2a2a2a] border border-[#3a3a3a] rounded-lg px-3 py-2 text-[#f4e8c1] text-sm focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20"
+                            className="flex-1 bg-input border border-muted-surface rounded-lg px-3 py-2 text-cream text-sm focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20"
                             autoFocus
                           />
                           <button
@@ -212,7 +210,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                               setIsEditing(false);
                               setEditedUsername(user.username);
                             }}
-                            className="px-3 py-2 bg-[#3a3a3a] hover:bg-[#4a4a4a] text-[#ccc] text-xs rounded-lg transition-colors duration-200"
+                            className="px-3 py-2 bg-muted-surface hover:bg-stroke-strong text-text text-xs rounded-lg transition-colors duration-200"
                           >
                             ✕
                           </button>
@@ -221,22 +219,19 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                         {/* Success message */}
                         {successMessage && (
                           <div className="mt-2 text-xs text-green-400 flex items-center gap-1">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M9 12l2 2 4-4"></path>
-                              <circle cx="12" cy="12" r="10"></circle>
-                            </svg>
+                            <CheckCircle2 className="h-3 w-3" />
                             <span>{successMessage}</span>
                           </div>
                         )}
                       </div>
                     ) : (
                       <div className="flex items-center justify-between group">
-                        <span className={`text-[#f4e8c1] font-medium ${fontClass}`}>
+                        <span className={`text-cream font-medium ${fontClass}`}>
                           {user.username}
                         </span>
                         <button
                           onClick={() => setIsEditing(true)}
-                          className="opacity-0 group-hover:opacity-100 px-2 py-1 text-xs text-[#888] hover:text-amber-400 transition-all duration-200 rounded"
+                          className="opacity-0 group-hover:opacity-100 px-2 py-1 text-xs text-text-muted hover:text-amber-400 transition-all duration-200 rounded"
                         >
                           {t("account.edit")}
                         </button>
@@ -247,18 +242,15 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                   {/* Email - only for registered users */}
                   {!isGuest && user.email && (
                     <div className="mb-3">
-                      <label className={`block text-xs font-medium text-[#a18d6f] mb-2 ${fontClass}`}>
+                      <label className={`block text-xs font-medium text-ink-soft mb-2 ${fontClass}`}>
                         {t("account.email")}
                       </label>
                       <div className="flex items-center justify-between">
-                        <span className={`text-[#ccc] text-sm ${fontClass}`}>
+                        <span className={`text-text text-sm ${fontClass}`}>
                           {user.email}
                         </span>
                         <div className="flex items-center gap-1 text-xs text-green-400">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 12l2 2 4-4"></path>
-                            <circle cx="12" cy="12" r="10"></circle>
-                          </svg>
+                          <CheckCircle2 className="h-3 w-3" />
                           <span>{t("account.verified")}</span>
                         </div>
                       </div>
@@ -267,22 +259,19 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
 
                   {/* User ID */}
                   <div className="mb-4">
-                    <label className={`block text-xs font-medium text-[#a18d6f] mb-2 ${fontClass}`}>
+                    <label className={`block text-xs font-medium text-ink-soft mb-2 ${fontClass}`}>
                       {t("account.userId")}
                     </label>
                     <div className="flex items-center gap-2">
-                      <span className={`text-[#888] text-sm font-mono ${fontClass}`}>
+                      <span className={`text-text-muted text-sm font-mono ${fontClass}`}>
                         {user.id}
                       </span>
                       <button
                         onClick={() => navigator.clipboard.writeText(user.id)}
-                        className="p-1 text-[#888] hover:text-amber-400 transition-colors duration-200"
+                        className="p-1 text-text-muted hover:text-amber-400 transition-colors duration-200"
                         title={t("account.copyId")}
                       >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
+                        <Copy className="h-3 w-3" />
                       </button>
                     </div>
                   </div>
@@ -291,7 +280,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             </div>
 
             {/* Divider */}
-            <div className="mx-6 h-[1px] bg-gradient-to-r from-transparent via-[#3a3a3a] to-transparent"></div>
+            <div className="mx-6 h-[1px] bg-gradient-to-r from-transparent via-muted-surface to-transparent"></div>
 
             {/* Account Type Badge */}
             <div className="px-6 py-4">
@@ -320,11 +309,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                 <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/5 to-red-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                 
                 <div className="relative flex items-center justify-center gap-2">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                  </svg>
+                  <LogOut className="h-4 w-4" />
                   <span className={`${fontClass}`}>{t("account.logout")}</span>
                 </div>
               </button>
@@ -343,4 +328,3 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
     </AnimatePresence>
   );
 } 
-

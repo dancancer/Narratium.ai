@@ -79,7 +79,7 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
           <PenSquare className="w-4 h-4" />
           <span>需要您的输入</span>
         </div>
-        <div className="pl-6 text-sm leading-relaxed text-[#c0a480]/90">
+        <div className="pl-6 text-sm leading-relaxed text-amber-soft/90">
           {question}
         </div>
       </div>
@@ -104,7 +104,7 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.05, duration: 0.25 }}
-                  className="inline-flex items-center px-3 py-1.5 text-xs text-[#c0a480]/80 bg-black/30 border border-amber-500/20 rounded-full hover:bg-black/40 hover:border-amber-400/40 hover:text-[#f4e8c1] transition-all duration-200 cursor-pointer"
+                  className="inline-flex items-center px-3 py-1.5 text-xs text-amber-soft/80 bg-black/30 border border-amber-500/20 rounded-full hover:bg-black/40 hover:border-amber-400/40 hover:text-cream transition-all duration-200 cursor-pointer"
                   onClick={() => {
                     setCustomInput(option);
                     if (inputRef.current) {
@@ -136,16 +136,16 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
             onKeyPress={handleKeyPress}
             placeholder="输入您的回复..."
             disabled={isLoading}
-            className="w-full pl-4 pr-12 py-2.5 text-sm text-[#f4e8c1] bg-black/30 border border-amber-500/30 rounded-full focus:outline-none focus:border-amber-400/60 focus:bg-black/40 placeholder-[#c0a480]/60 transition-all duration-300 hover:border-amber-500/40"
+            className="w-full pl-4 pr-12 py-2.5 text-sm text-cream bg-black/30 border border-amber-500/30 rounded-full focus:outline-none focus:border-amber-400/60 focus:bg-black/40 placeholder-amber-soft/60 transition-all duration-300 hover:border-amber-500/40"
             autoFocus
           />
           <button
             onClick={handleCustomSubmit}
             disabled={isLoading || !customInput.trim()}
-            className="absolute right-1.5 p-1.5 text-amber-400 rounded-full hover:bg-amber-500/15 disabled:text-[#c0a480]/40 disabled:hover:bg-transparent transition-all duration-200"
+            className="absolute right-1.5 p-1.5 text-amber-400 rounded-full hover:bg-amber-500/15 disabled:text-amber-soft/40 disabled:hover:bg-transparent transition-all duration-200"
           >
             {isLoading ? (
-              <div className="w-4 h-4 border-2 border-[#c0a480]/40 border-t-amber-400 rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-amber-soft/40 border-t-amber-400 rounded-full animate-spin" />
             ) : (
               <Send className="w-4 h-4" />
             )}

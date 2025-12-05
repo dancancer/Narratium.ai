@@ -171,12 +171,12 @@ export default function PresetInfoModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="fantasy-bg bg-opacity-75 border border-[#534741] rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg relative z-10 backdrop-filter backdrop-blur-sm mx-4 max-h-[85vh] overflow-hidden"
+            className="fantasy-bg bg-opacity-75 border border-ink rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg relative z-10 backdrop-filter backdrop-blur-sm mx-4 max-h-[85vh] overflow-hidden"
           >
             {/* Close button */}
             <button 
               onClick={onClose}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-[#a18d6f] hover:text-[#f9c86d] transition-colors z-20"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-ink-soft hover:text-amber-bright transition-colors z-20"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -187,14 +187,14 @@ export default function PresetInfoModal({
             {/* Header */}
             <div className="text-center mb-6">
               <div className="flex items-center justify-center mb-3">
-                <div className="w-12 h-12 flex items-center justify-center text-[#f9c86d] bg-[#1c1c1c] rounded-xl border border-[#534741] shadow-inner">
+                <div className="w-12 h-12 flex items-center justify-center text-amber-bright bg-surface rounded-xl border border-ink shadow-inner">
                   {getPresetIcon(presetName)}
                 </div>
               </div>
-              <h1 className={`text-xl sm:text-2xl font-bold text-[#f9c86d] mb-2 ${serifFontClass}`}>
+              <h1 className={`text-xl sm:text-2xl font-bold text-amber-bright mb-2 ${serifFontClass}`}>
                 {presetInfo.title}
               </h1>
-              <p className={`text-sm text-[#a18d6f] ${fontClass}`}>
+              <p className={`text-sm text-ink-soft ${fontClass}`}>
                 {t("presetInfo.modalTitle")}
               </p>
             </div>
@@ -202,25 +202,25 @@ export default function PresetInfoModal({
             {/* Content */}
             <div className="overflow-y-auto max-h-[50vh] space-y-4">
               {/* Description */}
-              <div className="p-4 bg-gradient-to-br from-[#2a261f]/60 via-[#1a1816]/40 to-[#2a261f]/60 rounded-lg border border-[#534741]/50">
-                <h3 className={`text-sm font-medium text-[#f4e8c1] mb-2 ${serifFontClass}`}>
+              <div className="p-4 bg-gradient-to-br from-overlay/60 via-deep/40 to-overlay/60 rounded-lg border border-ink/50">
+                <h3 className={`text-sm font-medium text-cream mb-2 ${serifFontClass}`}>
                   {t("presetInfo.description")}
                 </h3>
-                <p className={`text-xs sm:text-sm text-[#c0a480] leading-relaxed ${fontClass}`}>
+                <p className={`text-xs sm:text-sm text-amber-soft leading-relaxed ${fontClass}`}>
                   {presetInfo.description}
                 </p>
               </div>
 
               {/* Features */}
-              <div className="p-4 bg-gradient-to-br from-[#2a261f]/60 via-[#1a1816]/40 to-[#2a261f]/60 rounded-lg border border-[#534741]/50">
-                <h3 className={`text-sm font-medium text-[#f4e8c1] mb-3 ${serifFontClass}`}>
+              <div className="p-4 bg-gradient-to-br from-overlay/60 via-deep/40 to-overlay/60 rounded-lg border border-ink/50">
+                <h3 className={`text-sm font-medium text-cream mb-3 ${serifFontClass}`}>
                   {t("presetInfo.features")}
                 </h3>
                 <ul className="space-y-2">
                   {presetInfo.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#f9c86d] mt-2 mr-3 flex-shrink-0"></div>
-                      <span className={`text-xs sm:text-sm text-[#c0a480] ${fontClass}`}>
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-bright mt-2 mr-3 flex-shrink-0"></div>
+                      <span className={`text-xs sm:text-sm text-amber-soft ${fontClass}`}>
                         {feature}
                       </span>
                     </li>

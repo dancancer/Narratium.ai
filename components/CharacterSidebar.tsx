@@ -196,11 +196,11 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
           isCollapsed
             ? "w-0 p-0 opacity-0 breathing-bg"
             : isMobile
-              ? "fixed inset-0 z-50 w-full text-[12px] leading-tight breathing-bg"
-              : "w-[18rem] text-[14px] leading-normal breathing-bg"
+              ? "fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg"
+              : "w-[18rem] text-sm leading-normal breathing-bg"
         }
           relative overflow-hidden
-          border-r border-[#42382f]
+          border-r border-ink
           h-full flex flex-col
           magic-border transition-all duration-300 ease-in-out`}
       >
@@ -212,7 +212,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                 trackButtonClick("CharacterSidebar", "移动端关闭侧边栏");
                 toggleSidebar();
               }}
-              className="w-8 h-8 flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-full border border-[#333333] shadow-inner transition-all duration-300 hover:bg-[#252525] hover:border-[#444444] hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+              className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -232,8 +232,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         )}
 
         <div
-          className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mt-4 mx-4"
-          style={{ opacity: isCollapsed ? 0 : 1 }}
+          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mt-4 mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
         >
           <span>{t("characterChat.navigation")}</span>
         </div>
@@ -244,14 +243,14 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               <>
                 <Link
                   href="/character-cards"
-                  className="menu-item relative group flex items-center p-2 rounded-md hover:bg-[#252525] overflow-hidden transition-all duration-300"
+                  className="menu-item relative group flex items-center p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                  <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+                  <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
                   <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
                   <div className="relative z-5 flex items-center">
                     <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -307,14 +306,14 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                     trackButtonClick("CharacterSidebar", "切换角色侧边栏");
                     toggleSidebar();
                   }}
-                  className="menu-item relative group flex items-center w-full p-2 rounded-md hover:bg-[#252525] overflow-hidden transition-all duration-300 cursor-pointer"
+                  className="menu-item relative group flex items-center w-full p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 cursor-pointer"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                  <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+                  <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
                   <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
                   <div className="relative z-5 flex items-center">
                     <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -345,10 +344,10 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               <>
                 <Link
                   href="/character-cards"
-                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-[#252525] transition-all duration-300"
+                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
                 >
                   <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] hover:text-amber-400 hover:border-[#444444] hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -396,10 +395,10 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                     trackButtonClick("CharacterSidebar", "切换角色侧边栏");
                     toggleSidebar();
                   }}
-                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-[#252525] transition-all duration-300"
+                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
                 >
                   <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] hover:text-amber-400 hover:border-[#444444] hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -425,8 +424,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         <div className="mx-4 menu-divider my-2"></div>
 
         <div
-          className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mx-4"
-          style={{ opacity: isCollapsed ? 0 : 1 }}
+          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
         >
           <span>{t("characterChat.characterInfo")}</span>
         </div>
@@ -436,10 +434,10 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             {!isCollapsed ? (
               <div
                 className={
-                  "menu-item flex p-2 rounded-md hover:bg-[#252525] overflow-hidden transition-all duration-300 group"
+                  "menu-item flex p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 group"
                 }
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mr-3 flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]">
+                <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mr-3 flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]">
                   {character.avatar_path ? (
                     <CharacterAvatarBackground
                       avatarPath={character.avatar_path}
@@ -463,7 +461,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                 </div>
                 <div className="flex flex-col justify-center">
                   <span
-                    className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-[#f4e8c1] group-hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`}
+                    className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`}
                   >
                     {character.name
                       ? character.name.length > (isMobile ? 15 : 20)
@@ -472,7 +470,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                       : ""}
                   </span>
                   <p
-                    className={`text-[#a18d6f] text-[10px] md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}
+                    className={`text-ink-soft text-2xs md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}
                   >
                     {character.personality
                       ? character.personality.length > (isMobile ? 20 : 25)
@@ -488,8 +486,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
 
         <div className="mx-4 menu-divider my-2"></div>
         <div
-          className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mx-4"
-          style={{ opacity: isCollapsed ? 0 : 1 }}
+          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
         >
           <span>{t("characterChat.actions")}</span>
         </div>
@@ -499,16 +496,16 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             {!isCollapsed ? (
               <div
                 className={
-                  "menu-item flex items-center p-2 rounded-md hover:bg-[#252525] cursor-pointer overflow-hidden transition-all duration-300 group"
+                  "menu-item flex items-center p-2 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
                 }
                 onClick={() => setShowDialogueTreeModal(true)}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
                 <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
                 <div className="relative z-5 flex items-center">
                   <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -526,7 +523,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                   </div>
                   <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
                     <p
-                      className={`text-[#f4e8c1] text-xs md:text-sm transition-colors duration-300 ${fontClass}`}
+                      className={`text-cream text-xs md:text-sm transition-colors duration-300 ${fontClass}`}
                     >
                       {t("characterChat.Conversation")}
                     </p>
@@ -536,12 +533,12 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             ) : (
               <div
                 className={
-                  "menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-[#252525] transition-all duration-300"
+                  "menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
                 }
                 onClick={() => setShowDialogueTreeModal(true)}
               >
                 <div
-                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] hover:text-amber-400 hover:border-[#444444] hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -566,21 +563,20 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         {!isCollapsed && (
           <>
             <div
-              className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mx-4"
-              style={{ opacity: isCollapsed ? 0 : 1 }}
+              className="px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 opacity-100"
             >
               <span>{t("characterChat.presets") || "预设"}</span>
             </div>
             <div
-              className="menu-item flex items-center p-2 mx-6 rounded-md hover:bg-[#252525] cursor-pointer overflow-hidden transition-all duration-300 group"
+              className="menu-item flex items-center p-2 mx-6 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
               onClick={handleOpenPromptEditor}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-              <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+              <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
               <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
               <div className="relative z-5 flex items-center">
                 <div
-                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -609,18 +605,18 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
 
             <div className="relative">
               <div
-                className={`menu-item flex items-center p-2 mx-6 rounded-md hover:bg-[#252525] cursor-pointer overflow-hidden transition-all duration-300 group ${showGithubPresetDropdown ? "bg-[#252525]" : ""}`}
+                className={`menu-item flex items-center p-2 mx-6 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group ${showGithubPresetDropdown ? "bg-muted-surface" : ""}`}
                 onClick={() =>
                   setShowGithubPresetDropdown(!showGithubPresetDropdown)
                 }
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
                 <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
                 <div className="relative z-5 flex items-center justify-between w-full">
                   <div className="flex items-center">
                     <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-purple-400 group-hover:shadow-[0_0_8px_rgba(167,139,250,0.4)]`}
+                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-purple-400 group-hover:shadow-[0_0_8px_rgba(167,139,250,0.4)]`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -664,20 +660,20 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               </div>
 
               {showGithubPresetDropdown && (
-                <div className="absolute left-0 right-0 mt-1 mx-6 bg-[#1c1c1c] border border-[#333333] rounded-md shadow-lg z-10 overflow-hidden max-h-[240px]">
+                <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md shadow-lg z-10 overflow-hidden max-h-[240px]">
                   {githubPresets.length === 0 ? (
-                    <div className="p-3 text-center text-[#a18d6f]">
-                      <span className={`text-[10px] md:text-xs ${fontClass}`}>
+                    <div className="p-3 text-center text-ink-soft">
+                      <span className={`text-2xs md:text-xs ${fontClass}`}>
                         {t("characterChat.noPresets") || "没有可用的预设"}
                       </span>
                     </div>
                   ) : (
-                    <div className="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-[#2a2a2a] scrollbar-thumb-[#555555] hover:scrollbar-thumb-[#666666]">
+                    <div className="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong">
                       {githubPresets.map((preset, index) => (
                         <div
                           key={preset.name}
-                          className={`p-3 hover:bg-[#252525] transition-colors duration-200 group ${
-                            index !== githubPresets.length - 1 ? "border-b border-[#333333]" : ""
+                          className={`p-3 hover:bg-muted-surface transition-colors duration-200 group ${
+                            index !== githubPresets.length - 1 ? "border-b border-stroke" : ""
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -687,7 +683,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                             >
                               <div className="flex items-center">
                                 <span
-                                  className={`text-xs md:text-sm text-[#f4e8c1] ${fontClass} block truncate`}
+                                  className={`text-xs md:text-sm text-cream ${fontClass} block truncate`}
                                 >
                                   {getPresetDisplayName(
                                     preset.name,
@@ -699,7 +695,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                                     e.stopPropagation();
                                     handleShowPresetInfo(preset.name);
                                   }}
-                                  className="ml-2 w-4 h-4 flex items-center justify-center text-[#a18d6f] hover:text-[#f9c86d] transition-all duration-300 rounded-full hover:bg-[#333]/50 group/info"
+                                  className="ml-2 w-4 h-4 flex items-center justify-center text-ink-soft hover:text-amber-bright transition-all duration-300 rounded-full hover:bg-stroke/50 group/info"
                                   title={t("presetInfo.modalTitle")}
                                 >
                                   <svg
@@ -721,7 +717,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                                 </button>
                               </div>
                               <p
-                                className={`text-[10px] md:text-xs text-[#a18d6f] mt-1 ${fontClass} line-clamp-2`}
+                                className={`text-2xs md:text-xs text-ink-soft mt-1 ${fontClass} line-clamp-2`}
                               >
                                 {getPresetDescription(
                                   preset.name,
@@ -738,7 +734,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                                     height="14"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    stroke="#a78bfa"
+                                    stroke="var(--color-info)"
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -747,7 +743,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                                   </svg>
                                 </div>
                               ) : (
-                                <div className="w-4 h-4 border border-[#555555] rounded"></div>
+                                <div className="w-4 h-4 border border-stroke rounded"></div>
                               )}
                             </div>
                           </div>
@@ -764,8 +760,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         <div className="mx-4 menu-divider my-2"></div>
 
         <div
-          className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mx-4"
-          style={{ opacity: isCollapsed ? 0 : 1 }}
+          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
         >
           <span>{t("characterChat.advancedSettings")}</span>
         </div>
@@ -774,7 +769,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             {!isCollapsed ? (
               <div
                 className={
-                  "menu-item flex items-center p-2 rounded-md hover:bg-[#252525] cursor-pointer overflow-hidden transition-all duration-300 group"
+                  "menu-item flex items-center p-2 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
                 }
                 onClick={() => {
                   trackButtonClick("CharacterSidebar", "打开高级设置");
@@ -782,11 +777,11 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-[#333] opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
                 <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
                 <div className="relative z-5 flex items-center">
                   <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-[#f4e8c1] bg-[#1c1c1c] rounded-lg border border-[#333333] shadow-inner transition-all duration-300 group-hover:border-[#444444] group-hover:text-blue-400 group-hover:shadow-[0_0_8px_rgba(96,165,250,0.4)]`}
+                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-blue-400 group-hover:shadow-[0_0_8px_rgba(96,165,250,0.4)]`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -820,8 +815,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         <div className="mx-4 menu-divider my-2"></div>
 
         <div
-          className="px-2 py-1 flex justify-between items-center text-xs text-[#8a8a8a] uppercase tracking-wider font-medium text-[8px] md:text-[10px] transition-all duration-300 ease-in-out overflow-hidden mx-4"
-          style={{ opacity: isCollapsed ? 0 : 1 }}
+          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
         >
           <span>{t("characterChat.responseLength")}</span>
         </div>
@@ -831,7 +825,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             <div className="px-2 py-2">
               <div className="relative py-3 px-1">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="h-1.5 w-full bg-[#2a2a2a] rounded-full"></div>
+                  <div className="h-1.5 w-full bg-input rounded-full"></div>
                 </div>
                 <div className="relative w-full h-1.5 rounded-full overflow-hidden">
                   <div
@@ -855,15 +849,15 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               </div>
               <div className="flex justify-between mt-3 px-0.5">
                 <span
-                  className={`text-[10px] md:text-xs font-medium ${fontClass} text-[#9ca3af]`}
+                  className={`text-2xs md:text-xs font-medium ${fontClass} text-slate-400`}
                 >
                   100
                 </span>
                 <div className="flex items-center">
-                  <span className="text-[10px] md:text-xs font-medium bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
+                  <span className="text-2xs md:text-xs font-medium bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
                     {currentResponseLength}
                   </span>
-                  <span className="text-[10px] md:text-xs font-medium text-[#9ca3af] ml-1">
+                  <span className="text-2xs md:text-xs font-medium text-slate-400 ml-1">
                     / 5000
                   </span>
                 </div>

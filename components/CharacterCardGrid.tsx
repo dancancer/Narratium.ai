@@ -26,6 +26,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Tilt from "react-parallax-tilt";
+import { ArrowUp, PencilLine, Trash2, UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
@@ -85,7 +86,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
             tiltMaxAngleY={-15}
             glareEnable={true}
             glareMaxOpacity={0.1}
-            glareColor="#ffffff"
+            glareColor="var(--color-cream)"
             glarePosition="all"
             glareBorderRadius="8px"
             scale={1.02}
@@ -98,26 +99,19 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                 {/* move character to top of the screen */}
                 <button
                   onClick={(e) => {e.stopPropagation(); trackButtonClick("move_to_top_character_btn", "置顶角色"); onMoveToTopClick(character.id);}}
-                  className="p-2 sm:p-1.5 bg-[#252220] hover:bg-[#3a2a2a] rounded-full text-[#c0a480] hover:text-[#ffd475] transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.move_to_top")}
                   aria-label={t("characterCardsPage.move_to_top")}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5">
-                    <path d="M3 6h18"/>
-                    <path d="M12 18V8"/>
-                    <path d="M8 12l4-4 4 4"/>
-                  </svg>
+                  <ArrowUp className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                 </button>
                 <button
                   onClick={(e) => {trackButtonClick("edit_character_btn", "编辑角色"); onEditClick(character, e);}}
-                  className="p-2 sm:p-1.5 bg-[#252220] hover:bg-[#3a2a2a] rounded-full text-[#c0a480] hover:text-[#ffd475] transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.edit")}
                   aria-label={t("characterCardsPage.edit")}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
+                  <PencilLine className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                 </button>
                 <button
                   onClick={(e) => {
@@ -125,14 +119,11 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                     e.stopPropagation();
                     onDeleteClick(character.id);
                   }}
-                  className="p-2 sm:p-1.5 bg-[#252220] hover:bg-[#3a2a2a] rounded-full text-[#c0a480] hover:text-[#ffd475] transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.delete")}
                   aria-label={t("characterCardsPage.delete")}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-3.5 sm:h-3.5">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                  <Trash2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
                 </button>
               </div>
             
@@ -145,17 +136,15 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                   {character.avatar_path ? (
                     <CharacterAvatarBackground avatarPath={character.avatar_path} />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#252220]">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 sm:h-24 sm:w-24 text-[#534741]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                    <div className="w-full h-full flex items-center justify-center bg-muted-surface">
+                      <UserRound className="h-16 w-16 sm:h-24 sm:w-24 text-ink" strokeWidth={1.5} />
                     </div>
                   )}
                 </div>
               
                 <div className="p-2 sm:p-4">
-                  <h2 className={`text-sm sm:text-lg text-[#eae6db] line-clamp-1 magical-text ${serifFontClass}`}>{character.name}</h2>
-                  <div className={`text-[10px] sm:text-xs text-[#a18d6f] mt-1 sm:mt-2 italic ${fontClass}`}>
+                  <h2 className={`text-sm sm:text-lg text-cream-soft line-clamp-1 magical-text ${serifFontClass}`}>{character.name}</h2>
+                  <div className={`text-2xs sm:text-xs text-ink-soft mt-1 sm:mt-2 italic ${fontClass}`}>
                     <span className="inline-block mr-1 opacity-70">✨</span>
                     <span className="line-clamp-2">{character.personality}</span>
                   </div>

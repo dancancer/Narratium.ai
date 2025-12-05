@@ -1,6 +1,6 @@
 export const SLASH_RUNNER_PLACEHOLDER_PREFIX = "__SLASH_RUNNER_HTML_BLOCK_";
 export const SLASH_RUNNER_STYLES =
-  ".slash-runner-embed{margin:12px 0;border:1px solid rgba(136,17,68,0.3);border-radius:8px;overflow:hidden;background:rgba(0,0,0,0.35);} .slash-runner-embed iframe{display:block;width:100%;border:0;min-height:240px;background:#0b0b0b;}";
+  ".slash-runner-embed{margin:12px 0;border:1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);border-radius:8px;overflow:hidden;background:color-mix(in srgb, var(--color-canvas) 35%, transparent);} .slash-runner-embed iframe{display:block;width:100%;border:0;min-height:240px;background:var(--color-canvas);}";
 export const SLASH_RUNNER_SCRIPT = `
 const slashRunnerEmbeds = new Set();
 function resizeSlashRunnerEmbeds() {
