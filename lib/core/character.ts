@@ -31,6 +31,7 @@ export class Character {
       avatar: characterRecord.data.avatar || "",
       creator_notes: characterRecord.data.data?.creator_notes || "",
       alternate_greetings: characterRecord.data.data?.alternate_greetings || [],
+      extensions: characterRecord.data.data?.extensions || (characterRecord.data as any).extensions,
     }; 
     this.worldBook = this.processCharacterBook(characterRecord.data.data?.character_book);
   }

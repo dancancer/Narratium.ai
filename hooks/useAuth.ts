@@ -1,4 +1,14 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                              useAuth Hook                                  ║
+ * ║  认证状态管理：登录/登出/游客模式/用户名更新                                  ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
+"use client";
+
 import { useState, useEffect } from "react";
+import { useLocalStorageBoolean, useLocalStorageString } from "@/hooks/useLocalStorage";
 import AuthAPI from "@/lib/api/auth";
 
 interface User {
@@ -20,6 +30,19 @@ export const useAuth = () => {
     isAuthenticated: false,
   });
 
+  const { value: storedToken, setValue: setStoredToken, remove: removeStoredToken } =
+    useLocalStorageString("authToken", "");
+  const { value: storedUsername, setValue: setStoredUsername, remove: removeStoredUsername } =
+    useLocalStorageString("username", "");
+  const { value: storedUserId, setValue: setStoredUserId, remove: removeStoredUserId } =
+    useLocalStorageString("userId", "");
+  const { value: storedEmail, setValue: setStoredEmail, remove: removeStoredEmail } =
+    useLocalStorageString("email", "");
+  const { value: storedLoginMode, setValue: setStoredLoginMode, remove: removeStoredLoginMode } =
+    useLocalStorageString("loginMode", "");
+  const { value: isLoggedIn, setValue: setIsLoggedIn, remove: removeIsLoggedIn } =
+    useLocalStorageBoolean("isLoggedIn", false);
+
   // Check authentication status on mount
   useEffect(() => {
     checkAuthStatus();
@@ -28,19 +51,13 @@ export const useAuth = () => {
   const checkAuthStatus = async () => {
     try {
       // Check for guest login first
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
-      const loginMode = localStorage.getItem("loginMode");
-      const username = localStorage.getItem("username");
-      const userId = localStorage.getItem("userId");
-      const email = localStorage.getItem("email");
-
-      if (isLoggedIn === "true" && loginMode === "guest" && username && userId) {
+      if (isLoggedIn && storedLoginMode === "guest" && storedUsername && storedUserId) {
         // Guest login mode
         setAuthState({
           user: {
-            id: userId,
-            username: username,
-            email: email || "",
+            id: storedUserId,
+            username: storedUsername,
+            email: storedEmail || "",
           },
           isLoading: false,
           isAuthenticated: true,
@@ -50,7 +67,7 @@ export const useAuth = () => {
 
       // Regular API-based authentication
       const response = await AuthAPI.getCurrentUser();
-      
+
       if (response?.success && response.user) {
         setAuthState({
           user: response.user,
@@ -80,11 +97,12 @@ export const useAuth = () => {
       const response = await AuthAPI.login(email, password);
       if (response.success && response.token && response.user) {
         // Store authentication data
-        localStorage.setItem("authToken", response.token);
-        localStorage.setItem("username", response.user.username);
-        localStorage.setItem("userId", response.user.id);
-        localStorage.setItem("email", response.user.email);
-        localStorage.setItem("isLoggedIn", "true");
+        setStoredToken(response.token);
+        setStoredUsername(response.user.username);
+        setStoredUserId(response.user.id);
+        setStoredEmail(response.user.email);
+        setIsLoggedIn(true);
+        setStoredLoginMode("user");
         setAuthState({
           user: response.user,
           isLoading: false,
@@ -102,13 +120,13 @@ export const useAuth = () => {
 
   const logout = () => {
     // Clear all auth-related localStorage items
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("email");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("loginMode");
-    
+    removeStoredToken();
+    removeStoredUsername();
+    removeStoredUserId();
+    removeStoredEmail();
+    removeIsLoggedIn();
+    removeStoredLoginMode();
+
     AuthAPI.logout();
     setAuthState({
       user: null,
@@ -127,11 +145,9 @@ export const useAuth = () => {
   // Update username for both registered and guest users
   const updateUsername = async (newUsername: string) => {
     try {
-      const loginMode = localStorage.getItem("loginMode");
-      
-      if (loginMode === "guest") {
+      if (storedLoginMode === "guest") {
         // Update guest user locally
-        localStorage.setItem("username", newUsername.trim());
+        setStoredUsername(newUsername.trim());
         setAuthState(prev => ({
           ...prev,
           user: prev.user ? { ...prev.user, username: newUsername.trim() } : null,
@@ -144,14 +160,15 @@ export const useAuth = () => {
       } else {
         // Update registered user via API
         const response = await AuthAPI.updateUsername(newUsername.trim());
-        
+
         if (response.success && response.token && response.user) {
           // Update stored authentication data with new token and user info
-          localStorage.setItem("authToken", response.token);
-          localStorage.setItem("username", response.user.username);
-          localStorage.setItem("userId", response.user.id);
-          localStorage.setItem("email", response.user.email);
-          
+          setStoredToken(response.token);
+          setStoredUsername(response.user.username);
+          setStoredUserId(response.user.id);
+          setStoredEmail(response.user.email);
+          setStoredLoginMode("user");
+
           // Update state
           setAuthState(prev => ({
             ...prev,

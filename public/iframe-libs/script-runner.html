@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'none'; 
+                 script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
+                 style-src 'self' 'unsafe-inline';
+                 img-src 'self' data: https:;
+                 font-src 'self' data:;
+                 connect-src 'self';">
+  
+  <title>Script Runner - Narratium</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      background: transparent;
+      overflow-x: hidden;
+    }
+    
+    #root {
+      min-height: 100vh;
+      padding: 8px;
+    }
+    
+    .error {
+      padding: 12px;
+      background: #fee;
+      border-left: 4px solid #c33;
+      color: #c33;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .loading {
+      padding: 12px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script>
+    /**
+     * Script Runner Iframe
+     * 
+     * This iframe provides a sandboxed environment for executing user scripts.
+     * It communicates with the parent via postMessage for:
+     * - Receiving scripts to execute
+     * - Sending execution results
+     * - Handling events
+     * - Auto-resizing based on content
+     */
+    
+    (function() {
+      'use strict';
+      
+      // State
+      let Narratium = null;
+      let parentOrigin = null;
+      const logs = [];
+      
+      /**
+       * Send message to parent
+       */
+      function sendMessage(type, payload, id) {
+        const message = {
+          type,
+          payload,
+          id,
+          timestamp: Date.now(),
+          origin: window.location.origin,
+        };
+        
+        window.parent.postMessage(message, '*');
+      }
+      
+      /**
+       * Log message (captured for debugging)
+       */
+      function log(...args) {
+        const message = args.map(arg =>
+          typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+        ).join(' ');
+        
+        logs.push(`[${new Date().toISOString()}] ${message}`);
+        console.log('[ScriptRunner]', ...args);
+        
+        // Send to parent
+        sendMessage('CONSOLE_LOG', { message, args });
+      }
+      
+      /**
+       * Initialize Narratium API
+       */
+      function initializeAPI(context) {
+        Narratium = {
+          version: '1.0.0',
+          context: context || {},
+          
+          variables: {
+            get: (key) => {
+              return Narratium.context.variables?.[key];
+            },
+            set: (key, value) => {
+              if (!Narratium.context.variables) {
+                Narratium.context.variables = {};
+              }
+              Narratium.context.variables[key] = value;
+              sendMessage('API_CALL', { method: 'setVariable', args: [key, value] });
+            },
+            delete: (key) => {
+              if (Narratium.context.variables) {
+                delete Narratium.context.variables[key];
+              }
+              sendMessage('API_CALL', { method: 'deleteVariable', args: [key] });
+            },
+            list: () => {
+              return Object.keys(Narratium.context.variables || {});
+            },
+          },
+          
+          events: {
+            on: (eventName, handler) => {
+              window.addEventListener(`narratium:${eventName}`, (e) => {
+                handler(e.detail);
+              });
+            },
+            once: (eventName, handler) => {
+              const wrappedHandler = (e) => {
+                handler(e.detail);
+                window.removeEventListener(`narratium:${eventName}`, wrappedHandler);
+              };
+              window.addEventListener(`narratium:${eventName}`, wrappedHandler);
+            },
+            off: (eventName, handler) => {
+              if (handler) {
+                window.removeEventListener(`narratium:${eventName}`, handler);
+              }
+            },
+            emit: (eventName, data) => {
+              const event = new CustomEvent(`narratium:${eventName}`, { detail: data });
+              window.dispatchEvent(event);
+              sendMessage('EVENT_EMIT', { eventName, data });
+            },
+          },
+          
+          utils: {
+            log: log,
+            waitFor: (ms) => {
+              if (ms > 60000) {
+                throw new Error('Wait time cannot exceed 60 seconds');
+              }
+              return new Promise(resolve => setTimeout(resolve, ms));
+            },
+            getContext: () => {
+              return { ...Narratium.context };
+            },
+          },
+        };
+        
+        // Make it globally available
+        window.Narratium = Narratium;
+      }
+      
+      /**
+       * Execute script
+       */
+      async function executeScript(code, context, messageId) {
+        const startTime = Date.now();
+        
+        try {
+          // Initialize API with context
+          initializeAPI(context);
+          
+          // Create async function wrapper
+          const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+          const fn = new AsyncFunction('Narratium', code);
+          
+          // Execute
+          const result = await fn(Narratium);
+          
+          const executionTime = Date.now() - startTime;
+          
+          // Send result
+          sendMessage('SCRIPT_RESULT', {
+            result,
+            executionTime,
+          }, messageId);
+          
+        } catch (error) {
+          const executionTime = Date.now() - startTime;
+          
+          // Send error
+          sendMessage('SCRIPT_ERROR', {
+            error: error.message,
+            stack: error.stack,
+            line: error.lineNumber,
+            column: error.columnNumber,
+          }, messageId);
+        }
+      }
+      
+      /**
+       * Auto-resize based on content height
+       */
+      function updateHeight() {
+        const height = document.body.scrollHeight;
+        sendMessage('HEIGHT_UPDATE', { height });
+      }
+      
+      /**
+       * Handle messages from parent
+       */
+      window.addEventListener('message', async (event) => {
+        // Store parent origin on first message
+        if (!parentOrigin) {
+          parentOrigin = event.origin;
+        }
+        
+        // Validate origin (basic check)
+        // In production, this should be more strict
+        if (event.origin !== parentOrigin) {
+          log('Invalid origin:', event.origin);
+          return;
+        }
+        
+        const message = event.data;
+        
+        if (!message || typeof message !== 'object' || !message.type) {
+          return;
+        }
+        
+        switch (message.type) {
+          case 'SCRIPT_EXECUTE':
+            const { code, context, timeout } = message.payload;
+            await executeScript(code, context, message.id);
+            updateHeight();
+            break;
+            
+          case 'EVENT_EMIT':
+            const { eventName, data } = message.payload;
+            const event = new CustomEvent(`narratium:${eventName}`, { detail: data });
+            window.dispatchEvent(event);
+            break;
+            
+          default:
+            log('Unknown message type:', message.type);
+        }
+      });
+      
+      /**
+       * Set up auto-resize observer
+       */
+      const resizeObserver = new ResizeObserver(() => {
+        updateHeight();
+      });
+      
+      resizeObserver.observe(document.body);
+      
+      /**
+       * Initialize
+       */
+      window.addEventListener('DOMContentLoaded', () => {
+        log('Script runner initialized');
+        
+        // Signal ready to parent
+        sendMessage('READY', {
+          version: '1.0.0',
+          userAgent: navigator.userAgent,
+        });
+        
+        // Initial height update
+        updateHeight();
+      });
+      
+      /**
+       * Cleanup on unload
+       */
+      window.addEventListener('beforeunload', () => {
+        log('Script runner unloading');
+        resizeObserver.disconnect();
+      });
+      
+    })();
+  </script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import { useLanguage } from "@/app/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { Toast } from "@/components/Toast";
+import { useLocalStorageString } from "@/hooks/useLocalStorage";
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -113,7 +114,8 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
     logout();
   };
 
-  const isGuest = localStorage.getItem("loginMode") === "guest";
+  const { value: loginMode } = useLocalStorageString("loginMode", "");
+  const isGuest = loginMode === "guest";
 
   if (!isAuthenticated || !user) return null;
 

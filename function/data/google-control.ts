@@ -1,4 +1,5 @@
 import { createRequest } from "@/function/data/google-request";
+import { getString, setString } from "@/lib/storage/client-storage";
 
 const login_url = "https://accounts.google.com/o/oauth2/v2/auth";
 const token_url = "https://oauth2.googleapis.com/token";
@@ -40,7 +41,7 @@ export function getGoogleToken(code: string) {
 }
 
 export function refreshGoogleToken() {
-  const refresh_token = localStorage.getItem("google_drive_refresh_token") as string;
+  const refresh_token = getString("google_drive_refresh_token");
   const info = {
     client_id: client_id,
     client_secret: client_secret,
@@ -68,8 +69,8 @@ export async function getGoogleCodeByUrl(url: Location) {
       try {
         const res = await getGoogleToken(info.code);
         if(res?.access_token) {
-          localStorage.setItem("google_drive_token", res.access_token);
-          localStorage.setItem("google_drive_refresh_token", res.refresh_token);
+          setString("google_drive_token", res.access_token);
+          setString("google_drive_refresh_token", res.refresh_token);
 
           window.location.replace(window.location.origin);
           alert("Google 授权成功！请再次导出数据至谷歌！");
@@ -136,7 +137,7 @@ export async function getBackUpFile(folderId:string) {
   if(res?.files?.[0]) {
     const blob = await fetch(`https://www.googleapis.com/drive/v3/files/${res.files[0].id}?alt=media`, {
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("google_drive_token"),
+        "Authorization": "Bearer " + getString("google_drive_token"),
       },
     }).then(res => res.blob());
     const file = new File([blob], "backup.json", { type: "application/json" });

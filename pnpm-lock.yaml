@@ -50,6 +50,9 @@ importers:
       elkjs:
         specifier: ^0.10.0
         version: 0.10.0
+      emittery:
+        specifier: ^1.2.0
+        version: 1.2.0
       eslint-plugin-react-hooks:
         specifier: ^5.2.0
         version: 5.2.0(eslint@9.28.0(jiti@2.4.2))
@@ -2697,6 +2700,10 @@ packages:
 
   elkjs@0.10.0:
     resolution: {integrity: sha512-v/3r+3Bl2NMrWmVoRTMBtHtWvRISTix/s9EfnsfEWApNrsmNjqgqJOispCGg46BPwIFdkag3N/HYSxJczvCm6w==}
+
+  emittery@1.2.0:
+    resolution: {integrity: sha512-KxdRyyFcS85pH3dnU8Y5yFUm2YJdaHwcBZWrfG8o89ZY9a13/f9itbN+YG3ELbBo9Pg5zvIozstmuV8bX13q6g==}
+    engines: {node: '>=14.16'}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -7726,6 +7733,8 @@ snapshots:
   electron-to-chromium@1.5.185: {}
 
   elkjs@0.10.0: {}
+
+  emittery@1.2.0: {}
 
   emoji-regex@8.0.0: {}
 

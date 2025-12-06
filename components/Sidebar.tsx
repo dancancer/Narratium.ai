@@ -8,6 +8,7 @@ import { useLanguage } from "@/app/i18n";
 import { isUpdateAvailable, fetchLatestRelease } from "@/utils/version-compare";
 import "@/app/styles/fantasy-ui.css";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocalStorageString } from "@/hooks/useLocalStorage";
 import PWAInstallButton from "./PWAInstallButton";
 
 // Current app version from package.json
@@ -33,6 +34,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
   const [isCreatorOpen, setIsCreatorOpen] = useState(true);
   const [updateInfo, setUpdateInfo] = useState<{version: string, url: string} | null>(null);
   const [hasCheckedUpdate, setHasCheckedUpdate] = useState(false);
+  const { setValue: setSidebarState } = useLocalStorageString("sidebarState", "open");
 
   useEffect(() => {
     if (isOpen) {
@@ -95,7 +97,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
         <button
           onClick={() => {
             toggleSidebar();
-            localStorage.setItem("sidebarState", isOpen ? "closed" : "open");
+            setSidebarState(isOpen ? "closed" : "open");
             document.documentElement.style.setProperty(
               "--app-sidebar-width",
               isOpen ? "4rem" : "-1rem",

@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useCallback, ReactNode } from "react";
+import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
 
 interface SoundContextType {
   soundEnabled: boolean;
@@ -22,25 +23,14 @@ interface SoundProviderProps {
 }
 
 export function SoundProvider({ children }: SoundProviderProps) {
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const { value: soundEnabled, setValue: setSoundEnabled } = useLocalStorageBoolean(
+    "soundEnabled",
+    true
+  );
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedSoundPreference = localStorage.getItem("soundEnabled");
-      if (savedSoundPreference !== null) {
-        setSoundEnabled(savedSoundPreference === "true");
-      }
-    }
-  }, []);
-
-  const toggleSound = () => {
-    const newValue = !soundEnabled;
-    setSoundEnabled(newValue);
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("soundEnabled", String(newValue));
-    }
-  };
+  const toggleSound = useCallback(() => {
+    setSoundEnabled((prev) => !prev);
+  }, [setSoundEnabled]);
 
   return (
     <SoundContext.Provider value={{ soundEnabled, toggleSound }}>

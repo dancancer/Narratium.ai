@@ -46,16 +46,11 @@ export const getTranslation = (language: Language, key: string): string => {
 
 export const getClientLanguage = (): Language => {
   if (typeof window !== "undefined") {
-    const savedLanguage = localStorage.getItem("language") as Language;
-    if (savedLanguage && LANGUAGES.includes(savedLanguage)) {
-      return savedLanguage;
-    }
-    
     const browserLang = navigator.language.split("-")[0] as Language;
     if (LANGUAGES.includes(browserLang)) {
       return browserLang;
     }
   }
-  
+
   return DEFAULT_LANGUAGE;
 };

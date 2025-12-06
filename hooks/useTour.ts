@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/app/i18n";
+import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
 
 export interface TourStep {
   target: string;
@@ -17,15 +18,16 @@ export function useTour() {
   const [isTourVisible, setIsTourVisible] = useState(false);
   const [currentTourSteps, setCurrentTourSteps] = useState<TourStep[]>([]);
   const { t, language } = useLanguage();
+  const { value: homeTourCompleted, setValue: setHomeTourCompleted, remove: resetHomeTour } = useLocalStorageBoolean(TOUR_STORAGE_KEY, false);
+  const { value: characterTourCompleted, setValue: setCharacterTourCompleted, remove: resetCharacterTour } = useLocalStorageBoolean(CHARACTER_TOUR_STORAGE_KEY, false);
 
   useEffect(() => {
-    const tourCompleted = localStorage.getItem(TOUR_STORAGE_KEY);
-    if (!tourCompleted) {
+    if (!homeTourCompleted) {
       setTimeout(() => {
         startHomeTour();
       }, 2000);
     }
-  }, []);
+  }, [homeTourCompleted]);
 
   useEffect(() => {
     if (isTourVisible) {
@@ -41,6 +43,7 @@ export function useTour() {
   }, [language]);
 
   const startHomeTour = () => {
+    if (homeTourCompleted) return;
     const homeSteps: TourStep[] = [
       {
         target: "body",
@@ -75,7 +78,6 @@ export function useTour() {
   };
 
   const startCharacterTour = () => {
-    const characterTourCompleted = localStorage.getItem(CHARACTER_TOUR_STORAGE_KEY);
     if (characterTourCompleted) {
       return;
     }
@@ -114,20 +116,20 @@ export function useTour() {
   const completeTour = () => {
     setIsTourVisible(false);
     if (currentTourSteps.length > 0 && currentTourSteps[0].target === "body") {
-      localStorage.setItem(TOUR_STORAGE_KEY, "true");
+      setHomeTourCompleted(true);
     }
   };
 
   const skipTour = () => {
     setIsTourVisible(false);  
     if (currentTourSteps.length > 0 && currentTourSteps[0].target === "body") {
-      localStorage.setItem(TOUR_STORAGE_KEY, "true");
+      setHomeTourCompleted(true);
     }
   };
 
   const resetTour = () => {
-    localStorage.removeItem(TOUR_STORAGE_KEY);
-    localStorage.removeItem(CHARACTER_TOUR_STORAGE_KEY);
+    resetHomeTour();
+    resetCharacterTour();
     setIsTourVisible(false);
   };
 

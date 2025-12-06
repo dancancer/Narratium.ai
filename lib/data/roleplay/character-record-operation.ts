@@ -37,6 +37,7 @@ export class LocalCharacterRecordOperations {
     const characterRecord = characterRecords.find(
       (record: CharacterRecord) => record.id === characterId,
     );
+    console.log("===========characterRecord", characterRecord);
 
     return characterRecord;
   }

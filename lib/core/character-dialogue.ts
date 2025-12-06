@@ -9,6 +9,7 @@ import { getCharacterCompressorPromptZh, getCharacterCompressorPromptEn } from "
 import { CharacterHistory } from "@/lib/core/character-history";
 import { DialogueOptions } from "@/lib/models/character-dialogue-model";
 import { createGeminiRunnable } from "@/lib/core/gemini-client";
+import { getString } from "@/lib/storage/client-storage";
 
 export class CharacterDialogue {
   character: Character;
@@ -93,21 +94,19 @@ export class CharacterDialogue {
     };
     
     try {
-      if (typeof window !== "undefined" && window.localStorage) {
-        const savedSettings = localStorage.getItem("llmSettings");
-        if (savedSettings) {
-          llmSettings = {
-            temperature: 0.9,
-            maxTokens: undefined,
-            timeout: undefined,
-            maxRetries: 2,
-            topP: 0.7,
-            frequencyPenalty: 0,
-            presencePenalty: 0,
-            topK: 40,
-            repeatPenalty: 1.1,
-          };
-        }
+      const savedSettings = getString("llmSettings");
+      if (savedSettings) {
+        llmSettings = {
+          temperature: 0.9,
+          maxTokens: undefined,
+          timeout: undefined,
+          maxRetries: 2,
+          topP: 0.7,
+          frequencyPenalty: 0,
+          presencePenalty: 0,
+          topK: 40,
+          repeatPenalty: 1.1,
+        };
       }
     } catch (error) {
       console.warn("Failed to load LLM settings from localStorage, using defaults", error);

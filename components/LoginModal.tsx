@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { Toast } from "@/components/Toast";
+import { useLocalStorageBoolean, useLocalStorageString } from "@/hooks/useLocalStorage";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,6 +16,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const { t, serifFontClass } = useLanguage();
   const [guestName, setGuestName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { setValue: setUsername } = useLocalStorageString("username", "");
+  const { setValue: setUserId } = useLocalStorageString("userId", "");
+  const { setValue: setEmail } = useLocalStorageString("email", "");
+  const { setValue: setLoginMode } = useLocalStorageString("loginMode", "");
+  const { setValue: setIsLoggedIn } = useLocalStorageBoolean("isLoggedIn", false);
 
   // Add ErrorToast state
   const [errorToast, setErrorToast] = useState({
@@ -107,11 +113,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
     try {
       // Store guest data in localStorage
-      localStorage.setItem("username", guestName.trim());
-      localStorage.setItem("userId", `guest_${Date.now()}`);
-      localStorage.setItem("email", "");
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("loginMode", "guest");
+      setUsername(guestName.trim());
+      setUserId(`guest_${Date.now()}`);
+      setEmail("");
+      setIsLoggedIn(true);
+      setLoginMode("guest");
 
       onClose();
       resetForm();

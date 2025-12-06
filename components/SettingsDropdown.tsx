@@ -7,6 +7,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useTour } from "@/hooks/useTour";
 import { exportDataToFile, importDataFromFile, generateExportFilename, downloadFile } from "@/function/data/export-import";
 import { backupToGoogle, getFolderList, getGoogleCodeByUrl, getGoogleLoginUrl, getBackUpFile } from "@/function/data/google-control";
+import { getString } from "@/lib/storage/client-storage";
 import PluginManagerModal from "@/components/PluginManagerModal";
 
 interface SettingsDropdownProps {
@@ -84,7 +85,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
   };
 
   async function handleImportDataFromGoogle() {
-    const token = localStorage.getItem("google_drive_token");
+    const token = getString("google_drive_token");
     if(token) {
       const res = await getFolderList();
       if(res?.id) {
@@ -103,7 +104,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
   }
 
   async function handleExportDataToGoogle() {
-    const token = localStorage.getItem("google_drive_token");
+    const token = getString("google_drive_token");
     if(token) {
       const blob = await exportDataToFile();
       const filename = generateExportFilename();

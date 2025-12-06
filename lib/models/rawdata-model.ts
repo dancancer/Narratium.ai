@@ -1,4 +1,5 @@
 import { WorldBookEntry } from "@/lib/models/world-book-model";
+import { TavernHelperScript } from "@/lib/models/character-model";
 
 export interface RawCharacterData {
   id: any;
@@ -36,6 +37,10 @@ export interface RawCharacterData {
         order?: number;
         depth?: number;
       }[] | Record<string, WorldBookEntry>;
-    }
+    },
+    extensions?: {
+      TavernHelper_scripts?: TavernHelperScript[];
+      [key: string]: any;
+    };
   },
 }

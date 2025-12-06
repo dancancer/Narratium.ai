@@ -1,15 +1,20 @@
 /**
+ * ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║                        Username Helper                                   ║
+ * ║  显示名的存储与事件通知：读写封装 + 事件广播                                ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
+ */
+
+import { getString, setString } from "@/lib/storage/client-storage";
+
+/**
  * Get the current display username for character dialogues
  * Returns displayUsername if set, otherwise falls back to login username
  */
 export function getDisplayUsername(): string {
-  if (typeof window === "undefined") {
-    return "";
-  }
-  
-  const displayUsername = localStorage.getItem("displayUsername");
-  const loginUsername = localStorage.getItem("username");
-  
+  const displayUsername = getString("displayUsername");
+  const loginUsername = getString("username");
+
   return displayUsername || loginUsername || "";
 }
 
@@ -17,26 +22,22 @@ export function getDisplayUsername(): string {
  * Set the display username for character dialogues
  */
 export function setDisplayUsername(username: string): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  
-  localStorage.setItem("displayUsername", username);
-  
+  setString("displayUsername", username);
+
   // Trigger a custom event to notify components that username has changed
-  window.dispatchEvent(new CustomEvent("displayUsernameChanged", {
-    detail: { displayUsername: username },
-  }));
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent("displayUsernameChanged", {
+        detail: { displayUsername: username },
+      })
+    );
+  }
 }
 
 /**
  * Reset display username to login username
  */
 export function resetDisplayUsername(): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-  
-  const loginUsername = localStorage.getItem("username") || "";
+  const loginUsername = getString("username");
   setDisplayUsername(loginUsername);
-} 
+}

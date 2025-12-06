@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, RefreshCcw, X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { setDisplayUsername, resetDisplayUsername } from "@/utils/username-helper";
+import { getString } from "@/lib/storage/client-storage";
 
 interface UserNameSettingModalProps {
   isOpen: boolean;
@@ -80,11 +81,9 @@ export default function UserNameSettingModal({
   };
 
   const handleReset = () => {
-    if (typeof window !== "undefined") {
-      resetDisplayUsername();
-      const loginUsername = localStorage.getItem("username") || "";
-      setDisplayName(loginUsername);
-    }
+    resetDisplayUsername();
+    const loginUsername = getString("username", "");
+    setDisplayName(loginUsername);
     setError("");
   };
 
@@ -141,7 +140,9 @@ export default function UserNameSettingModal({
                 </label>
                 <div className="relative magical-input min-h-[50px] flex items-center justify-center bg-overlay/50 border border-ink/50">
                   <span className={`text-center text-sm text-text-muted ${serifFontClass}`}>
-                    {typeof window !== "undefined" ? (localStorage.getItem("username") || t("userNameSetting.notLoggedIn")) : t("userNameSetting.notLoggedIn")}
+                    {typeof window !== "undefined"
+                      ? getString("username", t("userNameSetting.notLoggedIn"))
+                      : t("userNameSetting.notLoggedIn")}
                   </span>
                 </div>
               </div>

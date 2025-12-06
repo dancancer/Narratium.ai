@@ -9,6 +9,7 @@
       "typescript",
       "typescriptreact"
     ],
-    "eslint.alwaysShowStatus": true
+    "eslint.alwaysShowStatus": true,
+    "kiroAgent.configureMCP": "Disabled"
   }
   

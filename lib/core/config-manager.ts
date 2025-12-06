@@ -1,6 +1,7 @@
 /**
  * LLM Configuration interface
  */
+import { getString, setString } from "@/lib/storage/client-storage";
 export interface LLMConfig {
   model_name: string;
   api_key: string;
@@ -106,20 +107,20 @@ export class ConfigManager {
  */
 export function loadConfigFromLocalStorage(): LLMConfig {
   try {
-    const llmType = localStorage.getItem("llmType") as "openai" | "ollama" | "gemini" | null;
-    const openaiModel = localStorage.getItem("openaiModel");
-    const ollamaModel = localStorage.getItem("ollamaModel");
-    const geminiModel = localStorage.getItem("geminiModel");
-    const openaiApiKey = localStorage.getItem("openaiApiKey");
-    const geminiApiKey = localStorage.getItem("geminiApiKey");
-    const openaiBaseUrl = localStorage.getItem("openaiBaseUrl");
-    const ollamaBaseUrl = localStorage.getItem("ollamaBaseUrl");
-    const geminiBaseUrl = localStorage.getItem("geminiBaseUrl");
-    const temperature = localStorage.getItem("temperature");
-    const maxTokens = localStorage.getItem("maxTokens");
-    const tavilyApiKey = localStorage.getItem("tavilyApiKey");
-    const jinaApiKey = localStorage.getItem("jinaApiKey");
-    const falApiKey = localStorage.getItem("falApiKey");
+    const llmType = getString("llmType") as "openai" | "ollama" | "gemini" | "";
+    const openaiModel = getString("openaiModel");
+    const ollamaModel = getString("ollamaModel");
+    const geminiModel = getString("geminiModel");
+    const openaiApiKey = getString("openaiApiKey");
+    const geminiApiKey = getString("geminiApiKey");
+    const openaiBaseUrl = getString("openaiBaseUrl");
+    const ollamaBaseUrl = getString("ollamaBaseUrl");
+    const geminiBaseUrl = getString("geminiBaseUrl");
+    const temperature = getString("temperature");
+    const maxTokens = getString("maxTokens");
+    const tavilyApiKey = getString("tavilyApiKey");
+    const jinaApiKey = getString("jinaApiKey");
+    const falApiKey = getString("falApiKey");
 
     const modelName =
       llmType === "ollama"
@@ -188,37 +189,37 @@ export function saveConfigToLocalStorage(config: LLMConfig): void {
   }
 
   try {
-    localStorage.setItem("llmType", config.llm_type);
+    setString("llmType", config.llm_type);
     
     const modelKey = config.llm_type === "openai" ? "openaiModel" : config.llm_type === "gemini" ? "geminiModel" : "ollamaModel";
-    localStorage.setItem(modelKey, config.model_name);
+    setString(modelKey, config.model_name);
     
     if (config.api_key && config.llm_type !== "ollama") {
       const apiKeyKey = config.llm_type === "gemini" ? "geminiApiKey" : "openaiApiKey";
-      localStorage.setItem(apiKeyKey, config.api_key);
+      setString(apiKeyKey, config.api_key);
     }
     
     if (config.base_url) {
       const baseUrlKey = config.llm_type === "openai" ? "openaiBaseUrl" : config.llm_type === "gemini" ? "geminiBaseUrl" : "ollamaBaseUrl";
-      localStorage.setItem(baseUrlKey, config.base_url);
+      setString(baseUrlKey, config.base_url);
     }
     
-    localStorage.setItem("temperature", config.temperature.toString());
+    setString("temperature", config.temperature.toString());
     
     if (config.max_tokens) {
-      localStorage.setItem("maxTokens", config.max_tokens.toString());
+      setString("maxTokens", config.max_tokens.toString());
     }
     
     if (config.tavily_api_key !== undefined) {
-      localStorage.setItem("tavilyApiKey", config.tavily_api_key);
+      setString("tavilyApiKey", config.tavily_api_key);
     }
     
     if (config.jina_api_key !== undefined) {
-      localStorage.setItem("jinaApiKey", config.jina_api_key);
+      setString("jinaApiKey", config.jina_api_key);
     }
     
     if (config.fal_api_key !== undefined) {
-      localStorage.setItem("falApiKey", config.fal_api_key);
+      setString("falApiKey", config.fal_api_key);
     }
   } catch (error) {
     console.error("Failed to save configuration to localStorage:", error);

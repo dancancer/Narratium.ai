@@ -319,7 +319,6 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
                 onClick={() => {
                   setLanguage("zh");
                   document.documentElement.lang = "zh";
-                  localStorage.setItem("language", "zh");
                   nextStep();
                 }}
                 className={`px-4 py-1.5 text-sm bg-amber-bright text-deep rounded hover:bg-amber-soft transition-colors font-medium ${serifFontClass}`}
@@ -330,7 +329,6 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
                 onClick={() => {
                   setLanguage("en");
                   document.documentElement.lang = "en";
-                  localStorage.setItem("language", "en");
                   nextStep();
                 }}
                 className={`px-4 py-1.5 text-sm bg-amber-bright text-deep rounded hover:bg-amber-soft transition-colors font-medium ${serifFontClass}`}

@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 type ThemeMode = "light" | "dark";
 
@@ -18,10 +19,6 @@ const resolveInitialTheme = (): ThemeMode => {
   if (typeof window === "undefined") {
     return "dark";
   }
-  const stored = window.localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
@@ -29,15 +26,17 @@ const applyTheme = (mode: ThemeMode) => {
   const root = document.documentElement;
   root.dataset.theme = mode;
   root.classList.toggle("dark", mode === "dark");
-  window.localStorage.setItem(STORAGE_KEY, mode);
 };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<ThemeMode>("dark");
-
-  useEffect(() => {
-    setTheme(resolveInitialTheme());
-  }, []);
+  const { value: theme, setValue: setTheme } = useLocalStorage<ThemeMode>(
+    STORAGE_KEY,
+    resolveInitialTheme(),
+    {
+      serializer: (mode) => mode,
+      deserializer: (mode) => (mode === "light" ? "light" : "dark"),
+    },
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") {

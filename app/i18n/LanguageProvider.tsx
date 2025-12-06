@@ -1,36 +1,41 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { DEFAULT_LANGUAGE, Language, LANGUAGES, LanguageContext, getTranslation, getClientLanguage } from "./index";
 import { getLanguageFont, getLanguageTitleFont, getLanguageSerifFont } from "./fonts";
 import LoadingTransition from "@/components/LoadingTransition";
+import { useLocalStorageString } from "@/hooks/useLocalStorage";
 
 interface LanguageProviderProps {
   children: ReactNode;
 }
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
-  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
+  const initialLanguage = useMemo(() => getClientLanguage(), []);
+  const { value: storedLanguage, setValue: setLanguageValue } = useLocalStorageString(
+    "language",
+    initialLanguage,
+  );
+  const language = useMemo<Language>(() => (
+    LANGUAGES.includes(storedLanguage as Language) ? storedLanguage as Language : DEFAULT_LANGUAGE
+  ), [storedLanguage]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  const [fontClass, setFontClass] = useState(getLanguageFont(DEFAULT_LANGUAGE));
-  const [titleFontClass, setTitleFontClass] = useState(getLanguageTitleFont(DEFAULT_LANGUAGE));
-  const [serifFontClass, setSerifFontClass] = useState(getLanguageSerifFont(DEFAULT_LANGUAGE));
+  const [fontClass, setFontClass] = useState(getLanguageFont(language));
+  const [titleFontClass, setTitleFontClass] = useState(getLanguageTitleFont(language));
+  const [serifFontClass, setSerifFontClass] = useState(getLanguageSerifFont(language));
 
   useEffect(() => {
-    const clientLanguage = getClientLanguage();
-    setLanguageState(clientLanguage);
-
-    setFontClass(getLanguageFont(clientLanguage));
-    setTitleFontClass(getLanguageTitleFont(clientLanguage));
-    setSerifFontClass(getLanguageSerifFont(clientLanguage));
+    setFontClass(getLanguageFont(language));
+    setTitleFontClass(getLanguageTitleFont(language));
+    setSerifFontClass(getLanguageSerifFont(language));
 
     if (typeof document !== "undefined") {
-      document.documentElement.setAttribute("lang", clientLanguage);
+      document.documentElement.setAttribute("lang", language);
     }
-    
+
     if (isFirstLoad) {
       setShowTransition(true);
       setTimeout(() => {
@@ -38,26 +43,17 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         setIsFirstLoad(false);
       }, 3000);
     }
-    
+
     setIsLoaded(true);
-  }, [isFirstLoad]);
+  }, [language, isFirstLoad]);
 
   const setLanguage = (newLanguage: Language) => {
     if (LANGUAGES.includes(newLanguage) && newLanguage !== language) {
       setShowTransition(true);
 
       setTimeout(() => {
-        setLanguageState(newLanguage);
-        localStorage.setItem("language", newLanguage);
+        setLanguageValue(newLanguage);
 
-        setFontClass(getLanguageFont(newLanguage));
-        setTitleFontClass(getLanguageTitleFont(newLanguage));
-        setSerifFontClass(getLanguageSerifFont(newLanguage));
-
-        if (typeof document !== "undefined") {
-          document.documentElement.setAttribute("lang", newLanguage);
-        }
-        
         setTimeout(() => {
           setShowTransition(false);
         }, 2000);

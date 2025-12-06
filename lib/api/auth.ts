@@ -1,4 +1,6 @@
 // Authentication API service for connecting to backend
+import { getString, removeItem } from "@/lib/storage/client-storage";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // API Response types
@@ -131,7 +133,7 @@ class AuthAPI {
 
   // Update username for registered users
   static async updateUsername(newUsername: string): Promise<UpdateUsernameResponse> {
-    const token = localStorage.getItem("authToken");
+    const token = getString("authToken");
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -152,21 +154,21 @@ class AuthAPI {
 
   // Get current user from stored token
   static async getCurrentUser(): Promise<VerifyTokenResponse | null> {
-    const token = localStorage.getItem("authToken");
+    const token = getString("authToken");
     if (!token) return null;
 
     try {
       return await this.verifyToken(token);
     } catch (error) {
       // Token is invalid, remove it
-      localStorage.removeItem("authToken");
+      removeItem("authToken");
       return null;
     }
   }
 
   // Get API key and base URL for official API
   static async getApiKeyInfo(): Promise<ApiKeyInfoResponse> {
-    const token = localStorage.getItem("authToken");
+    const token = getString("authToken");
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -179,13 +181,12 @@ class AuthAPI {
 
   // Logout - clear local storage
   static logout(): void {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("email");
-    localStorage.removeItem("isLoggedIn");
+    removeItem("authToken");
+    removeItem("username");
+    removeItem("userId");
+    removeItem("email");
+    removeItem("isLoggedIn");
   }
 }
 
 export default AuthAPI; 
- 

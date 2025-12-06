@@ -1,47 +1,35 @@
 /**
- * Character Sidebar Component
- *
- * This component provides a comprehensive sidebar interface for character management with the following features:
- * - Character information display and navigation
- * - Response length control slider
- * - Preset management and GitHub integration
- * - Advanced settings access
- * - Dialogue tree modal integration
- * - Collapsible sidebar functionality
- *
- * The component handles:
- * - Sidebar layout and responsive design
- * - Character information display
- * - Preset downloading and management
- * - Response length configuration
- * - Modal interactions and state management
- * - Navigation and routing
- *
- * Dependencies:
- * - useLanguage: For internationalization
- * - DialogueTreeModal: For conversation tree display
- * - AdvancedSettingsEditor: For advanced configuration
- * - CharacterAvatarBackground: For avatar display
- * - Preset management functions: For GitHub preset integration
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                     Character Sidebar Component                           ║
+ * ║                                                                           ║
+ * ║  角色侧边栏 - 导航、信息、预设、设置的统一入口                                   ║
+ * ║  职责：组合子组件，不包含具体业务逻辑                                           ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
-import { useLanguage } from "@/app/i18n";
+import React, { useState } from "react";
 import Link from "next/link";
-import DialogueTreeModal from "@/components/DialogueTreeModal";
+import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
-import {
-  getAvailableGithubPresets,
-  getPresetDisplayName,
-  getPresetDescription,
-} from "@/function/preset/download";
+import DialogueTreeModal from "@/components/DialogueTreeModal";
 import AdvancedSettingsEditor from "@/components/AdvancedSettingsEditor";
 import PresetInfoModal from "@/components/PresetInfoModal";
 
-/**
- * Interface definitions for the component's props
- */
+/* ─── 子组件 & Hooks ─── */
+import {
+  SidebarMenuItem,
+  ResponseLengthSlider,
+  PresetDropdown,
+} from "@/components/character-sidebar";
+import { usePresetManager } from "@/hooks/usePresetManager";
+import { useResponseLength } from "@/hooks/useResponseLength";
+import { useMobileDetection } from "@/hooks/useMobileDetection";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * 类型定义
+ * ───────────────────────────────────────────────────────────────────────────── */
+
 interface CharacterSidebarProps {
   character: {
     id: string;
@@ -52,25 +40,81 @@ interface CharacterSidebarProps {
   };
   isCollapsed: boolean;
   toggleSidebar: () => void;
-  responseLength?: number;
-  onResponseLengthChange?: (length: number) => void;
   onDialogueEdit?: () => void;
   onViewSwitch?: () => void;
 }
 
-/**
- * Character sidebar component
- *
- * Provides a comprehensive sidebar interface for character management with:
- * - Character information and navigation
- * - Response length configuration
- * - Preset management and GitHub integration
- * - Advanced settings access
- * - Collapsible design with responsive layout
- *
- * @param {CharacterSidebarProps} props - Component props
- * @returns {JSX.Element} The character sidebar interface
- */
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SVG 图标组件 - 集中管理，避免内联重复
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+const Icons = {
+  Spinner: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.2" />
+      <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray="1, 150">
+        <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  ),
+  ArrowLeft: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
+    </svg>
+  ),
+  Activity: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
+  ),
+  Edit: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  ),
+  Github: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </svg>
+  ),
+  Settings: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+    </svg>
+  ),
+  Close: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  ),
+  User: () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6">
+      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+    </svg>
+  ),
+};
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Section Header 组件 - 区块标题
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+const SectionHeader: React.FC<{ label: string; isCollapsed: boolean }> = ({ label, isCollapsed }) => (
+  <div className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}>
+    <span>{label}</span>
+  </div>
+);
+
+const Divider: React.FC = () => <div className="mx-4 menu-divider my-2" />;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * 主组件
+ * ───────────────────────────────────────────────────────────────────────────── */
+
 const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
   character,
   isCollapsed,
@@ -79,118 +123,56 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
   onViewSwitch,
 }) => {
   const { t, fontClass, serifFontClass, language } = useLanguage();
-  const [currentResponseLength, setCurrentResponseLength] =
-    useState<number>(200);
-  const [githubPresets, setGithubPresets] = useState<any[]>([]);
-  const [showGithubPresetDropdown, setShowGithubPresetDropdown] =
-    useState(false);
-  const [downloadedPresets, setDownloadedPresets] = useState<string[]>([]);
+  const { isMobile } = useMobileDetection();
+
+  /* ─── 模态框状态 ─── */
+  const [showDialogueTreeModal, setShowDialogueTreeModal] = useState(false);
   const [isAdvancedSettingsOpen, setIsAdvancedSettingsOpen] = useState(false);
   const [showPresetInfoModal, setShowPresetInfoModal] = useState(false);
-  const [selectedPresetForInfo, setSelectedPresetForInfo] = useState<string>("");
+  const [selectedPresetForInfo, setSelectedPresetForInfo] = useState("");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedLength = localStorage.getItem("responseLength");
-      if (savedLength) {
-        setCurrentResponseLength(parseInt(savedLength, 10));
-      }
-    }
-  }, []);
+  /* ─── 提取的 Hooks ─── */
+  const presetManager = usePresetManager({ language: language as "zh" | "en" });
+  const responseLength = useResponseLength();
 
-  const [showDialogueTreeModal, setShowDialogueTreeModal] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  const handleResponseLengthChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const length = parseInt(event.target.value);
-    setCurrentResponseLength(length);
-
-    localStorage.setItem("responseLength", length.toString());
-  };
-
+  /* ─── 事件处理 ─── */
   const handleOpenPromptEditor = () => {
     trackButtonClick("CharacterSidebar", "切换到预设编辑器");
-    if (typeof window !== "undefined") {
-      const event = new CustomEvent("switchToPresetView", {
-        detail: { characterId: character.id },
-      });
-      window.dispatchEvent(event);
-    }
+    window.dispatchEvent(
+      new CustomEvent("switchToPresetView", { detail: { characterId: character.id } }),
+    );
   };
 
-  const handleSelectPreset = async (presetName: string) => {
-    try {
-      // Only handle system presets selection (comment out download logic)
-      const preset = githubPresets.find((p) => p.name === presetName);
-      if (preset) {
-        // Set the system preset type in localStorage
-        let presetType = presetName;
-        localStorage.setItem("system_preset_type", presetType);
-        localStorage.setItem(
-          "system_preset_name",
-          getPresetDisplayName(presetName, language as "zh" | "en"),
-        );
-
-        // Mark as selected (using the existing downloaded state for UI consistency)
-        setDownloadedPresets([presetName]); // Only one can be selected at a time
-      }
-    } catch (error) {
-      console.error("Error selecting preset:", error);
-    }
+  const handleToggleSidebar = () => {
+    trackButtonClick("CharacterSidebar", "切换角色侧边栏");
+    toggleSidebar();
   };
-
-  useEffect(() => {
-    const loadGithubPresets = async () => {
-      const presets = getAvailableGithubPresets();
-      setGithubPresets(presets);
-
-      // Get current selected preset from localStorage
-      const currentPresetType = localStorage.getItem("system_preset_type");
-      let currentPresetName: string;
-      if (currentPresetType === "novel_king") {
-        currentPresetName = "novel_king";
-      } else if (currentPresetType === "professional_heart") {
-        currentPresetName = "professional_heart";
-      } else if (currentPresetType === "magician") {
-        currentPresetName = "magician";
-      } else if (currentPresetType === "whisperer") {
-        currentPresetName = "whisperer";
-      } else {
-        currentPresetName = "mirror_realm";
-      }
-
-      // Set the selected preset
-      setDownloadedPresets([currentPresetName]);
-    };
-
-    loadGithubPresets();
-  }, [language]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleShowPresetInfo = (presetName: string) => {
     setSelectedPresetForInfo(presetName);
     setShowPresetInfoModal(true);
   };
 
+  /* ─── 截断文本的工具函数 ─── */
+  const truncate = (text: string | undefined, limit: number) => {
+    if (!text) return "";
+    return text.length > limit ? `${text.substring(0, limit)}...` : text;
+  };
+
+  const nameLimit = isMobile ? 15 : 20;
+  const personalityLimit = isMobile ? 20 : 25;
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+   * 渲染
+   * ───────────────────────────────────────────────────────────────────────────── */
+
   return (
     <>
-      {/* Mobile background overlay */}
+      {/* 移动端遮罩 */}
       {isMobile && !isCollapsed && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
       )}
-      
+
       <div
         className={`${
           isCollapsed
@@ -198,688 +180,201 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             : isMobile
               ? "fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg"
               : "w-[18rem] text-sm leading-normal breathing-bg"
-        }
-          relative overflow-hidden
-          border-r border-ink
-          h-full flex flex-col
-          magic-border transition-all duration-300 ease-in-out`}
+        } relative overflow-hidden border-r border-ink h-full flex flex-col magic-border transition-all duration-300 ease-in-out`}
       >
-        {/* Mobile close button */}
+        {/* 移动端关闭按钮 */}
         {isMobile && !isCollapsed && (
           <div className="absolute top-4 right-4 z-10">
             <button
-              onClick={() => {
-                trackButtonClick("CharacterSidebar", "移动端关闭侧边栏");
-                toggleSidebar();
-              }}
+              onClick={() => { trackButtonClick("CharacterSidebar", "移动端关闭侧边栏"); toggleSidebar(); }}
               className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
+              <Icons.Close />
             </button>
           </div>
         )}
 
-        <div
-          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mt-4 mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
-        >
-          <span>{t("characterChat.navigation")}</span>
-        </div>
-
-        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 导航区
+         * ═══════════════════════════════════════════════════════════════════════ */}
+        <SectionHeader label={t("characterChat.navigation")} isCollapsed={isCollapsed} />
+        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100 mt-4">
           <div className="space-y-1 my-2">
-            {!isCollapsed ? (
-              <>
-                <Link
-                  href="/character-cards"
-                  className="menu-item relative group flex items-center p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                  <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-                  <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-                  <div className="relative z-5 flex items-center">
-                    <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 50 50"
-                      >
-                        <circle
-                          cx="25"
-                          cy="25"
-                          r="20"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                          opacity="0.2"
-                        />
-                        <circle
-                          cx="25"
-                          cy="25"
-                          r="20"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeDasharray="1, 150"
-                          strokeDashoffset="0"
-                          transform="rotate(0 25 25)"
-                        >
-                          <animateTransform
-                            attributeName="transform"
-                            attributeType="XML"
-                            type="rotate"
-                            from="0 25 25"
-                            to="360 25 25"
-                            dur="1s"
-                            repeatCount="indefinite"
-                          />
-                        </circle>
-                      </svg>
-                    </div>
-                    <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                      <span
-                        className={`magical-text whitespace-nowrap block text-xs md:text-sm group-hover:text-amber-400 transition-colors duration-300 ${fontClass}`}
-                      >
-                        {t("characterChat.backToCharacters")}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-
-                <button
-                  onClick={() => {
-                    trackButtonClick("CharacterSidebar", "切换角色侧边栏");
-                    toggleSidebar();
-                  }}
-                  className="menu-item relative group flex items-center w-full p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 cursor-pointer"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                  <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-                  <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-                  <div className="relative z-5 flex items-center">
-                    <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M19 12H5" />
-                        <polyline points="12 19 5 12 12 5" />
-                      </svg>
-                    </div>
-                    <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                      <span
-                        className={`magical-text whitespace-nowrap block text-xs md:text-sm group-hover:text-amber-400 transition-colors duration-300 ${fontClass}`}
-                      >
-                        {t("characterChat.collapseSidebar")}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/character-cards"
-                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
-                >
-                  <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 50 50"
-                    >
-                      <circle
-                        cx="25"
-                        cy="25"
-                        r="20"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                        opacity="0.2"
-                      />
-                      <circle
-                        cx="25"
-                        cy="25"
-                        r="20"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeDasharray="1, 150"
-                        strokeDashoffset="0"
-                        transform="rotate(0 25 25)"
-                      >
-                        <animateTransform
-                          attributeName="transform"
-                          attributeType="XML"
-                          type="rotate"
-                          from="0 25 25"
-                          to="360 25 25"
-                          dur="1s"
-                          repeatCount="indefinite"
-                        />
-                      </circle>
-                    </svg>
-                  </div>
-                </Link>
-
-                <button
-                  onClick={() => {
-                    trackButtonClick("CharacterSidebar", "切换角色侧边栏");
-                    toggleSidebar();
-                  }}
-                  className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
-                >
-                  <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M19 12H5" />
-                      <polyline points="12 19 5 12 12 5" />
-                    </svg>
-                  </div>
-                </button>
-              </>
-            )}
+            <SidebarMenuItem
+              icon={<Icons.Spinner />}
+              label={t("characterChat.backToCharacters")}
+              href="/character-cards"
+              isCollapsed={isCollapsed}
+              isMobile={isMobile}
+              fontClass={fontClass}
+            />
+            <SidebarMenuItem
+              icon={<Icons.ArrowLeft />}
+              label={t("characterChat.collapseSidebar")}
+              onClick={handleToggleSidebar}
+              isCollapsed={isCollapsed}
+              isMobile={isMobile}
+              fontClass={fontClass}
+            />
           </div>
         </div>
 
-        <div className="mx-4 menu-divider my-2"></div>
+        <Divider />
 
-        <div
-          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
-        >
-          <span>{t("characterChat.characterInfo")}</span>
-        </div>
-
-        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
-          <div className="space-y-1 my-2">
-            {!isCollapsed ? (
-              <div
-                className={
-                  "menu-item flex p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 group"
-                }
-              >
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 角色信息区
+         * ═══════════════════════════════════════════════════════════════════════ */}
+        <SectionHeader label={t("characterChat.characterInfo")} isCollapsed={isCollapsed} />
+        {!isCollapsed && (
+          <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
+            <div className="space-y-1 my-2">
+              <div className="menu-item flex p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 group">
                 <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mr-3 flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]">
                   {character.avatar_path ? (
-                    <CharacterAvatarBackground
-                      avatarPath={character.avatar_path}
-                    />
+                    <CharacterAvatarBackground avatarPath={character.avatar_path} />
                   ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="md:w-6 md:h-6"
-                    >
-                      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                    <Icons.User />
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
-                  <span
-                    className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`}
-                  >
-                    {character.name
-                      ? character.name.length > (isMobile ? 15 : 20)
-                        ? `${character.name.substring(0, isMobile ? 15 : 20)}...`
-                        : character.name
-                      : ""}
+                  <span className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`}>
+                    {truncate(character.name, nameLimit)}
                   </span>
-                  <p
-                    className={`text-ink-soft text-2xs md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}
-                  >
+                  <p className={`text-ink-soft text-2xs md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}>
                     {character.personality
-                      ? character.personality.length > (isMobile ? 20 : 25)
-                        ? `${character.personality.substring(0, isMobile ? 20 : 25)}...`
-                        : character.personality
+                      ? truncate(character.personality, personalityLimit)
                       : t("characterChat.noPersonality")}
                   </p>
                 </div>
               </div>
-            ) : null}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="mx-4 menu-divider my-2"></div>
-        <div
-          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
-        >
-          <span>{t("characterChat.actions")}</span>
-        </div>
+        <Divider />
 
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 操作区
+         * ═══════════════════════════════════════════════════════════════════════ */}
+        <SectionHeader label={t("characterChat.actions")} isCollapsed={isCollapsed} />
         <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
           <div className="space-y-1 my-2">
-            {!isCollapsed ? (
-              <div
-                className={
-                  "menu-item flex items-center p-2 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
-                }
-                onClick={() => setShowDialogueTreeModal(true)}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-                <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-                <div className="relative z-5 flex items-center">
-                  <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                    </svg>
-                  </div>
-                  <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                    <p
-                      className={`text-cream text-xs md:text-sm transition-colors duration-300 ${fontClass}`}
-                    >
-                      {t("characterChat.Conversation")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div
-                className={
-                  "menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
-                }
-                onClick={() => setShowDialogueTreeModal(true)}
-              >
-                <div
-                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </div>
-              </div>
-            )}
+            <SidebarMenuItem
+              icon={<Icons.Activity />}
+              label={t("characterChat.Conversation")}
+              onClick={() => setShowDialogueTreeModal(true)}
+              isCollapsed={isCollapsed}
+              isMobile={isMobile}
+              fontClass={fontClass}
+            />
           </div>
         </div>
-        <div className="mx-4 menu-divider my-2"></div>
 
+        <Divider />
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 预设区
+         * ═══════════════════════════════════════════════════════════════════════ */}
         {!isCollapsed && (
           <>
-            <div
-              className="px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 opacity-100"
-            >
-              <span>{t("characterChat.presets") || "预设"}</span>
-            </div>
-            <div
-              className="menu-item flex items-center p-2 mx-6 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
-              onClick={handleOpenPromptEditor}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-              <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-              <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-              <div className="relative z-5 flex items-center">
-                <div
-                  className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 20h9"></path>
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                  </svg>
-                </div>
-                <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                  <span
-                    className={`magical-text whitespace-nowrap block text-xs md:text-sm group-hover:text-amber-400 transition-colors duration-300 ${fontClass}`}
-                  >
-                    {t("characterChat.presetEditor")}
-                  </span>
-                </div>
+            <SectionHeader label={t("characterChat.presets") || "预设"} isCollapsed={false} />
+            <div className="space-y-1">
+              <div className="mx-6">
+                <SidebarMenuItem
+                  icon={<Icons.Edit />}
+                  label={t("characterChat.presetEditor")}
+                  onClick={handleOpenPromptEditor}
+                  isMobile={isMobile}
+                  fontClass={fontClass}
+                />
+              </div>
+              <div className="relative mx-6">
+                <SidebarMenuItem
+                  icon={<Icons.Github />}
+                  label={t("characterChat.systemPresets")}
+                  onClick={presetManager.toggleDropdown}
+                  isMobile={isMobile}
+                  fontClass={fontClass}
+                  accentColor="purple"
+                  isActive={presetManager.isDropdownOpen}
+                  suffix={
+                    <div className="flex items-center justify-center ml-2">
+                      <div className={`transition-transform duration-300 ${presetManager.isDropdownOpen ? "rotate-180" : ""}`}>
+                        <Icons.ChevronDown />
+                      </div>
+                    </div>
+                  }
+                />
+                {presetManager.isDropdownOpen && (
+                  <PresetDropdown
+                    presets={presetManager.presets}
+                    selectedPreset={presetManager.selectedPreset}
+                    language={language as "zh" | "en"}
+                    fontClass={fontClass}
+                    onSelect={presetManager.selectPreset}
+                    onShowInfo={handleShowPresetInfo}
+                    emptyText={t("characterChat.noPresets") || "没有可用的预设"}
+                  />
+                )}
               </div>
             </div>
-
-            <div className="relative">
-              <div
-                className={`menu-item flex items-center p-2 mx-6 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group ${showGithubPresetDropdown ? "bg-muted-surface" : ""}`}
-                onClick={() =>
-                  setShowGithubPresetDropdown(!showGithubPresetDropdown)
-                }
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-                <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-                <div className="relative z-5 flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <div
-                      className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-purple-400 group-hover:shadow-[0_0_8px_rgba(167,139,250,0.4)]`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                      </svg>
-                    </div>
-                    <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                      <span
-                        className={`magical-text whitespace-nowrap block text-xs md:text-sm group-hover:text-purple-400 transition-colors duration-300 ${fontClass}`}
-                      >
-                        {t("characterChat.systemPresets")}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center ml-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={`transition-transform duration-300 ${showGithubPresetDropdown ? "rotate-180" : ""}`}
-                    >
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              {showGithubPresetDropdown && (
-                <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md shadow-lg z-10 overflow-hidden max-h-[240px]">
-                  {githubPresets.length === 0 ? (
-                    <div className="p-3 text-center text-ink-soft">
-                      <span className={`text-2xs md:text-xs ${fontClass}`}>
-                        {t("characterChat.noPresets") || "没有可用的预设"}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong">
-                      {githubPresets.map((preset, index) => (
-                        <div
-                          key={preset.name}
-                          className={`p-3 hover:bg-muted-surface transition-colors duration-200 group ${
-                            index !== githubPresets.length - 1 ? "border-b border-stroke" : ""
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div 
-                              className="flex-1 min-w-0 cursor-pointer"
-                              onClick={() => handleSelectPreset(preset.name)}
-                            >
-                              <div className="flex items-center">
-                                <span
-                                  className={`text-xs md:text-sm text-cream ${fontClass} block truncate`}
-                                >
-                                  {getPresetDisplayName(
-                                    preset.name,
-                                    language as "zh" | "en",
-                                  )}
-                                </span>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleShowPresetInfo(preset.name);
-                                  }}
-                                  className="ml-2 w-4 h-4 flex items-center justify-center text-ink-soft hover:text-amber-bright transition-all duration-300 rounded-full hover:bg-stroke/50 group/info"
-                                  title={t("presetInfo.modalTitle")}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="12"
-                                    height="12"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="transition-transform duration-300 group-hover/info:scale-110"
-                                  >
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 16v-4" />
-                                    <path d="M12 8h.01" />
-                                  </svg>
-                                </button>
-                              </div>
-                              <p
-                                className={`text-2xs md:text-xs text-ink-soft mt-1 ${fontClass} line-clamp-2`}
-                              >
-                                {getPresetDescription(
-                                  preset.name,
-                                  language as "zh" | "en",
-                                )}
-                              </p>
-                            </div>
-                            <div className="ml-2 flex-shrink-0">
-                              {downloadedPresets.includes(preset.name) ? (
-                                <div className="w-4 h-4 flex items-center justify-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="var(--color-info)"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M20 6L9 17l-5-5"></path>
-                                  </svg>
-                                </div>
-                              ) : (
-                                <div className="w-4 h-4 border border-stroke rounded"></div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            <Divider />
           </>
         )}
 
-        <div className="mx-4 menu-divider my-2"></div>
-
-        <div
-          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
-        >
-          <span>{t("characterChat.advancedSettings")}</span>
-        </div>
-        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
-          <div className="space-y-1 my-2">
-            {!isCollapsed ? (
-              <div
-                className={
-                  "menu-item flex items-center p-2 rounded-md hover:bg-muted-surface cursor-pointer overflow-hidden transition-all duration-300 group"
-                }
-                onClick={() => {
-                  trackButtonClick("CharacterSidebar", "打开高级设置");
-                  setIsAdvancedSettingsOpen(true);
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
-                <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
-                <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
-                <div className="relative z-5 flex items-center">
-                  <div
-                    className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-blue-400 group-hover:shadow-[0_0_8px_rgba(96,165,250,0.4)]`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                      <path d="M12 6v2M12 16v2M6 12h2M16 12h2" />
-                      <path d="M8.5 8.5l1.5 1.5M14 14l1.5 1.5M8.5 15.5l1.5-1.5M14 10l1.5-1.5" />
-                    </svg>
-                  </div>
-                  <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
-                    <span
-                      className={`magical-text whitespace-nowrap block text-xs md:text-sm group-hover:text-blue-400 transition-colors duration-300 ${fontClass}`}
-                    >
-                      {t("characterChat.advancedSettings")}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="mx-4 menu-divider my-2"></div>
-
-        <div
-          className={`px-2 py-1 flex justify-between items-center text-xs text-text-muted uppercase tracking-wider font-medium text-3xs md:text-2xs transition-all duration-300 ease-in-out overflow-hidden mx-4 ${isCollapsed ? "opacity-0" : "opacity-100"}`}
-        >
-          <span>{t("characterChat.responseLength")}</span>
-        </div>
-        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
-          <div className="space-y-1 my-2"></div>
-          {!isCollapsed ? (
-            <div className="px-2 py-2">
-              <div className="relative py-3 px-1">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="h-1.5 w-full bg-input rounded-full"></div>
-                </div>
-                <div className="relative w-full h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-200"
-                    style={{
-                      width: `${((currentResponseLength - 100) / 5000) * 100}%`,
-                      clipPath:
-                        "polygon(0 100%, calc(100% - 5px) 100%, 100% 0, 5px 0, 0 100%)",
-                    }}
-                  />
-                  <input
-                    type="range"
-                    min="100"
-                    max="5000"
-                    step="50"
-                    value={currentResponseLength}
-                    onChange={handleResponseLengthChange}
-                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between mt-3 px-0.5">
-                <span
-                  className={`text-2xs md:text-xs font-medium ${fontClass} text-slate-400`}
-                >
-                  100
-                </span>
-                <div className="flex items-center">
-                  <span className="text-2xs md:text-xs font-medium bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
-                    {currentResponseLength}
-                  </span>
-                  <span className="text-2xs md:text-xs font-medium text-slate-400 ml-1">
-                    / 5000
-                  </span>
-                </div>
-              </div>
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 高级设置区
+         * ═══════════════════════════════════════════════════════════════════════ */}
+        <SectionHeader label={t("characterChat.advancedSettings")} isCollapsed={isCollapsed} />
+        {!isCollapsed && (
+          <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
+            <div className="space-y-1 my-2">
+              <SidebarMenuItem
+                icon={<Icons.Settings />}
+                label={t("characterChat.advancedSettings")}
+                onClick={() => { trackButtonClick("CharacterSidebar", "打开高级设置"); setIsAdvancedSettingsOpen(true); }}
+                isMobile={isMobile}
+                fontClass={fontClass}
+                accentColor="blue"
+              />
             </div>
-          ) : null}
-        </div>
+          </div>
+        )}
+
+        <Divider />
+
+        {/* ═══════════════════════════════════════════════════════════════════════
+         * 响应长度区
+         * ═══════════════════════════════════════════════════════════════════════ */}
+        <SectionHeader label={t("characterChat.responseLength")} isCollapsed={isCollapsed} />
+        {!isCollapsed && (
+          <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
+            <ResponseLengthSlider
+              value={responseLength.length}
+              min={responseLength.min}
+              max={responseLength.max}
+              percentage={responseLength.percentage}
+              onChange={responseLength.handleChange}
+              fontClass={fontClass}
+            />
+          </div>
+        )}
       </div>
 
+      {/* ═══════════════════════════════════════════════════════════════════════
+       * 模态框
+       * ═══════════════════════════════════════════════════════════════════════ */}
       <DialogueTreeModal
         isOpen={showDialogueTreeModal}
         onClose={() => setShowDialogueTreeModal(false)}
         characterId={character.id}
         onDialogueEdit={onDialogueEdit}
       />
-
       <AdvancedSettingsEditor
         isOpen={isAdvancedSettingsOpen}
         onClose={() => setIsAdvancedSettingsOpen(false)}
         onViewSwitch={onViewSwitch}
       />
-
       <PresetInfoModal
         isOpen={showPresetInfoModal}
         onClose={() => setShowPresetInfoModal(false)}

@@ -1,6 +1,7 @@
 import { importPresetFromJson } from "@/function/preset/import";
 import { PresetOperations } from "@/lib/data/roleplay/preset-operation";
 import { PromptKey } from "@/lib/prompts/preset-prompts";
+import { getJSON, getString, setJSON } from "@/lib/storage/client-storage";
 
 interface GithubPreset {
   name: string;
@@ -247,16 +248,11 @@ export function getPresetDescription(presetName: string, language: "zh" | "en" =
 
 function markPresetAsDownloaded(presetName: string): void {
   try {
-    const downloadedPresets = localStorage.getItem("downloaded_github_presets");
-    let presets: string[] = [];
-    
-    if (downloadedPresets) {
-      presets = JSON.parse(downloadedPresets);
-    }
-    
+    const presets = getJSON<string[]>("downloaded_github_presets", []);
+
     if (!presets.includes(presetName)) {
       presets.push(presetName);
-      localStorage.setItem("downloaded_github_presets", JSON.stringify(presets));
+      setJSON("downloaded_github_presets", presets);
     }
   } catch (error) {
     console.error("Error marking preset as downloaded:", error);
@@ -265,7 +261,7 @@ function markPresetAsDownloaded(presetName: string): void {
 
 export function getCurrentSystemPresetType(): PromptKey {
   try {
-    const presetType = localStorage.getItem("system_preset_type");
+    const presetType = getString("system_preset_type");
     if (presetType === "novel_king") {
       return "novel_king";
     } else if (presetType === "professional_heart") {

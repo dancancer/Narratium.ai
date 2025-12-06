@@ -38,6 +38,7 @@ import { handleCharacterUpload } from "@/function/character/import";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { moveToTop } from "@/function/character/move-to-top";
 import { Toast } from "@/components/Toast";
+import { getBoolean, getString, setBoolean, setString } from "@/lib/storage/client-storage";
 
 /**
  * Interface defining the structure of a character object
@@ -100,7 +101,7 @@ export default function CharacterCards() {
   };
 
   useEffect(() => {
-    const savedViewMode = localStorage.getItem("characterCardsViewMode");
+    const savedViewMode = getString("characterCardsViewMode");
     if (savedViewMode === "grid" || savedViewMode === "carousel") {
       setViewMode(savedViewMode);
     }
@@ -134,8 +135,8 @@ export default function CharacterCards() {
 
   const fetchCharacters = useCallback(async () => {
     setIsLoading(true);
-    const username = localStorage.getItem("username") || "";
-    const language = localStorage.getItem("language") || "zh";
+    const username = getString("username");
+    const language = getString("language", "zh");
     try {
       const response = await getAllCharacters(language as "zh" | "en", username);
 
@@ -160,7 +161,7 @@ export default function CharacterCards() {
    * Used when data structure changes from parsed_content to parsedContent
    */
   const migrateDataStructure = useCallback(async () => {
-    const migrationFlag = localStorage.getItem("characterCardsDataMigration");
+    const migrationFlag = getString("characterCardsDataMigration");
     
     // Check if migration is needed and hasn't been performed yet
     if (migrationFlag !== "completed") {
@@ -168,8 +169,8 @@ export default function CharacterCards() {
       
       try {
         // Fetch all characters first
-        const username = localStorage.getItem("username") || "";
-        const language = localStorage.getItem("language") || "zh";
+        const username = getString("username");
+        const language = getString("language", "zh");
         const characters = await getAllCharacters(language as "zh" | "en", username);
         
         if (characters && characters.length > 0) {
@@ -186,7 +187,7 @@ export default function CharacterCards() {
         }
         
         // Mark migration as completed
-        localStorage.setItem("characterCardsDataMigration", "completed");
+        setString("characterCardsDataMigration", "completed");
         console.log("Data structure migration completed");
         
       } catch (error) {
@@ -295,9 +296,9 @@ export default function CharacterCards() {
       await fetchCharacters();
       
       // Only mark as not first time if it was actually the first visit
-      const isFirstVisit = localStorage.getItem("characterCardsFirstVisit") !== "false";
+      const isFirstVisit = !getBoolean("characterCardsFirstVisit", false);
       if (isFirstVisit) {
-        localStorage.setItem("characterCardsFirstVisit", "false");
+        setBoolean("characterCardsFirstVisit", false);
       }
       
     } catch (error) {
@@ -320,7 +321,7 @@ export default function CharacterCards() {
 
   // Check if this is the first visit and auto-download preset characters
   useEffect(() => {
-    const isFirstVisit = localStorage.getItem("characterCardsFirstVisit") !== "false";
+    const isFirstVisit = !getBoolean("characterCardsFirstVisit", false);
     
     // Auto-download preset characters if:
     // 1. It's the first visit, OR
@@ -371,7 +372,7 @@ export default function CharacterCards() {
                     trackButtonClick("view_mode_btn", "切换视图模式");
                     const newViewMode = viewMode === "grid" ? "carousel" : "grid";
                     setViewMode(newViewMode);
-                    localStorage.setItem("characterCardsViewMode", newViewMode);
+                    setString("characterCardsViewMode", newViewMode);
                   }}
                 >
                   {viewMode === "grid" ? (
