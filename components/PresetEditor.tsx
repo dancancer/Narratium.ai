@@ -350,40 +350,40 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
       )}
 
       {isEditNameModalOpen && currentEditingPreset && (
-          <EditPresetNameModal
-            isOpen={isEditNameModalOpen}
-            onClose={() => {
-              setIsEditNameModalOpen(false);
-              setCurrentEditingPreset(null);
-            }}
-            presetId={currentEditingPreset.id}
-            currentName={currentEditingPreset.name}
-            onSuccess={async () => {
-              await loadPresets();
-              if (selectedPreset?.id === currentEditingPreset.id) {
-                await selectPreset(currentEditingPreset.id);
-              }
-              setIsEditNameModalOpen(false);
-              setCurrentEditingPreset(null);
-            }}
+        <EditPresetNameModal
+          isOpen={isEditNameModalOpen}
+          onClose={() => {
+            setIsEditNameModalOpen(false);
+            setCurrentEditingPreset(null);
+          }}
+          presetId={currentEditingPreset.id}
+          currentName={currentEditingPreset.name}
+          onSuccess={async () => {
+            await loadPresets();
+            if (selectedPreset?.id === currentEditingPreset.id) {
+              await selectPreset(currentEditingPreset.id);
+            }
+            setIsEditNameModalOpen(false);
+            setCurrentEditingPreset(null);
+          }}
         />
       )}
 
       {isCopyModalOpen && currentCopyingPreset && (
-          <CopyPresetModal
-            isOpen={isCopyModalOpen}
-            onClose={() => {
-              setIsCopyModalOpen(false);
-              setCurrentCopyingPreset(null);
-            }}
-            sourcePresetId={currentCopyingPreset.id}
-            sourcePresetName={currentCopyingPreset.name}
-            onSuccess={() => {
-              setIsCopyModalOpen(false);
-              setCurrentCopyingPreset(null);
-              loadPresets();
-            }}
-          />
+        <CopyPresetModal
+          isOpen={isCopyModalOpen}
+          onClose={() => {
+            setIsCopyModalOpen(false);
+            setCurrentCopyingPreset(null);
+          }}
+          sourcePresetId={currentCopyingPreset.id}
+          sourcePresetName={currentCopyingPreset.name}
+          onSuccess={() => {
+            setIsCopyModalOpen(false);
+            setCurrentCopyingPreset(null);
+            loadPresets();
+          }}
+        />
       )}
     </div>
   );
