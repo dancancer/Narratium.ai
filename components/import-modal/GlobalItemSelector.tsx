@@ -51,7 +51,7 @@ function LoadingState({ text, serifFontClass }: { text: string; serifFontClass: 
           <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
           <div className="absolute inset-0 w-4 h-4 border-2 border-transparent border-r-blue-400 rounded-full animate-spin animate-reverse" />
         </div>
-        <span className={`text-ink-soft text-sm `}>{text}</span>
+        <span className={"text-ink-soft text-sm "}>{text}</span>
       </div>
     </div>
   );
@@ -68,7 +68,7 @@ function EmptyState({ title, hint, serifFontClass }: { title: string; hint: stri
         <FileText className="mx-auto mb-3 h-8 w-8 text-ink-soft/50" strokeWidth={1} />
         <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-blue-400/50 to-blue-600/50 rounded-full animate-pulse" />
       </div>
-      <p className={`text-ink-soft text-sm `}>{title}</p>
+      <p className={"text-ink-soft text-sm "}>{title}</p>
       <p className="text-ink-soft/70 text-xs mt-1">{hint}</p>
     </div>
   );
@@ -101,7 +101,7 @@ function ItemCard({ item, isSelected, isDeleting, deleteTitle, serifFontClass, o
       <input type="radio" value={item.id} checked={isSelected} onChange={onSelect} className="sr-only" />
       <div className="relative flex items-start justify-between">
         <div className="flex-1 min-w-0">
-          <h4 className={`text-cream-soft font-medium text-sm truncate `}>{item.name}</h4>
+          <h4 className={"text-cream-soft font-medium text-sm truncate "}>{item.name}</h4>
           {item.description && <p className="text-ink-soft text-xs mt-0.5 line-clamp-2">{item.description}</p>}
           <div className="flex items-center space-x-3 mt-1.5 text-xs text-ink-soft/80">
             <span className="flex items-center">
@@ -174,7 +174,7 @@ export function GlobalItemSelector({
 
   return (
     <div className="space-y-2">
-      <h3 className={`text-xs font-medium text-ink-soft mb-2 `}>{selectLabel}</h3>
+      <h3 className={"text-xs font-medium text-ink-soft mb-2 "}>{selectLabel}</h3>
       <div className="space-y-1.5 max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink">
         {items.map((item) => (
           <ItemCard

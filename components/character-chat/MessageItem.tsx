@@ -262,7 +262,7 @@ function MessageHeader({
 
       {/* 名称和控制按钮 */}
       <div className="flex items-center">
-        <span className={`text-sm font-medium text-cream `}>
+        <span className={"text-sm font-medium text-cream "}>
           {character.name}
         </span>
         {showRegenerateButton && headerSlot}

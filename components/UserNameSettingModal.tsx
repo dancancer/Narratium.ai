@@ -109,7 +109,7 @@ export default function UserNameSettingModal({
               {t("userNameSetting.loginUsername")}
             </label>
             <div className="relative magical-input min-h-[50px] flex items-center justify-center bg-overlay/50 border border-border/50">
-              <span className={`text-center text-sm text-text-muted `}>
+              <span className={"text-center text-sm text-text-muted "}>
                 {typeof window !== "undefined"
                   ? getString("username", t("userNameSetting.notLoggedIn"))
                   : t("userNameSetting.notLoggedIn")}
@@ -131,7 +131,7 @@ export default function UserNameSettingModal({
                   onChange={(e) => setDisplayName(e.target.value)}
                   disabled={isLoading}
                   autoComplete="off"
-                  className={`bg-transparent border-0 outline-none w-full text-center text-base text-cream-soft placeholder-ink-soft shadow-none focus:ring-0 focus:border-0 caret-[var(--color-primary-bright)] tracking-[0.05em] `}
+                  className={"bg-transparent border-0 outline-none w-full text-center text-base text-cream-soft placeholder-ink-soft shadow-none focus:ring-0 focus:border-0 caret-[var(--color-primary-bright)] tracking-[0.05em] "}
                 />
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 opacity-100 transition-opacity duration-300">
                   <div className="w-full h-full bg-gradient-to-r from-transparent via-primary-soft to-transparent"></div>
@@ -160,7 +160,7 @@ export default function UserNameSettingModal({
             <button
               type="submit"
               disabled={isLoading || !displayName.trim()}
-              className={`group relative px-6 py-2 bg-transparent border border-primary-soft text-primary-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-primary-bright hover:text-primary-bright hover: hover:shadow-primary-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden `}
+              className={"group relative px-6 py-2 bg-transparent border border-primary-soft text-primary-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-primary-bright hover:text-primary-bright hover: hover:shadow-primary-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden "}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary-soft/0 via-primary-soft/10 to-primary-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-primary-bright/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

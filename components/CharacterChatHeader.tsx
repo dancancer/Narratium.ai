@@ -104,7 +104,7 @@ export default function CharacterChatHeader({
           </div>
 
           <h2
-            className={`text-base md:text-lg text-cream-soft magical-text  truncate max-w-[120px] md:max-w-[200px]`}
+            className={"text-base md:text-lg text-cream-soft magical-text  truncate max-w-[120px] md:max-w-[200px]"}
           >
             {character.name}
           </h2>

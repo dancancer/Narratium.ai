@@ -37,7 +37,7 @@ export function ImportModalHeader({ title, activeTab, tabs, serifFontClass, onTa
   return (
     <div className="relative p-3 border-b border-border/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
       <div className="flex justify-between items-center">
-        <h2 className={`text-base font-semibold text-cream-soft  `}>
+        <h2 className={"text-base font-semibold text-cream-soft  "}>
           {title}
         </h2>
         <button

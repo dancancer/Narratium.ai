@@ -157,7 +157,7 @@ export default function ImportPresetModal({
       <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-border gap-0">
         <div className="p-3 border-b border-border/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
           <DialogHeader>
-            <DialogTitle className={`text-base font-semibold text-cream-soft `}>
+            <DialogTitle className={"text-base font-semibold text-cream-soft "}>
               {t("importPreset.title")}
             </DialogTitle>
           </DialogHeader>
@@ -187,7 +187,7 @@ export default function ImportPresetModal({
                 </div>
                 
                 <div>
-                  <h3 className={`text-lg font-medium text-cream-soft `}>
+                  <h3 className={"text-lg font-medium text-cream-soft "}>
                     {isDragging ? t("importPreset.dropFileHere") : t("importPreset.dragDropFile")}
                   </h3>
                   <p className={`text-sm text-ink-soft mt-1 ${fontClass}`}>
@@ -216,7 +216,7 @@ export default function ImportPresetModal({
             
             {jsonData && !importResult && (
               <div className="p-4 bg-muted-surface/50 backdrop-blur-sm border border-border/40 rounded-md animate-fadeIn">
-                <h4 className={`text-sm font-medium text-cream-soft mb-3 `}>{t("importPreset.customizePreset")}</h4>
+                <h4 className={"text-sm font-medium text-cream-soft mb-3 "}>{t("importPreset.customizePreset")}</h4>
                 
                 <div className="space-y-4">
                   <div>
@@ -269,7 +269,7 @@ export default function ImportPresetModal({
                       <X className="h-3 w-3 text-red-400" />
                     )}
                   </div>
-                  <h4 className={`font-medium `}>
+                  <h4 className={"font-medium "}>
                     {importResult.success ? t("importPreset.importSuccess") : t("importPreset.importFailed")}
                   </h4>
                 </div>
@@ -280,7 +280,7 @@ export default function ImportPresetModal({
             )}
             
             <div className="bg-muted-surface/40 backdrop-blur-sm border border-border/30 rounded-md p-4">
-              <h4 className={`text-sm font-medium text-cream-soft mb-2 `}>{t("importPreset.guidelines")}</h4>
+              <h4 className={"text-sm font-medium text-cream-soft mb-2 "}>{t("importPreset.guidelines")}</h4>
               <ul className={`text-xs text-ink-soft space-y-1 ${fontClass}`}>
                 <li>• {t("importPreset.jsonFormat")}</li>
                 <li>• {t("importPreset.validStructure")}</li>

@@ -72,7 +72,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
       <div className="relative w-full h-full bg-deep breathing-bg text-text flex flex-col">
         {/* ===== 头部 ===== */}
         <div className="flex-shrink-0 flex justify-between items-center p-4 border-b border-border bg-gradient-to-r from-canvas to-input">
-          <h1 className={`text-lg magical-text `}>{t("modelSettings.title")}</h1>
+          <h1 className={"text-lg magical-text "}>{t("modelSettings.title")}</h1>
           <button
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
             className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"

@@ -100,7 +100,7 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
     <div className="bg-black/40 border border-primary-500/20 rounded-md p-3 space-y-3">
       {/* Compact Header */}
       <div className="text-center">
-        <h3 className={`text-sm font-semibold text-cream  magical-text`}>
+        <h3 className={"text-sm font-semibold text-cream  magical-text"}>
           {t("agentProgress.title") || "创作进度"}
         </h3>
         <p className={`text-2xs-plus text-primary-soft/60 mt-0.5 ${fontClass}`}>

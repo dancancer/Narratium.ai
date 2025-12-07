@@ -63,7 +63,7 @@ export default function ThinkBubble({
         }`}
       >
         <div className="bg-ember/80 border border-border/40 rounded-md p-4 backdrop-blur-sm">
-          <div className={`text-sm text-primary-soft leading-relaxed whitespace-pre-wrap `}>
+          <div className={"text-sm text-primary-soft leading-relaxed whitespace-pre-wrap "}>
             {thinkingContent}
           </div>
         </div>

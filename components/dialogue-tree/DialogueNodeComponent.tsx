@@ -167,13 +167,13 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
           )}
         </div>
         {steps.length > 0 ? (
-          <ol className={`list-decimal list-inside ml-1  text-sm`}>
+          <ol className={"list-decimal list-inside ml-1  text-sm"}>
             {steps.map((step, index) => (
               <li key={index}>{step}</li>
             ))}
           </ol>
         ) : (
-          <div className={` text-sm truncate max-w-[200px]`}>
+          <div className={" text-sm truncate max-w-[200px]"}>
             {data.label || t("dialogue.node")}
           </div>
         )}

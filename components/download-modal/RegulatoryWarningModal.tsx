@@ -52,7 +52,7 @@ export function RegulatoryWarningModal({
             <div className="w-12 h-12 mx-auto mb-3 bg-primary-100 rounded-full flex items-center justify-center">
               <AlertTriangle size={24} className="text-primary-600" />
             </div>
-            <h3 className={`text-lg font-semibold text-cream-soft mb-2 `}>
+            <h3 className={"text-lg font-semibold text-cream-soft mb-2 "}>
               {t("downloadModal.regulatoryWarning.title")}
             </h3>
           </div>

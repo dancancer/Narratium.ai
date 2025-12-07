@@ -289,7 +289,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       <div className="absolute inset-0 backdrop-blur-sm"></div>
       <div className="bg-deep bg-opacity-75 border border-border rounded-md  p-4 w-[90%] h-[80%] max-w-5xl mx-4  relative z-10 backdrop-filter backdrop-blur-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className={`text-cream text-lg `}>{t("dialogue.treeVisualization")}</h3>
+          <h3 className={"text-cream text-lg "}>{t("dialogue.treeVisualization")}</h3>
           <button
             onClick={() => {
               trackButtonClick("DialogueTreeModal", "close_modal");

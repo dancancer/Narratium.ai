@@ -177,7 +177,7 @@ function EmptyState({ serifFontClass, t }: EmptyStateProps) {
       <div className="w-16 h-16 mx-auto mb-4 opacity-60 text-primary-bright">
         <MessageCircle size={64} strokeWidth={1.5} />
       </div>
-      <p className={`text-primary-soft `}>
+      <p className={"text-primary-soft "}>
         {t("characterChat.startConversation")}
       </p>
     </div>
@@ -204,7 +204,7 @@ function OpeningNavigator({
   return (
     <div className="flex items-center justify-center gap-3 text-primary-soft">
       <NavButton direction="prev" onClick={() => onNavigate("prev")} disabled={isSending} />
-      <span className={`text-sm `}>
+      <span className={"text-sm "}>
         {t("firstMessage") || "开场白"} {openingIndex + 1}/{totalOpenings}
       </span>
       <NavButton direction="next" onClick={() => onNavigate("next")} disabled={isSending} />
@@ -247,7 +247,7 @@ function TypingIndicator({ characterName, serifFontClass, t }: TypingIndicatorPr
         <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin" />
         <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow" />
       </div>
-      <span className={`text-sm `}>
+      <span className={"text-sm "}>
         {characterName} {t("characterChat.isTyping") || "is typing..."}
       </span>
     </div>

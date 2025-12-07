@@ -273,10 +273,10 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
         }}
       >
         <div className="mb-4">
-          <h3 className={`text-lg font-semibold text-cream mb-2 `}>
+          <h3 className={"text-lg font-semibold text-cream mb-2 "}>
             {currentStepData.title}
           </h3>
-          <p className={`text-primary-soft text-sm leading-relaxed `}>
+          <p className={"text-primary-soft text-sm leading-relaxed "}>
             {currentStepData.content}
           </p>
         </div>
@@ -293,7 +293,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
               />
             ))}
           </div>
-          <span className={`text-xs text-ink-soft `}>
+          <span className={"text-xs text-ink-soft "}>
             {currentStep + 1} / {steps.length}
           </span>
         </div>
@@ -303,7 +303,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
             {currentStep > 0 && (
               <button
                 onClick={prevStep}
-                className={`px-3 py-1.5 text-sm bg-deep text-primary-soft border border-border rounded hover:bg-muted-surface hover:text-cream transition-colors `}
+                className={"px-3 py-1.5 text-sm bg-deep text-primary-soft border border-border rounded hover:bg-muted-surface hover:text-cream transition-colors "}
               >
                 {t("tour.previous") || "上一步"}
               </button>
@@ -311,7 +311,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
             {currentStepData.allowSkip !== false && (
               <button
                 onClick={skipTour}
-                className={`px-3 py-1.5 text-sm text-ink-soft hover:text-primary-soft transition-colors `}
+                className={"px-3 py-1.5 text-sm text-ink-soft hover:text-primary-soft transition-colors "}
               >
                 {t("tour.skip") || "跳过"}
               </button>
@@ -327,7 +327,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
                   document.documentElement.lang = "zh";
                   nextStep();
                 }}
-                className={`px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium `}
+                className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
               >
                 中文
               </button>
@@ -337,7 +337,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
                   document.documentElement.lang = "en";
                   nextStep();
                 }}
-                className={`px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium `}
+                className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
               >
                 English
               </button>
@@ -345,7 +345,7 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
           ) : (
             <button
               onClick={nextStep}
-              className={`px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium `}
+              className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
             >
               {currentStep === steps.length - 1 
                 ? (t("tour.finish") || "完成") 

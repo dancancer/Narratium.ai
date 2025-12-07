@@ -40,14 +40,14 @@ export function DialogueEditModal({
     <div className="absolute inset-0 flex items-center justify-center backdrop-blur-md z-20">
       <div ref={modalRef} className="bg-deep bg-opacity-85 border border-border rounded-md p-6 w-[80%] max-w-2xl backdrop-filter backdrop-blur-sm ">
         <div className="flex justify-between items-center mb-4">
-          <h4 className={`text-cream text-lg `}>{t("dialogue.editNode")}</h4>
+          <h4 className={"text-cream text-lg "}>{t("dialogue.editNode")}</h4>
           <button onClick={onClose} className="text-text-muted hover:text-primary-400 transition-colors duration-300" aria-label={t("common.close")}>
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className=" border border-border rounded-md p-3 mb-4 ">
-          <h5 className={`text-primary-400 text-sm mb-2 `}>{t("dialogue.memorySummary")}:</h5>
+          <h5 className={"text-primary-400 text-sm mb-2 "}>{t("dialogue.memorySummary")}:</h5>
           <div className="ml-2">
             <ol className={`list-decimal list-inside ${fontClass} text-cream text-sm`}>
               {node.data.label.split(/——>|-->|->|→/).map((step, index) => (
@@ -61,7 +61,7 @@ export function DialogueEditModal({
 
         <div className="space-y-4">
           <div>
-            <label className={`block text-primary text-sm mb-2 `}>
+            <label className={"block text-primary text-sm mb-2 "}>
               <span className="flex items-center">
                 <MessageSquare className="w-3.5 h-3.5 mr-1" />
                 {t("dialogue.response")}
@@ -77,7 +77,7 @@ export function DialogueEditModal({
         </div>
 
         <div className="flex justify-end gap-5 mt-4">
-          <button onClick={onClose} className={`text-text-muted hover:text-primary-400 transition-colors duration-300 `} aria-label={t("common.cancel")} disabled={isSaving}>
+          <button onClick={onClose} className={"text-text-muted hover:text-primary-400 transition-colors duration-300 "} aria-label={t("common.cancel")} disabled={isSaving}>
             {t("common.cancel")}
           </button>
           {isSaving ? (
@@ -86,7 +86,7 @@ export function DialogueEditModal({
               <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
             </div>
           ) : (
-            <button onClick={onSave} className={`text-primary-400 hover:text-primary-300 transition-colors duration-300 `} aria-label={t("common.save")}>
+            <button onClick={onSave} className={"text-primary-400 hover:text-primary-300 transition-colors duration-300 "} aria-label={t("common.save")}>
               {t("common.save")}
             </button>
           )}

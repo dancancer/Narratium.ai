@@ -90,7 +90,7 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
           <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-md bg-gradient-to-br from-primary-500/20 to-primary-600/30 flex items-center justify-center border border-primary-500/30  ">
             <Palette className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-400" />
           </div>
-          <h3 className={`text-base sm:text-lg font-semibold  `}>
+          <h3 className={"text-base sm:text-lg font-semibold  "}>
             {t("characterChat.tagColorEditor")}
           </h3>
         </div>
@@ -128,7 +128,7 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10 mb-2 sm:mb-0">
-                <span className={` text-base sm:text-lg text-cream-soft`}>{symbol}</span>
+                <span className={" text-base sm:text-lg text-cream-soft"}>{symbol}</span>
               </div>
               <div className="relative z-10 flex items-center gap-2 sm:gap-3">
                 <div className="flex gap-1.5 sm:gap-2">

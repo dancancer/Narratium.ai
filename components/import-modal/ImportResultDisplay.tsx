@@ -108,7 +108,7 @@ export function ImportResultDisplay({
 }: ImportResultDisplayProps) {
   return (
     <div className="mt-3 p-2.5 bg-gradient-to-br from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm border border-border/40 rounded-md animate-in slide-in-from-bottom-2 duration-300">
-      <h3 className={`text-xs font-medium text-cream-soft mb-1.5 `}>{title}</h3>
+      <h3 className={"text-xs font-medium text-cream-soft mb-1.5 "}>{title}</h3>
       <div className="space-y-1 text-xs">
         {/* 已导入数量 */}
         <p className="text-green-400 flex items-center">

@@ -119,7 +119,7 @@ export default function PresetInfoModal({
               {getPresetIcon(presetName)}
             </div>
           </div>
-          <h1 className={`text-xl sm:text-2xl font-bold text-primary-bright mb-2 `}>
+          <h1 className={"text-xl sm:text-2xl font-bold text-primary-bright mb-2 "}>
             {presetInfo.title}
           </h1>
           <p className={`text-sm text-ink-soft ${fontClass}`}>
@@ -133,7 +133,7 @@ export default function PresetInfoModal({
         <div className="overflow-y-auto max-h-[50vh] space-y-4">
           {/* 描述信息 - Description */}
           <div className="p-4 bg-gradient-to-br from-overlay/60 via-deep/40 to-overlay/60 rounded-md border border-border/50">
-            <h3 className={`text-sm font-medium text-cream mb-2 `}>
+            <h3 className={"text-sm font-medium text-cream mb-2 "}>
               {t("presetInfo.description")}
             </h3>
             <p className={`text-xs sm:text-sm text-primary-soft leading-relaxed ${fontClass}`}>
@@ -143,7 +143,7 @@ export default function PresetInfoModal({
 
           {/* 特性列表 - Features List */}
           <div className="p-4 bg-gradient-to-br from-overlay/60 via-deep/40 to-overlay/60 rounded-md border border-border/50">
-            <h3 className={`text-sm font-medium text-cream mb-3 `}>
+            <h3 className={"text-sm font-medium text-cream mb-3 "}>
               {t("presetInfo.features")}
             </h3>
             <ul className="space-y-2">

@@ -23,7 +23,7 @@ export function ToastProvider() {
       duration={5000}
       toastOptions={{
         classNames: {
-          toast: ` border border-border  `,
+          toast: " border border-border  ",
           title: "text-cream font-medium",
           description: "text-primary-soft",
           actionButton: "bg-primary-bright text-deep hover:bg-primary-soft",

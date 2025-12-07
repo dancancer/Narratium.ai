@@ -40,17 +40,17 @@ export function WorldBookHeader({
       <div className="relative z-10 flex justify-between items-center min-h-[2rem]">
         <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
           <h2 className="text-base sm:text-lg font-medium text-cream-soft flex-shrink-0">
-            <span className={` `}>
+            <span className={" "}>
               {t("worldBook.title")}
             </span>
             <span
-              className={`ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft  inline-block truncate max-w-[140px] sm:max-w-[200px] align-bottom`}
+              className={"ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft  inline-block truncate max-w-[140px] sm:max-w-[200px] align-bottom"}
               title={characterName}
             >
               - {characterName}
             </span>
           </h2>
-          <div className={`hidden md:flex items-center space-x-2 text-xs text-ink-soft  flex-shrink-0`}>
+          <div className={"hidden md:flex items-center space-x-2 text-xs text-ink-soft  flex-shrink-0"}>
             <span className="whitespace-nowrap">
               {t("worldBook.total")}: {entries.length}
             </span>
@@ -71,7 +71,7 @@ export function WorldBookHeader({
               </>
             )}
           </div>
-          <div className={`md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft  flex-shrink-0`}>
+          <div className={"md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft  flex-shrink-0"}>
             <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
               {entries.length} / {enabledCount} / {constantCount}
               {filterBy !== "all" && ` (${filteredCount})`}

@@ -70,7 +70,7 @@ export default function HomeContent() {
         Narratium
         </h1>
         <p
-          className={`text-xl mb-12 tracking-wide bg-gradient-to-r from-[var(--color-ink-soft)] via-[var(--color-primary)] to-[var(--color-danger)]  `}
+          className={"text-xl mb-12 tracking-wide bg-gradient-to-r from-[var(--color-ink-soft)] via-[var(--color-primary)] to-[var(--color-danger)]  "}
         >
           {t("homePage.slogan")}
         </p>

@@ -66,7 +66,7 @@ export function DragDropZone({
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </div>
         <div>
-          <p className={`text-cream-soft font-medium text-sm `}>{description}</p>
+          <p className={"text-cream-soft font-medium text-sm "}>{description}</p>
           <p className="text-ink-soft text-xs mt-0.5">{hint}</p>
           {multiple && multipleHint && (
             <p className="text-ink-soft text-xs mt-0.5 font-medium">✨ {multipleHint}</p>

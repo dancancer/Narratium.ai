@@ -45,7 +45,7 @@ export function PresetControls({
               onClick={onCreate}
               className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  group flex-shrink-0 border border-border"
             >
-              <span className={`flex items-center `}>
+              <span className={"flex items-center "}>
                 <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
                 <span className="hidden sm:inline">{t("preset.createPreset")}</span>
                 <span className="sm:hidden">{t("preset.create")}</span>
@@ -56,7 +56,7 @@ export function PresetControls({
               onClick={onImport}
               className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  hover:shadow-success/20 group flex-shrink-0 border border-border"
             >
-              <span className={`flex items-center `}>
+              <span className={"flex items-center "}>
                 <FileText size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
                 {t("preset.importPreset")}
               </span>
@@ -70,14 +70,14 @@ export function PresetControls({
           <div className="flex items-center gap-1 sm:gap-2">
             <div className="flex items-center gap-1 sm:gap-1.5">
               <AlignJustify size={10} className="text-primary-400/80" />
-              <label className={`text-2xs sm:text-xs text-ink-soft font-medium `}>{t("preset.sortBy")}</label>
+              <label className={"text-2xs sm:text-xs text-ink-soft font-medium "}>{t("preset.sortBy")}</label>
             </div>
 
             <div className="relative">
               <select
                 value={sortBy}
                 onChange={(e) => onSortByChange(e.target.value)}
-                className={`appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-border/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-2xs sm:text-xs font-medium  hover: hover:shadow-primary-500/5`}
+                className={"appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-border/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-2xs sm:text-xs font-medium  hover: hover:shadow-primary-500/5"}
               >
                 <option value="name" className="bg-deep text-cream-soft">
                   {t("preset.name")}
@@ -96,10 +96,10 @@ export function PresetControls({
           </div>
 
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <span className={`text-2xs sm:text-xs text-ink-soft font-medium `}>{t("preset.sortOrder")}:</span>
+            <span className={"text-2xs sm:text-xs text-ink-soft font-medium "}>{t("preset.sortOrder")}:</span>
             <button
               onClick={onSortOrderToggle}
-              className={`group relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md bg-gradient-to-br from-deep via-muted-surface to-deep border border-border/60 hover:border-primary-500/40 text-cream-soft hover:text-primary-200 transition-all duration-300 backdrop-blur-sm hover: hover: focus:outline-none focus:ring-2 focus:ring-primary-500/20 `}
+              className={"group relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md bg-gradient-to-br from-deep via-muted-surface to-deep border border-border/60 hover:border-primary-500/40 text-cream-soft hover:text-primary-200 transition-all duration-300 backdrop-blur-sm hover: hover: focus:outline-none focus:ring-2 focus:ring-primary-500/20 "}
               title={sortOrder === "asc" ? t("preset.ascending") : t("preset.descending")}
             >
               <div
@@ -116,14 +116,14 @@ export function PresetControls({
           <div className="flex items-center gap-1 sm:gap-2">
             <div className="flex items-center gap-1 sm:gap-1.5">
               <Filter size={10} className="text-blue-400/80" />
-              <label className={`text-2xs sm:text-xs text-ink-soft font-medium `}>{t("preset.filterBy")}</label>
+              <label className={"text-2xs sm:text-xs text-ink-soft font-medium "}>{t("preset.filterBy")}</label>
             </div>
 
             <div className="relative">
               <select
                 value={filterBy}
                 onChange={(e) => onFilterChange(e.target.value)}
-                className={`appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-border/60 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-2xs sm:text-xs font-medium  hover: hover:shadow-blue-500/5`}
+                className={"appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-border/60 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-2xs sm:text-xs font-medium  hover: hover:shadow-blue-500/5"}
               >
                 <option value="all" className="bg-deep text-cream-soft">
                   {t("preset.all")}

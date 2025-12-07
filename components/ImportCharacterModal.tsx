@@ -197,7 +197,7 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
       <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
         <div className="p-6">
           <DialogHeader className="mb-4">
-            <DialogTitle className={`text-xl text-cream-soft magical-text `}>
+            <DialogTitle className={"text-xl text-cream-soft magical-text "}>
               {t("importCharacterModal.title")}
             </DialogTitle>
           </DialogHeader>

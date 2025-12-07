@@ -346,7 +346,7 @@ export default function CharacterCards() {
               className="flex justify-between items-center mb-8"
             >
               <div className="flex items-center gap-3">
-                <h1 className={`text-xl sm:text-2xl magical-login-text `}>{t("sidebar.characterCards")}</h1>
+                <h1 className={"text-xl sm:text-2xl magical-login-text "}>{t("sidebar.characterCards")}</h1>
                 <motion.button
                   className={`hidden md:block portal-button text-primary-soft hover:text-highlight p-1.5 sm:p-2 border border-border rounded-md cursor-pointer ${fontClass} translate-y-[1px]`}
                   whileHover={{ scale: 1.05 }}
@@ -439,7 +439,7 @@ export default function CharacterCards() {
                 <div className="mb-6 opacity-60 text-primary-bright">
                   <Star size={64} fill="currentColor" fillOpacity={0.3} className="mx-auto" />
                 </div>
-                <p className={`text-cream-soft mb-6 `}>{t("characterCardsPage.noCharacters")}</p>
+                <p className={"text-cream-soft mb-6 "}>{t("characterCardsPage.noCharacters")}</p>
                 <motion.div
                   className={`portal-button inline-block text-primary-soft hover:text-highlight px-5 py-2 border border-border rounded-md cursor-pointer ${fontClass}`}
                   whileHover={{ scale: 1.05 }}

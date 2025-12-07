@@ -113,7 +113,7 @@ export default function WorldBookEntryEditor({
             <>
               <div className="p-4 bg-muted-surface/90 border-b border-border/60 relative z-10">
                 <DialogHeader>
-                  <DialogTitle className={`text-lg font-semibold text-transparent  `}>
+                  <DialogTitle className={"text-lg font-semibold text-transparent  "}>
                     {editingEntry.id ? t("worldBook.editEntry") : t("worldBook.newEntry")}
                   </DialogTitle>
                 </DialogHeader>
@@ -353,7 +353,7 @@ export default function WorldBookEntryEditor({
           <div className="p-4 bg-muted-surface/90 border-b border-border/60 relative z-10">
             <DialogHeader>
               <div className="flex items-center space-x-3">
-                <DialogTitle className={`text-lg font-semibold text-transparent `}>
+                <DialogTitle className={"text-lg font-semibold text-transparent "}>
                   {t("worldBook.contentLabel")} - {editingEntry?.comment || t("worldBook.newEntry")}
                 </DialogTitle>
                 <span className={`text-sm text-ink-soft/70 bg-muted-surface/60 px-3 py-1.5 rounded-md ${fontClass}`}>

@@ -87,15 +87,15 @@ export function PresetTable({
                           : "bg-muted text-foreground border-border"
                       }`}
                       title={preset.enabled !== false ? t("preset.disablePreset") : t("preset.enablePreset")}
-                      >
-                        <span
-                          className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full border transition-all duration-200 ${
-                            preset.enabled !== false
+                    >
+                      <span
+                        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full border transition-all duration-200 ${
+                          preset.enabled !== false
                             ? "translate-x-5 sm:translate-x-6 bg-primary-foreground border-primary/60"
                             : "translate-x-1 bg-background border-border/70"
-                          }`}
-                        />
-                      </button>
+                        }`}
+                      />
+                    </button>
                   </td>
 
                   <td className="p-1.5 sm:p-3">
@@ -293,7 +293,7 @@ function PromptCard({
             <span className="hidden sm:inline">{prompt.enabled !== false ? t("preset.enabled_prompt") : t("preset.disabled_prompt")}</span>
             <span className="sm:hidden">{prompt.enabled !== false ? "On" : "Off"}</span>
           </button>
-          <span className={`text-xs sm:text-sm text-primary-soft `}>{prompt.name}</span>
+          <span className={"text-xs sm:text-sm text-primary-soft "}>{prompt.name}</span>
           {prompt.system_prompt && (
             <span className="text-[10px] sm:text-2xs px-1.5 py-0.5 rounded bg-blue-900/40 text-blue-200 border border-blue-700/40">
               {t("preset.systemPrompt")}

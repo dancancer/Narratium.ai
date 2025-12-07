@@ -188,7 +188,7 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                 
                   {/* Character info */}
                   <div className="p-4 relative">
-                    <h2 className={`text-lg text-cream-soft line-clamp-1 magical-text `}>{character.name}</h2>
+                    <h2 className={"text-lg text-cream-soft line-clamp-1 magical-text "}>{character.name}</h2>
                     <div className={`text-xs text-ink-soft mt-2 italic ${fontClass}`}>
                       <span className="inline-block mr-1 opacity-70">✨</span>
                       <span className="line-clamp-2">{character.personality}</span>

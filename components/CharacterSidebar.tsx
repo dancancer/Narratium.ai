@@ -180,7 +180,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
-                  <span className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-accent-foreground transition-colors duration-300 `}>
+                  <span className={"magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-accent-foreground transition-colors duration-300 "}>
                     {truncate(character.name, nameLimit)}
                   </span>
                   <p className={`text-ink-soft text-2xs md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}>

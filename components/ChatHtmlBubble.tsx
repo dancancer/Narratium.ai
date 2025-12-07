@@ -258,7 +258,7 @@ export default memo(function ChatHtmlBubble({
   if (showLoader) {
     return (
       <div className="flex flex-col items-center justify-center py-6 px-4">
-        <div className={`text-sm-plus text-gray-400 font-medium leading-relaxed text-center `}>
+        <div className={"text-sm-plus text-gray-400 font-medium leading-relaxed text-center "}>
           No response received. Please check your network connection or API configuration.
         </div>
       </div>

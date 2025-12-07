@@ -109,7 +109,7 @@ const EditPromptModal = ({
       <DialogContent className="max-w-lg p-0 overflow-hidden bg-deep border-border gap-0">
         <div className="p-6 border-b border-border">
           <DialogHeader>
-            <DialogTitle className={`text-xl font-medium text-primary-soft magical-text `}>
+            <DialogTitle className={"text-xl font-medium text-primary-soft magical-text "}>
               {t("preset.editPrompt")} - {prompt?.name || ""}
             </DialogTitle>
           </DialogHeader>

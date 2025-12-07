@@ -61,7 +61,7 @@ export default function CreatorAreaBanner({
           </button>
           
           <div className="flex items-center space-x-3">
-            <h2 className={`text-lg md:text-xl text-cream-soft magical-text  truncate max-w-[200px] md:max-w-[300px]`}>
+            <h2 className={"text-lg md:text-xl text-cream-soft magical-text  truncate max-w-[200px] md:max-w-[300px]"}>
               {session?.title || "创作工坊"}
             </h2>
             <div className="p-1.5 rounded-md bg-gradient-to-r from-primary-500/20 to-orange-400/20 border border-primary-500/30 flex-shrink-0">

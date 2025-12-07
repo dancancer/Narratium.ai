@@ -91,7 +91,7 @@ export default function CreatePresetModal({ isOpen, onClose, onSuccess }: Create
       <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
         <div className="p-4 border-b border-border bg-gradient-to-r from-primary-500/5 to-transparent">
           <DialogHeader>
-            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text `}>
+            <DialogTitle className={"text-lg font-medium text-cream-soft magical-text "}>
               <span className="">
                 {t("preset.createPreset")}
               </span>

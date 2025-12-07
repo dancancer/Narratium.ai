@@ -37,7 +37,7 @@ export function ImportModalFooter({
     <div className="relative p-3 border-t border-border/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm flex justify-end space-x-2">
       <button
         onClick={onClose}
-        className={`px-3 py-1.5 text-xs text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-md hover:bg-stroke/30 `}
+        className={"px-3 py-1.5 text-xs text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-md hover:bg-stroke/30 "}
       >
         {cancelLabel}
       </button>
@@ -45,7 +45,7 @@ export function ImportModalFooter({
         <button
           onClick={onImport}
           disabled={isImporting || !canImport}
-          className={`relative px-3 py-1.5 bg-gradient-to-r from-blue-600/90 to-blue-700/90 hover:from-blue-500/90 hover:to-blue-600/90 text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5 text-xs font-medium  shadow-blue-500/20 `}
+          className={"relative px-3 py-1.5 bg-gradient-to-r from-blue-600/90 to-blue-700/90 hover:from-blue-500/90 hover:to-blue-600/90 text-white rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5 text-xs font-medium  shadow-blue-500/20 "}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-600/20 rounded-md opacity-0 hover:opacity-100 transition-opacity duration-300" />
           {isImporting && (

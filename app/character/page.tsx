@@ -145,8 +145,6 @@ export default function CharacterPage() {
     }
   }, [presetViewPayload, characterView, resetPresetViewPayload]);
 
-
-
   // ═══════════════════════════════════════════════════════════════
   // 响应用户名变化，重新加载对话
   // 
@@ -228,7 +226,7 @@ export default function CharacterPage() {
           <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
           <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
         </div>
-        <p className={`text-cream  text-center mb-2`}>
+        <p className={"text-cream  text-center mb-2"}>
           {loader.loadingPhase}
         </p>
         {loader.isInitializing && (

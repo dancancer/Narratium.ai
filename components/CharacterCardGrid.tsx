@@ -143,7 +143,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                 </div>
               
                 <div className="p-2 sm:p-4">
-                  <h2 className={`text-sm sm:text-lg text-cream-soft line-clamp-1 magical-text `}>{character.name}</h2>
+                  <h2 className={"text-sm sm:text-lg text-cream-soft line-clamp-1 magical-text "}>{character.name}</h2>
                   <div className={`text-2xs sm:text-xs text-ink-soft mt-1 sm:mt-2 italic ${fontClass}`}>
                     <span className="inline-block mr-1 opacity-70">✨</span>
                     <span className="line-clamp-2">{character.personality}</span>

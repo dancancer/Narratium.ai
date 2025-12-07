@@ -72,7 +72,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
     >
       <div className={`w-64 h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-y-auto fantasy-scrollbar`}>
         <div className="flex justify-between items-center p-3 border-b border-border bg-gradient-to-r from-canvas to-input">
-          <h1 className={`text-base magical-text `}>{t("modelSettings.title")}</h1>
+          <h1 className={"text-base magical-text "}>{t("modelSettings.title")}</h1>
           <button
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
             className="w-6 h-6 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"

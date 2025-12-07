@@ -153,7 +153,7 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
           text-success hover:text-success rounded-md transition-all duration-300 font-medium
            hover:shadow-success/20 group flex-shrink-0 border border-border`}
       >
-        <span className={`flex items-center `}>
+        <span className={"flex items-center "}>
           <Edit3 className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           {t("regexScriptEditor.edit")}
         </span>
@@ -168,7 +168,7 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
             : "bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft border border-border hover:shadow-primary-bright/20"
         }`}
       >
-        <span className={`flex items-center `}>
+        <span className={"flex items-center "}>
           {script.disabled ? (
             <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           ) : (
@@ -185,7 +185,7 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
           text-rose-300 hover:text-rose-200 rounded-md transition-all duration-300 font-medium
            hover:shadow-rose-400/20 group flex-shrink-0 border border-border`}
       >
-        <span className={`flex items-center `}>
+        <span className={"flex items-center "}>
           <Trash2 className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           {t("regexScriptEditor.delete")}
         </span>

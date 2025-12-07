@@ -52,7 +52,7 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
             <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-md bg-gradient-to-br from-primary-500/20 to-primary-600/30 flex items-center justify-center border border-primary-500/30  ">
               <Layers className="h-3 w-3 sm:h-4 sm:w-4 text-primary-400" />
             </div>
-            <h2 className={`text-sm sm:text-xl font-semibold  `}>
+            <h2 className={"text-sm sm:text-xl font-semibold  "}>
               {t("characterChat.advancedSettings")}
             </h2>
           </div>

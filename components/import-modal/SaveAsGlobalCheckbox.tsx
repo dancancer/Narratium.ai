@@ -38,7 +38,7 @@ export function SaveAsGlobalCheckbox({ checked, label, serifFontClass, onChange,
             {checked && <Check className="absolute inset-0 h-3 w-3 text-white" strokeWidth={3} />}
           </div>
         </div>
-        <span className={`text-cream-soft text-sm font-medium `}>{label}</span>
+        <span className={"text-cream-soft text-sm font-medium "}>{label}</span>
       </label>
 
       {checked && children && (
@@ -80,7 +80,7 @@ export function GlobalFormFields({
   return (
     <div className="space-y-2">
       <div>
-        <label className={`block text-xs font-medium text-ink-soft mb-1 `}>{nameLabel}</label>
+        <label className={"block text-xs font-medium text-ink-soft mb-1 "}>{nameLabel}</label>
         <input
           type="text"
           value={name}
@@ -90,7 +90,7 @@ export function GlobalFormFields({
         />
       </div>
       <div>
-        <label className={`block text-xs font-medium text-ink-soft mb-1 `}>{descriptionLabel}</label>
+        <label className={"block text-xs font-medium text-ink-soft mb-1 "}>{descriptionLabel}</label>
         <textarea
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}

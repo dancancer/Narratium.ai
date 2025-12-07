@@ -97,7 +97,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             <X className="h-3.5 w-3.5" />
           </button>
           
-          <h2 className={`text-xl font-bold text-cream mb-2 `}>
+          <h2 className={"text-xl font-bold text-cream mb-2 "}>
             {t("account.title")}
           </h2>
           

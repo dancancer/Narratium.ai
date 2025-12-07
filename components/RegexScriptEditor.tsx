@@ -291,16 +291,16 @@ function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontCla
       <div className="relative z-10 flex justify-between items-center min-h-[2rem]">
         <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
           <h2 className="text-base sm:text-lg font-medium text-cream-soft flex-shrink-0">
-            <span className={` `}>
+            <span className={" "}>
               {t("regexScriptEditor.title")}
             </span>
-            <span className={`ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft  inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom`} title={characterName}>
+            <span className={"ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft  inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom"} title={characterName}>
               - {characterName}
             </span>
           </h2>
 
           {/* 桌面端统计 */}
-          <div className={`hidden md:flex items-center space-x-2 text-xs text-ink-soft  flex-shrink-0`}>
+          <div className={"hidden md:flex items-center space-x-2 text-xs text-ink-soft  flex-shrink-0"}>
             <span className="whitespace-nowrap">{t("regexScriptEditor.totalCount")} {stats.total}</span>
             <span>•</span>
             <span className="text-primary-400 whitespace-nowrap">{t("regexScriptEditor.enabledCount")} {stats.enabled}</span>
@@ -353,14 +353,14 @@ function Toolbar({ settings, serifFontClass, fontClass, t, onAddNew, onOpenImpor
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
         <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
           <button onClick={onAddNew} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  group flex-shrink-0 border border-border">
-            <span className={`flex items-center `}>
+            <span className={"flex items-center "}>
               <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.addNewScript")}
             </span>
           </button>
 
           <button onClick={onOpenImport} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-coal text-sky-300 hover:text-sky-200 rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  hover:shadow-sky-400/20 group flex-shrink-0 border border-stroke-strong">
-            <span className={`flex items-center `}>
+            <span className={"flex items-center "}>
               <Download size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.importScript")}
             </span>

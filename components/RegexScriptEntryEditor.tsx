@@ -122,7 +122,7 @@ export default function RegexScriptEntryEditor({
         
         <div className="p-5 border-b border-border/60 relative z-10">
           <DialogHeader>
-            <DialogTitle className={`text-lg text-cream-soft magical-text  font-medium`}>
+            <DialogTitle className={"text-lg text-cream-soft magical-text  font-medium"}>
               <span className="">
                 {editingScript?.id ? t("regexScriptEditor.editScript") : t("regexScriptEditor.newScript")}
               </span>
@@ -233,7 +233,7 @@ export default function RegexScriptEntryEditor({
                   text-cream rounded-md border border-border/60 transition-all duration-300 text-sm font-medium
                   hover:border-border hover: group"
               >
-                <span className={` group-hover:scale-105 transition-transform inline-block`}>
+                <span className={" group-hover:scale-105 transition-transform inline-block"}>
                   {t("regexScriptEditor.cancel")}
                 </span>
               </button>
