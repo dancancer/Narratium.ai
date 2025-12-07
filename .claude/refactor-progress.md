@@ -310,7 +310,7 @@ const { value, setValue, handleChange } = useTableSort({
 ```typescript
 // 用映射表替代条件分支 - Linus 的好品味
 const colorMap: Record<AccentColor, ColorConfig> = {
-  amber: { gradient: "from-amber-500/10", text: "group-hover:text-amber-400" },
+  primary: { gradient: "from-primary-500/10", text: "group-hover:text-primary-400" },
   purple: { gradient: "from-purple-500/10", text: "group-hover:text-purple-400" },
 };
 

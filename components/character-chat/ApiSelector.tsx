@@ -68,13 +68,13 @@ export default function ApiSelector({
       {/* 主按钮 */}
       <button
         onClick={onToggleDropdown}
-        className="p-1 rounded-md transition-all duration-300 group relative text-text-muted hover:text-amber flex items-center"
+        className="p-1 rounded-md transition-all duration-300 group relative text-text-muted hover:text-primary flex items-center"
       >
         <div className="flex items-center">
           <ApiIcon name={currentConfig?.name || "openai"} />
           <ChevronDown className="h-2 w-2 ml-0.5" strokeWidth={3} />
         </div>
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-ink z-50">
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border z-50">
           {currentConfig?.name || t("modelSettings.noConfigs")}
         </div>
       </button>
@@ -116,20 +116,20 @@ interface ConfigDropdownProps {
 function ConfigDropdown({ configs, activeConfigId, onSelect, emptyText }: ConfigDropdownProps) {
   if (configs.length === 0) {
     return (
-      <div className="absolute top-full left-0 mt-1 bg-overlay border border-ink rounded-md shadow-lg z-50 min-w-[160px]">
+      <div className="absolute top-full left-0 mt-1 bg-overlay border border-border rounded-md  z-50 min-w-[160px]">
         <div className="px-2 py-1.5 text-xs text-text-muted">{emptyText}</div>
       </div>
     );
   }
 
   return (
-    <div className="absolute top-full left-0 mt-1 bg-overlay border border-ink rounded-md shadow-lg z-50 min-w-[160px]">
+    <div className="absolute top-full left-0 mt-1 bg-overlay border border-border rounded-md  z-50 min-w-[160px]">
       {configs.map((config) => (
         <button
           key={config.id}
           onClick={() => onSelect(config.id)}
-          className={`w-full text-left px-2 py-1.5 text-xs hover:bg-muted-surface transition-colors flex items-center justify-between ${
-            activeConfigId === config.id ? "bg-muted-surface text-amber" : "text-cream"
+          className={`w-full text-left px-2 py-1.5 text-xs hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-between ${
+            activeConfigId === config.id ? "bg-accent text-accent-foreground" : "text-cream"
           }`}
         >
           <div className="flex items-center">
@@ -156,12 +156,12 @@ function ModelDropdown({ config, onBack, onSelect, t }: ModelDropdownProps) {
   const models = config.availableModels;
 
   return (
-    <div className="absolute top-full left-0 mt-1 bg-overlay border border-ink rounded-md shadow-lg z-50 min-w-[180px]">
+    <div className="absolute top-full left-0 mt-1 bg-overlay border border-border rounded-md  z-50 min-w-[180px]">
       {/* 头部：返回按钮 */}
-      <div className="px-2 py-1.5 text-xs text-text-muted border-b border-ink flex items-center justify-between">
+      <div className="px-2 py-1.5 text-xs text-text-muted border-b border-border flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center text-amber-soft hover:text-amber transition-colors"
+          className="flex items-center text-primary-soft hover:text-primary transition-colors"
         >
           <ChevronLeft className="h-3 w-3 mr-1" />
           {t("characterChat.back")}
@@ -213,8 +213,8 @@ function ModelItem({ modelName, configName, isActive, onSelect, defaultLabel }: 
   return (
     <button
       onClick={onSelect}
-      className={`w-full text-left px-2 py-1.5 text-xs hover:bg-muted-surface transition-colors flex items-center ${
-        isActive ? "bg-muted-surface text-amber" : "text-cream"
+      className={`w-full text-left px-2 py-1.5 text-xs hover:bg-accent hover:text-accent-foreground transition-colors flex items-center ${
+        isActive ? "bg-accent text-accent-foreground" : "text-cream"
       }`}
     >
       <span className="mr-2.5">

@@ -81,10 +81,10 @@ export default function DownloadCharacterModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className={`p-0 overflow-hidden bg-deep border-ink gap-0 ${
+      <DialogContent className={`p-0 overflow-hidden bg-deep border-border gap-0 ${
         isMobile
           ? "h-full max-h-[calc(100vh-12rem)] rounded-none pb-28 max-w-full"
-          : "max-w-6xl max-h-[90vh] rounded-lg"
+          : "max-w-6xl max-h-[90vh] rounded-md"
       }`}>
         <DialogTitle className="sr-only">{t("downloadModal.title")}</DialogTitle>
         <div className={isMobile ? "p-3" : "p-6"}>
@@ -160,7 +160,7 @@ interface ModalHeaderProps {
 function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose }: ModalHeaderProps) {
   return (
     <div className={`flex justify-between items-center ${isMobile ? "mb-4" : "mb-6"}`}>
-      <h2 className={`text-cream-soft font-bold ${serifFontClass} ${isMobile ? "text-lg" : "text-2xl"}`}>
+      <h2 className={`text-cream-soft font-bold  ${isMobile ? "text-lg" : "text-2xl"}`}>
         {t("downloadModal.title")}
       </h2>
 
@@ -169,7 +169,7 @@ function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose 
         <button
           onClick={onRefresh}
           disabled={loading}
-          className={`group p-2 rounded-full text-ink-soft hover:text-amber-bright hover:bg-muted-surface transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40 ${
+          className={`group p-2 rounded-full text-ink-soft hover:text-primary-bright hover:bg-muted-surface transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40 ${
             loading ? "opacity-60 cursor-wait" : ""
           }`}
           title={t("downloadModal.refresh")}
@@ -184,7 +184,7 @@ function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose 
         {/* 关闭按钮 */}
         <button
           onClick={onClose}
-          className="p-2 rounded-full text-ink-soft hover:text-amber-bright hover:bg-muted-surface transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40"
+          className="p-2 rounded-full text-ink-soft hover:text-primary-bright hover:bg-muted-surface transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40"
           title={t("common.close")}
           type="button"
         >
@@ -211,16 +211,16 @@ function TagFilter({ isMobile, selectedTag, tagCounts, fontClass, serifFontClass
 
   const getButtonStyle = (isSelected: boolean, isDisabled: boolean) => {
     if (isSelected) {
-      return "bg-gradient-to-br from-sand to-sand text-ink font-semibold shadow-lg shadow-sand/20 border border-transparent";
+      return "bg-gradient-to-br from-sand to-sand text-ink font-semibold   border border-transparent";
     }
-    return `bg-transparent text-amber-soft hover:bg-muted-surface hover:text-sand border border-ink/50 hover:border-ink ${
+    return `bg-transparent text-primary-soft hover:bg-muted-surface hover:text-sand border border-border/50 hover:border-border ${
       isDisabled ? "opacity-50 cursor-not-allowed" : ""
     }`;
   };
 
   return (
     <div className={isMobile ? "mb-4" : "mb-6"}>
-      <h3 className={`text-cream-soft ${serifFontClass} ${isMobile ? "text-base mb-2" : "text-lg mb-3"}`}>
+      <h3 className={`text-cream-soft  ${isMobile ? "text-base mb-2" : "text-lg mb-3"}`}>
         {t("downloadModal.tagFilter")}
       </h3>
 
@@ -285,8 +285,8 @@ function ContentArea({
   // 加载状态
   if (loading) {
     return (
-      <div className={`text-amber-soft py-12 text-center ${fontClass}`}>
-        <div className="animate-spin w-8 h-8 border-2 border-amber-soft border-t-transparent rounded-full mx-auto mb-4" />
+      <div className={`text-primary-soft py-12 text-center ${fontClass}`}>
+        <div className="animate-spin w-8 h-8 border-2 border-primary-soft border-t-transparent rounded-full mx-auto mb-4" />
         <div className="mb-2">
           {loadingStage === "fetching" && t("downloadModal.loading")}
           {loadingStage === "preloading" && t("downloadModal.preloading")}
@@ -301,7 +301,7 @@ function ContentArea({
   // 空状态
   if (filteredCharacters.length === 0) {
     return (
-      <div className={`text-amber-soft py-12 text-center ${fontClass}`}>
+      <div className={`text-primary-soft py-12 text-center ${fontClass}`}>
         <div className="opacity-60 mb-2">📭</div>
         {t("downloadModal.noCharactersInTag")}
       </div>

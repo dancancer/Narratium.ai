@@ -106,10 +106,10 @@ const EditPromptModal = ({
 
   return (
     <Dialog open={isOpen && !!prompt} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden bg-deep border-ink gap-0">
-        <div className="p-6 border-b border-ink">
+      <DialogContent className="max-w-lg p-0 overflow-hidden bg-deep border-border gap-0">
+        <div className="p-6 border-b border-border">
           <DialogHeader>
-            <DialogTitle className={`text-xl font-medium text-amber-soft magical-text ${serifFontClass}`}>
+            <DialogTitle className={`text-xl font-medium text-primary-soft magical-text `}>
               {t("preset.editPrompt")} - {prompt?.name || ""}
             </DialogTitle>
           </DialogHeader>
@@ -123,7 +123,7 @@ const EditPromptModal = ({
               </label>
               <textarea
                 id="promptContent"
-                className="w-full p-3 bg-muted-surface border border-ink rounded-md text-cream-soft focus:outline-none focus:border-amber-500 h-40 resize-y fantasy-scrollbar"
+                className="w-full p-3 bg-muted-surface border border-border rounded-md text-cream-soft focus:outline-none focus:border-primary-500 h-40 resize-y fantasy-scrollbar"
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
               />
@@ -132,14 +132,14 @@ const EditPromptModal = ({
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => handleOpenChange(false)}
-                className="px-4 py-2 bg-gradient-to-r from-overlay to-ember text-ink-soft rounded-md hover:from-overlay hover:to-muted-surface transition-all duration-300 border border-ink shadow-md"
+                className="px-4 py-2 bg-gradient-to-r from-overlay to-ember text-ink-soft rounded-md hover:from-overlay hover:to-muted-surface transition-all duration-300 border border-border "
                 disabled={isSaving}
               >
                 {t("preset.cancel")}
               </button>
               <button
                 onClick={handleSave}
-                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-800 text-white rounded-md hover:from-amber-700 hover:to-amber-900 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
+                className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-md hover:from-primary-700 hover:to-primary-900 transition-all duration-300  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
                 disabled={isSaving}
               >
                 {isSaving ? t("common.saving") : t("common.save")}

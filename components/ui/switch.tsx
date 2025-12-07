@@ -11,9 +11,9 @@ const Switch = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SwitchPrimitive.Root
     className={cn(
-      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+      "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
       // Fantasy styles
-      "h-[24px] w-[44px] bg-black/40 border border-ink-soft data-[state=checked]:bg-amber-900/40 data-[state=checked]:border-amber-500/50 shadow-inner",
+      "h-[24px] w-[44px] border-border data-[state=checked]:bg-primary-900/60 data-[state=checked]:border-primary-500/50 data-[state=unchecked]:bg-muted-surface/80 data-[state=unchecked]:border-border/80",
       className,
     )}
     {...props}
@@ -21,9 +21,9 @@ const Switch = React.forwardRef<
   >
     <SwitchPrimitive.Thumb
       className={cn(
-        "pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0",
+        "pointer-events-none block h-5 w-5 rounded-full border bg-background ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0",
         // Fantasy styles
-        "bg-ink-soft portal-button data-[state=checked]:bg-amber-400 data-[state=checked]:shadow-[0_0_10px_rgba(251,191,36,0.6)]",
+        "bg-ink-soft border-border data-[state=checked]:bg-primary-foreground data-[state=checked]:border-primary-400 data-[state=unchecked]:border-border/80",
       )}
     />
   </SwitchPrimitive.Root>

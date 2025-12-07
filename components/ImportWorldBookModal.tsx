@@ -212,15 +212,15 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-ink gap-0">
+      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-border gap-0">
         <DialogTitle className="sr-only">{t("worldBook.importWorldBook")}</DialogTitle>
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse pointer-events-none" />
 
         <ImportModalHeader
           title={t("worldBook.importWorldBook")}
           activeTab={activeTab}
           tabs={[
-            { id: "file", label: t("worldBook.importFromJson"), icon: "file", activeColor: "amber" },
+            { id: "file", label: t("worldBook.importFromJson"), icon: "file", activeColor: "primary" },
             { id: "global", label: t("worldBook.importFromGlobal"), icon: "global", activeColor: "blue" },
           ]}
           serifFontClass={serifFontClass}

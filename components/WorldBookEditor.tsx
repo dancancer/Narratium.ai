@@ -10,7 +10,6 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/lib/store/toast-store";
-import "@/app/styles/fantasy-ui.css";
 import { useLanguage } from "@/app/i18n";
 import WorldBookEntryEditor from "@/components/WorldBookEntryEditor";
 import ImportWorldBookModal from "@/components/ImportWorldBookModal";
@@ -301,10 +300,10 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
       <div className="h-full flex items-center justify-center breathing-bg">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-            <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
+            <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+            <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
           </div>
-          <p className="mt-4 text-amber-soft magical-text">{t("worldBook.loading")}</p>
+          <p className="mt-4 text-primary-soft magical-text">{t("worldBook.loading")}</p>
         </div>
       </div>
     );

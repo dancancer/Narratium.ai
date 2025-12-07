@@ -83,7 +83,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
       whileHover={{ y: -2, transition: { duration: 0.2 } }}
-      className="group bg-gradient-to-br from-overlay/30 to-deep/50 rounded-xl p-5 border border-ink/30 hover:border-cream/40 transition-all duration-300 backdrop-blur-sm hover:shadow-lg hover:shadow-cream/10"
+      className="group bg-gradient-to-br from-overlay/30 to-deep/50 rounded-xl p-5 border border-border/30 hover:border-cream/40 transition-all duration-300 backdrop-blur-sm hover: hover:shadow-cream/10"
     >
       <div className="flex items-start justify-between">
         {/* ═══════════════════════════════════════════════════════════
@@ -91,7 +91,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             ═══════════════════════════════════════════════════════════ */}
         <div className="flex items-start space-x-4 flex-1">
           {/* 插件图标 - Plugin Icon */}
-          <div className="w-12 h-12 bg-gradient-to-br from-ink/40 to-overlay/60 rounded-xl flex items-center justify-center overflow-hidden relative group-hover:from-cream/20 group-hover:to-amber/20 transition-all duration-300">
+          <div className="w-12 h-12 bg-gradient-to-br from-ink/40 to-overlay/60 rounded-xl flex items-center justify-center overflow-hidden relative group-hover:from-cream/20 group-hover:to-primary/20 transition-all duration-300">
             {plugin.manifest.icon ? (
               plugin.manifest.icon.startsWith("http") || plugin.manifest.icon.startsWith("/") ? (
                 plugin.manifest.id === "dialogue-stats" ? (
@@ -119,7 +119,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
               <h3 className="font-medium text-cream truncate">
                 {plugin.manifest.name}
               </h3>
-              <span className="text-xs bg-ink/30 px-2 py-1 rounded-md text-amber-soft flex-shrink-0">
+              <span className="text-xs bg-ink/30 px-2 py-1 rounded-md text-primary-soft flex-shrink-0">
                 v{plugin.manifest.version}
               </span>
               <div className="flex items-center space-x-1 flex-shrink-0">
@@ -130,11 +130,11 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
               </div>
             </div>
 
-            <p className="text-sm text-amber-soft mb-3 leading-relaxed line-clamp-2 overflow-hidden">
+            <p className="text-sm text-primary-soft mb-3 leading-relaxed line-clamp-2 overflow-hidden">
               {plugin.manifest.description}
             </p>
 
-            <div className="flex items-center space-x-3 text-xs text-amber-soft/70">
+            <div className="flex items-center space-x-3 text-xs text-primary-soft/70">
               <div className="flex items-center space-x-1">
                 <User className="w-3 h-3" />
                 <span>{plugin.manifest.author}</span>
@@ -146,7 +146,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             </div>
 
             {plugin.error && (
-              <div className="mt-3 p-3 bg-red-900/20 border border-red-500/30 rounded-lg text-red-400 text-xs">
+              <div className="mt-3 p-3 bg-red-900/20 border border-red-500/30 rounded-md text-red-400 text-xs">
                 <strong>{t("plugins.error")}</strong> {plugin.error}
               </div>
             )}
@@ -161,7 +161,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onToggle(plugin.manifest.id, !plugin.enabled)}
-            className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
               plugin.enabled
                 ? "bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30"
                 : "bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30"
@@ -186,7 +186,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
               }
             }}
             disabled={!plugin.manifest.homepage}
-            className="p-2 bg-ink/20 hover:bg-ink/40 text-amber-soft rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="p-2 bg-ink/20 hover:bg-ink/40 text-primary-soft rounded-md transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             title={t("plugins.homepage")}
           >
             <ExternalLink className="w-4 h-4" />
@@ -195,7 +195,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="p-2 bg-ink/20 hover:bg-ink/40 text-amber-soft rounded-lg transition-all duration-200"
+            className="p-2 bg-ink/20 hover:bg-ink/40 text-primary-soft rounded-md transition-all duration-200"
             onClick={() => {
               console.log("Plugin details:", plugin);
             }}

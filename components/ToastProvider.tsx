@@ -23,12 +23,12 @@ export function ToastProvider() {
       duration={5000}
       toastOptions={{
         classNames: {
-          toast: `fantasy-bg border border-ink shadow-2xl ${serifFontClass}`,
+          toast: ` border border-border  `,
           title: "text-cream font-medium",
-          description: "text-amber-soft",
-          actionButton: "bg-amber-bright text-deep hover:bg-amber-soft",
+          description: "text-primary-soft",
+          actionButton: "bg-primary-bright text-deep hover:bg-primary-soft",
           cancelButton: "bg-muted-surface text-ink-soft hover:bg-deep",
-          closeButton: "bg-muted-surface text-ink-soft hover:bg-deep hover:text-amber-soft",
+          closeButton: "bg-muted-surface text-ink-soft hover:bg-deep hover:text-primary-soft",
           success: "border-green-600/50",
           error: "border-red-600/50",
           warning: "border-yellow-600/50",

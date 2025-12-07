@@ -323,15 +323,15 @@ export default function CharacterCards() {
   if (!mounted) return null;
 
   return (
-    <div className="h-full w-full overflow-hidden login-fantasy-bg relative">
+    <div className="h-full w-full overflow-hidden  relative">
       <div
-        className={`absolute inset-0 z-0 opacity-35 transition-opacity duration-500 bg-[url('/background_yellow.png')] bg-cover bg-center bg-no-repeat ${
+        className={`absolute inset-0 z-0 opacity-35 transition-opacity duration-500  ${
           imagesLoaded ? "opacity-35" : "opacity-0"
         }`}
       />
 
       <div
-        className={`absolute inset-0 z-1 opacity-45 transition-opacity duration-500 bg-[url('/background_red.png')] bg-cover bg-center bg-no-repeat mix-blend-multiply ${
+        className={`absolute inset-0 z-1 opacity-45 transition-opacity duration-500  mix-blend-multiply ${
           imagesLoaded ? "opacity-45" : "opacity-0"
         }`}
       />
@@ -346,9 +346,9 @@ export default function CharacterCards() {
               className="flex justify-between items-center mb-8"
             >
               <div className="flex items-center gap-3">
-                <h1 className={`text-xl sm:text-2xl magical-login-text ${serifFontClass}`}>{t("sidebar.characterCards")}</h1>
+                <h1 className={`text-xl sm:text-2xl magical-login-text `}>{t("sidebar.characterCards")}</h1>
                 <motion.button
-                  className={`hidden md:block portal-button text-amber-soft hover:text-highlight p-1.5 sm:p-2 border border-ink rounded-lg cursor-pointer ${fontClass} translate-y-[1px]`}
+                  className={`hidden md:block portal-button text-primary-soft hover:text-highlight p-1.5 sm:p-2 border border-border rounded-md cursor-pointer ${fontClass} translate-y-[1px]`}
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   onClick={() => {
@@ -367,11 +367,9 @@ export default function CharacterCards() {
               </div>
               <div className="flex gap-2 sm:gap-3">
                 <motion.div
-                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg cursor-pointer ${fontClass}
+                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-md cursor-pointer ${fontClass}
                     bg-gradient-to-b from-overlay to-deep
-                    border border-ink
-                    shadow-[0_0_15px_rgba(192,164,128,0.1)]
-                    hover:shadow-[0_0_20px_rgba(192,164,128,0.2)]
+                    border border-border
                     before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-[rgba(192,164,128,0.1)] before:to-transparent
                     before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700
                     group`}
@@ -387,16 +385,14 @@ export default function CharacterCards() {
                   }}
                   onClick={() => setIsImportModalOpen(true)}
                 >
-                  <span className="relative z-10 text-amber-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
+                  <span className="relative z-10 text-primary-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
                     {t("characterCardsPage.importCharacter")}
                   </span>
                 </motion.div>
                 <motion.div
-                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg cursor-pointer ${fontClass}
+                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-md cursor-pointer ${fontClass}
                     bg-gradient-to-b from-overlay to-deep
-                    border border-ink
-                    shadow-[0_0_15px_rgba(192,164,128,0.1)]
-                    hover:shadow-[0_0_20px_rgba(192,164,128,0.2)]
+                    border border-border
                     before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-[rgba(192,164,128,0.1)] before:to-transparent
                     before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700
                     group`}
@@ -412,7 +408,7 @@ export default function CharacterCards() {
                   }}
                   onClick={() => setIsDownloadModalOpen(true)}
                 >
-                  <span className="relative z-10 text-amber-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
+                  <span className="relative z-10 text-primary-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
                     {t("characterCardsPage.downloadCharacter")}
                   </span>
                 </motion.div>
@@ -426,9 +422,9 @@ export default function CharacterCards() {
                 className="flex justify-center items-center h-64"
               >
                 <div className="relative w-16 h-16">
-                  <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-                  <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
-                  <div className={`absolute w-full text-center top-20 text-amber-soft ${fontClass}`}>
+                  <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+                  <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
+                  <div className={`absolute w-full text-center top-20 text-primary-soft ${fontClass}`}>
                     {isDownloadingPresets ? t("characterCardsPage.downloadingPresets") : t("characterCardsPage.loading")}
                   </div>
                 </div>
@@ -440,12 +436,12 @@ export default function CharacterCards() {
                 transition={{ duration: 0.5 }}
                 className="session-card p-8 text-center"
               >
-                <div className="mb-6 opacity-60 text-amber-bright">
+                <div className="mb-6 opacity-60 text-primary-bright">
                   <Star size={64} fill="currentColor" fillOpacity={0.3} className="mx-auto" />
                 </div>
-                <p className={`text-cream-soft mb-6 ${serifFontClass}`}>{t("characterCardsPage.noCharacters")}</p>
+                <p className={`text-cream-soft mb-6 `}>{t("characterCardsPage.noCharacters")}</p>
                 <motion.div
-                  className={`portal-button inline-block text-amber-soft hover:text-highlight px-5 py-2 border border-ink rounded-lg cursor-pointer ${fontClass}`}
+                  className={`portal-button inline-block text-primary-soft hover:text-highlight px-5 py-2 border border-border rounded-md cursor-pointer ${fontClass}`}
                   whileHover={{ scale: 1.05 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   onClick={() => setIsImportModalOpen(true)}

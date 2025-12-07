@@ -116,11 +116,11 @@ export default function CopyPresetModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
-        <div className="p-4 border-b border-ink bg-gradient-to-r from-blue-500/5 to-transparent">
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+        <div className="p-4 border-b border-border bg-gradient-to-r from-blue-500/5 to-transparent">
           <DialogHeader>
-            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text ${serifFontClass}`}>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-300">
+            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text `}>
+              <span className="">
                 {t("preset.copyPreset")}
               </span>
             </DialogTitle>
@@ -132,7 +132,7 @@ export default function CopyPresetModal({
             <label className={`block text-sm font-medium text-ink-soft mb-2 ${fontClass}`}>
               {t("preset.sourcePreset")}
             </label>
-            <div className="px-3 py-2 bg-muted-surface/50 text-ink-soft rounded-md border border-ink/50 text-sm">
+            <div className="px-3 py-2 bg-muted-surface/50 text-ink-soft rounded-md border border-border/50 text-sm">
               {sourcePresetName}
             </div>
           </div>
@@ -148,10 +148,10 @@ export default function CopyPresetModal({
               placeholder={t("preset.newPresetNamePlaceholder")}
               disabled={isCopying}
               className={`w-full px-3 py-2 bg-gradient-to-br from-deep via-muted-surface to-deep 
-                text-cream-soft rounded-md border border-ink 
+                text-cream-soft rounded-md border border-border 
                 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 
-                transition-all duration-300 hover:border-ink backdrop-blur-sm
-                shadow-inner ${fontClass}
+                transition-all duration-300 hover:border-border backdrop-blur-sm
+                 ${fontClass}
                 disabled:opacity-50 disabled:cursor-not-allowed`}
               autoFocus
             />
@@ -164,8 +164,8 @@ export default function CopyPresetModal({
               disabled={isCopying}
               className={`px-4 py-2 text-sm font-medium text-ink-soft hover:text-cream-soft 
                 bg-gradient-to-br from-deep via-muted-surface to-deep 
-                border border-ink rounded-md 
-                hover:border-ink transition-all duration-300 backdrop-blur-sm
+                border border-border rounded-md 
+                hover:border-border transition-all duration-300 backdrop-blur-sm
                 disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}`}
             >
               {t("preset.cancel")}
@@ -178,7 +178,6 @@ export default function CopyPresetModal({
                 hover:from-ember hover:to-coal 
                 text-sky hover:text-sky/80 
                 rounded-md transition-all duration-300 
-                shadow-lg hover:shadow-blue-500/20 
                 border border-info
                 disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}
                 flex items-center`}

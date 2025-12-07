@@ -111,20 +111,20 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
   // ========== 渲染 ==========
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[85vh] p-0 overflow-hidden bg-deep bg-opacity-90 border-ink/40 backdrop-filter backdrop-blur-md">
+      <DialogContent className="max-w-3xl max-h-[85vh] p-0 overflow-hidden bg-deep bg-opacity-90 border-border/40 backdrop-filter backdrop-blur-md">
         {/* ═══════════════════════════════════════════════════════════
             头部区域 - Header Section
             ═══════════════════════════════════════════════════════════ */}
         <div className="flex items-center justify-between p-6 pb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-br from-cream/20 to-amber/20 rounded-xl">
+            <div className="p-2 bg-gradient-to-br from-cream/20 to-primary/20 rounded-xl">
               <Package className="w-5 h-5 text-cream" />
             </div>
             <div>
               <h2 className={`text-lg font-semibold text-cream ${fontClass}`}>
                 {t("plugins.title")}
               </h2>
-              <p className="text-xs text-amber-soft opacity-80">
+              <p className="text-xs text-primary-soft opacity-80">
                 {t("plugins.enhancedSystem")}
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
             <button
               onClick={handleRefreshPlugins}
               disabled={isRefreshing}
-              className="p-2 bg-ink/30 hover:bg-ink-soft/40 text-cream rounded-lg transition-all duration-200 disabled:opacity-50 group hover:scale-105 active:scale-95"
+              className="p-2 bg-ink/30 hover:bg-ink-soft/40 text-cream rounded-md transition-all duration-200 disabled:opacity-50 group hover:scale-105 active:scale-95"
               title={t("plugins.refresh")}
             >
               <RefreshCw
@@ -146,7 +146,7 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
         {/* ═══════════════════════════════════════════════════════════
             工具栏 - Toolbar
             ═══════════════════════════════════════════════════════════ */}
-        <div className="px-6 py-3 border-b border-ink/30">
+        <div className="px-6 py-3 border-b border-border/30">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <PluginFilter
@@ -154,14 +154,14 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
                 onChange={setFilter}
                 pluginCounts={pluginCounts}
               />
-              <div className="px-3 py-1.5 bg-gradient-to-r from-ink/20 to-ink/10 rounded-lg text-amber-soft border border-ink/20 text-xs">
+              <div className="px-3 py-1.5 bg-gradient-to-r from-ink/20 to-ink/10 rounded-md text-primary-soft border border-border/20 text-xs">
                 <span className="font-medium text-cream">{pluginCounts[filter]}</span>
-                <span className="mx-1 text-amber-soft/60">/</span>
+                <span className="mx-1 text-primary-soft/60">/</span>
                 <span>{pluginCounts.all}</span>
-                <span className="ml-1 text-amber-soft/80">{t("plugins.items")}</span>
+                <span className="ml-1 text-primary-soft/80">{t("plugins.items")}</span>
               </div>
             </div>
-            <div className="text-xs text-amber-soft opacity-70">
+            <div className="text-xs text-primary-soft opacity-70">
               <span>{t("plugins.version")}</span>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
         {/* ═══════════════════════════════════════════════════════════
             底部状态栏 - Footer Status Bar
             ═══════════════════════════════════════════════════════════ */}
-        <div className="px-6 py-4 border-t border-ink/30 bg-gradient-to-r from-overlay/20 to-deep/40">
+        <div className="px-6 py-4 border-t border-border/30 bg-gradient-to-r from-overlay/20 to-deep/40">
           <PluginStats plugins={plugins} />
         </div>
       </DialogContent>

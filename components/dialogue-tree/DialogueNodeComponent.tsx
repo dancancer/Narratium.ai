@@ -59,13 +59,13 @@ function getNodeColors(id: string, isCurrentPath: boolean) {
     };
   }
   return {
-    border: "border-ink",
-    hoverBorder: "hover:border-ink-soft",
+    border: "border-border",
+    hoverBorder: "hover:border-border",
     text: "text-text-muted",
-    expandIcon: "text-amber-700",
-    jumpButton: "text-amber-700 hover:text-amber-600",
-    handle: "!bg-amber-700 !border-amber-900",
-    hoverText: "hover:text-amber-700",
+    expandIcon: "text-primary-700",
+    jumpButton: "text-primary-700 hover:text-primary-600",
+    handle: "!bg-primary-700 !border-primary-900",
+    hoverText: "hover:text-primary-700",
   };
 }
 
@@ -119,15 +119,15 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
 
   return (
     <div
-      className={`fantasy-bg border ${colors.border} rounded-md p-3 shadow-md w-72 ${colors.hoverBorder} transition-all duration-300 relative cursor-pointer ${fontClass} ${data.isCurrentPath ? "bg-opacity-100" : "bg-opacity-70"}`}
+      className={` border ${colors.border} rounded-md p-3  w-72 ${colors.hoverBorder} transition-all duration-300 relative cursor-pointer ${fontClass} ${data.isCurrentPath ? "bg-opacity-100" : "bg-opacity-70"}`}
       onClick={handleNodeClick}
     >
       {/* Root 节点提示 */}
       {showRootTooltip && (
-        <div className="absolute -top-14 right-0 z-20 bg-surface border border-amber-700 rounded-md p-2 shadow-lg max-w-[200px] text-xs text-amber-400 animate-fade-in">
+        <div className="absolute -top-14 right-0 z-20 bg-surface border border-primary-700 rounded-md p-2  max-w-[200px] text-xs text-primary-400 animate-fade-in">
           <div className="relative">
             {t("dialogue.rootNodeCannotJump")}
-            <div className="absolute -bottom-6 right-4 w-0 h-0 border-8 border-transparent border-t-amber-700"></div>
+            <div className="absolute -bottom-6 right-4 w-0 h-0 border-8 border-transparent border-t-primary-700"></div>
           </div>
         </div>
       )}
@@ -144,7 +144,7 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
           disabled={isJumping}
         >
           {isJumping ? (
-            <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-amber-400 animate-spin"></div>
+            <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-primary-400 animate-spin"></div>
           ) : (
             <CornerDownRight className="w-3.5 h-3.5" />
           )}
@@ -156,7 +156,7 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
 
       {/* 节点内容 */}
       <div
-        className={`${colors.text} text-sm ${serifFontClass} ${colors.hoverText} transition-colors duration-300 flex items-center`}
+        className={`${colors.text} text-sm  ${colors.hoverText} transition-colors duration-300 flex items-center`}
         onClick={handleToggleExpand}
       >
         <div className={`w-5 h-5 mr-2 flex-shrink-0 ${colors.expandIcon} bg-surface rounded-full border ${colors.border} flex items-center justify-center`}>
@@ -167,13 +167,13 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
           )}
         </div>
         {steps.length > 0 ? (
-          <ol className={`list-decimal list-inside ml-1 ${serifFontClass} text-sm`}>
+          <ol className={`list-decimal list-inside ml-1  text-sm`}>
             {steps.map((step, index) => (
               <li key={index}>{step}</li>
             ))}
           </ol>
         ) : (
-          <div className={`${serifFontClass} text-sm truncate max-w-[200px]`}>
+          <div className={` text-sm truncate max-w-[200px]`}>
             {data.label || t("dialogue.node")}
           </div>
         )}
@@ -187,7 +187,7 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
               <div className={`text-ink-soft text-xs ${fontClass} mb-1`}>
                 {t("dialogue.assistantResponse") || "助手回复"}:
               </div>
-              <p className={`${data.isCurrentPath ? "text-amber" : "text-ink-soft"} text-xs ${fontClass} leading-relaxed`}>
+              <p className={`${data.isCurrentPath ? "text-primary" : "text-ink-soft"} text-xs ${fontClass} leading-relaxed`}>
                 {data.assistantResponse}
               </p>
             </div>

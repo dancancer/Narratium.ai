@@ -223,12 +223,12 @@ export default function CharacterPage() {
   // ========== 渲染：加载状态 ==========
   if (loader.isLoading || loader.isInitializing) {
     return (
-      <div className="flex flex-col justify-center items-center h-full fantasy-bg">
+      <div className="flex flex-col justify-center items-center h-full ">
         <div className="relative w-12 h-12 flex items-center justify-center mb-4">
-          <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
+          <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
         </div>
-        <p className={`text-cream ${serifFontClass} text-center mb-2`}>
+        <p className={`text-cream  text-center mb-2`}>
           {loader.loadingPhase}
         </p>
         {loader.isInitializing && (
@@ -243,14 +243,14 @@ export default function CharacterPage() {
   // ========== 渲染：错误状态 ==========
   if (loader.error || !loader.character) {
     return (
-      <div className="flex flex-col items-center justify-center h-full fantasy-bg">
+      <div className="flex flex-col items-center justify-center h-full ">
         <h1 className="text-2xl text-cream mb-4">{t("characterChat.error")}</h1>
-        <p className="text-amber-soft mb-6">
+        <p className="text-primary-soft mb-6">
           {loader.error || t("characterChat.characterNotFound")}
         </p>
         <a
           href="/character-cards"
-          className="bg-muted-surface hover:bg-muted-surface text-cream font-medium py-2 px-4 rounded border border-ink"
+          className="bg-muted-surface hover:bg-muted-surface text-cream font-medium py-2 px-4 rounded border border-border"
         >
           {t("characterChat.backToCharacters")}
         </a>
@@ -260,7 +260,7 @@ export default function CharacterPage() {
 
   // ========== 渲染：主界面 ==========
   return (
-    <div className="flex h-full relative fantasy-bg overflow-hidden [left:var(--app-sidebar-width,0)]">
+    <div className="flex h-full relative  overflow-hidden [left:var(--app-sidebar-width,0)]">
       {/* 侧边栏容器：固定宽度，内部元素通过 transform 滑动 */}
       <div className={`${isMobile ? "" : sidebarCollapsed ? "w-0" : "w-[18rem]"} flex-shrink-0 transition-[width] duration-300 ease-out`}>
         <CharacterSidebar
@@ -276,7 +276,7 @@ export default function CharacterPage() {
       </div>
 
       {/* 主内容区：flex-1 自动填充剩余空间 */}
-      <div className="flex-1 fantasy-bg h-full flex flex-col min-w-0">
+      <div className="flex-1  h-full flex flex-col min-w-0">
         <CharacterChatHeader
           character={loader.character}
           serifFontClass={serifFontClass}

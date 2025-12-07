@@ -53,7 +53,7 @@ export default function MessageHeaderControls({
         active={streaming}
         onClick={handleStreamingClick}
         tooltip={streaming ? t("characterChat.disableStreaming") : t("characterChat.enableStreaming")}
-        activeColor="amber"
+        activeColor="primary"
         icon={<StreamIcon active={streaming} />}
       />
 
@@ -77,19 +77,19 @@ interface ToggleButtonProps {
   active: boolean;
   onClick: () => void;
   tooltip: string;
-  activeColor: "amber" | "blue";
+  activeColor: "primary" | "blue";
   icon: React.ReactNode;
 }
 
 function ToggleButton({ active, onClick, tooltip, activeColor, icon }: ToggleButtonProps) {
   const colorStyles = {
-    amber: {
-      active: "text-amber-400 hover:text-amber-300 border-amber-400/60 hover:border-amber-300/70 hover:shadow-[0_0_8px_rgba(252,211,77,0.4)]",
-      inactive: "text-ink-soft hover:text-amber-soft border-stroke hover:border-stroke-strong",
+    primary: {
+      active: "text-primary-400 hover:text-primary-300 border-primary-400/60 hover:border-primary-300/70 hover:shadow-[0_0_8px_rgba(252,211,77,0.4)]",
+      inactive: "text-ink-soft hover:text-primary-soft border-stroke hover:border-stroke-strong",
     },
     blue: {
       active: "text-blue-500 hover:text-blue-400 border-blue-500/60 hover:border-blue-400/70 hover:shadow-[0_0_8px_rgba(59,130,246,0.4)]",
-      inactive: "text-ink-soft hover:text-amber-soft border-stroke hover:border-stroke-strong",
+      inactive: "text-ink-soft hover:text-primary-soft border-stroke hover:border-stroke-strong",
     },
   };
 
@@ -98,10 +98,10 @@ function ToggleButton({ active, onClick, tooltip, activeColor, icon }: ToggleBut
   return (
     <button
       onClick={onClick}
-      className={`mx-1 w-6 h-6 flex items-center justify-center bg-surface rounded-lg border shadow-inner transition-all duration-300 group relative ${style}`}
+      className={`mx-1 w-6 h-6 flex items-center justify-center bg-surface rounded-md border  transition-all duration-300 group relative ${style}`}
       data-tooltip={tooltip}
     >
-      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-ink">
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border">
         {tooltip}
       </div>
       {icon}
@@ -110,7 +110,7 @@ function ToggleButton({ active, onClick, tooltip, activeColor, icon }: ToggleBut
 }
 
 function StreamIcon({ active }: { active: boolean }) {
-  return <Waves className={`w-3 h-3 ${active ? "text-amber-400" : ""}`} />;
+  return <Waves className={`w-3 h-3 ${active ? "text-primary-400" : ""}`} />;
 }
 
 function LightningIcon({ active }: { active: boolean }) {

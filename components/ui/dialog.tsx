@@ -65,14 +65,14 @@ const DialogContent = React.forwardRef<
         // 布局和间距
         "grid gap-4 p-6",
         // 边框和阴影
-        "border shadow-lg rounded-lg",
+        "border  rounded-md",
         // 动画
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
         "duration-200",
         // 主题样式
-        "bg-deep border-ink shadow-xl",
+        "bg-deep border-border shadow-xl",
         className,
       )}
       {...props}

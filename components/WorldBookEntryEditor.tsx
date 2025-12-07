@@ -106,14 +106,14 @@ export default function WorldBookEntryEditor({
   return (
     <>
       <Dialog open={isOpen && !isFullscreen && !!editingEntry} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden bg-deep border-ink gap-0 max-h-[85vh]">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden bg-deep border-border gap-0 max-h-[85vh]">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
           
           {editingEntry && (
             <>
-              <div className="p-4 bg-muted-surface/90 border-b border-ink/60 relative z-10">
+              <div className="p-4 bg-muted-surface/90 border-b border-border/60 relative z-10">
                 <DialogHeader>
-                  <DialogTitle className={`text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 magical-text ${serifFontClass}`}>
+                  <DialogTitle className={`text-lg font-semibold text-transparent  `}>
                     {editingEntry.id ? t("worldBook.editEntry") : t("worldBook.newEntry")}
                   </DialogTitle>
                 </DialogHeader>
@@ -123,33 +123,33 @@ export default function WorldBookEntryEditor({
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                      <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                         {t("worldBook.commentTitle")}
                       </label>
                       <input
                         type="text"
                         value={editingEntry.comment}
                         onChange={(e) => onEntryChange({ ...editingEntry, comment: e.target.value })}
-                        className={`w-full bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                        className={`w-full bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                         placeholder={t("worldBook.commentPlaceholder")}
                       />
                     </div>
                 
                     <div className="space-y-2">
-                      <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                      <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                         {t("worldBook.insertionOrder")}
                       </label>
                       <input
                         type="number"
                         value={editingEntry.insertion_order}
                         onChange={(e) => onEntryChange({ ...editingEntry, insertion_order: Number(e.target.value) })}
-                        className={`w-full bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                        className={`w-full bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                    <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                       {t("worldBook.primaryKeywords")}
                     </label>
                     <div className="space-y-2">
@@ -159,13 +159,13 @@ export default function WorldBookEntryEditor({
                             type="text"
                             value={key}
                             onChange={(e) => handleKeywordChange(index, e.target.value)}
-                            className={`flex-1 bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                            className={`flex-1 bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                             placeholder={t("worldBook.keywordPlaceholder")}
                           />
                           {editingEntry.keys.length > 1 && (
                             <button
                               onClick={() => handleRemoveKeyword(index)}
-                              className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                              className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-md hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
                             >
                               <X size={14} />
                             </button>
@@ -174,7 +174,7 @@ export default function WorldBookEntryEditor({
                       ))}
                       <button
                         onClick={handleAddKeyword}
-                        className={`text-sm text-amber-400 hover:text-amber-300 transition-all duration-300 flex items-center space-x-1 group ${fontClass}`}
+                        className={`text-sm text-primary-400 hover:text-primary-300 transition-all duration-300 flex items-center space-x-1 group ${fontClass}`}
                       >
                         <Plus size={14} className="transition-transform duration-300 group-hover:scale-110" />
                         <span>{t("worldBook.addKeyword")}</span>
@@ -183,7 +183,7 @@ export default function WorldBookEntryEditor({
                   </div>
 
                   <div className="space-y-3">
-                    <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                    <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                       {t("worldBook.secondaryKeywords")}
                     </label>
                     <div className="space-y-2">
@@ -193,12 +193,12 @@ export default function WorldBookEntryEditor({
                             type="text"
                             value={key}
                             onChange={(e) => handleSecondaryKeywordChange(index, e.target.value)}
-                            className={`flex-1 bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                            className={`flex-1 bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                             placeholder={t("worldBook.keywordPlaceholder")}
                           />
                           <button
                             onClick={() => handleRemoveSecondaryKeyword(index)}
-                            className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-lg hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                            className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-md hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
                           >
                             <X size={14} />
                           </button>
@@ -216,13 +216,13 @@ export default function WorldBookEntryEditor({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                      <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                         {t("worldBook.position")}
                       </label>
                       <select
                         value={editingEntry.position}
                         onChange={(e) => onEntryChange({ ...editingEntry, position: Number(e.target.value) })}
-                        className={`w-full bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                        className={`w-full bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                       >
                         <option value={0}>{t("worldBook.positionOptions.systemPromptStart")}</option>
                         <option value={1}>{t("worldBook.positionOptions.afterSystemPrompt")}</option>
@@ -233,7 +233,7 @@ export default function WorldBookEntryEditor({
                     </div>
           
                     <div className="space-y-2">
-                      <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                      <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                         {t("worldBook.depthLabel")}
                       </label>
                       <input
@@ -242,48 +242,48 @@ export default function WorldBookEntryEditor({
                         max="10"
                         value={editingEntry.depth}
                         onChange={(e) => onEntryChange({ ...editingEntry, depth: Number(e.target.value) })}
-                        className={`w-full bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
+                        className={`w-full bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                       />
                     </div>
                   </div>
               
                   <div className="grid grid-cols-2 gap-3">
-                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg bg-muted-surface/40 border border-ink/40 hover:bg-muted-surface/60 hover:border-ink/60 transition-all duration-300 group ${fontClass}`}>
+                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-md bg-muted-surface/40 border border-border/40 hover:bg-muted-surface/60 hover:border-border/60 transition-all duration-300 group ${fontClass}`}>
                       <input
                         type="checkbox"
                         checked={editingEntry.enabled}
                         onChange={(e) => onEntryChange({ ...editingEntry, enabled: e.target.checked })}
-                        className="w-4 h-4 rounded border-ink bg-deep text-amber-500 focus:ring-amber-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border bg-deep text-primary-500 focus:ring-primary-500/50 focus:ring-2 transition-all duration-300"
                       />
-                      <span className="text-sm text-cream-soft group-hover:text-amber-200 transition-colors duration-300">{t("worldBook.enabledLabel")}</span>
+                      <span className="text-sm text-cream-soft group-hover:text-primary-200 transition-colors duration-300">{t("worldBook.enabledLabel")}</span>
                     </label>
                 
-                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg bg-muted-surface/40 border border-ink/40 hover:bg-muted-surface/60 hover:border-ink/60 transition-all duration-300 group ${fontClass}`}>
+                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-md bg-muted-surface/40 border border-border/40 hover:bg-muted-surface/60 hover:border-border/60 transition-all duration-300 group ${fontClass}`}>
                       <input
                         type="checkbox"
                         checked={editingEntry.use_regex}
                         onChange={(e) => onEntryChange({ ...editingEntry, use_regex: e.target.checked })}
-                        className="w-4 h-4 rounded border-ink bg-deep text-blue-500 focus:ring-blue-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border bg-deep text-blue-500 focus:ring-blue-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-blue-200 transition-colors duration-300">{t("worldBook.regexLabel")}</span>
                     </label>
                 
-                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg bg-muted-surface/40 border border-ink/40 hover:bg-muted-surface/60 hover:border-ink/60 transition-all duration-300 group ${fontClass}`}>
+                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-md bg-muted-surface/40 border border-border/40 hover:bg-muted-surface/60 hover:border-border/60 transition-all duration-300 group ${fontClass}`}>
                       <input
                         type="checkbox"
                         checked={editingEntry.selective}
                         onChange={(e) => onEntryChange({ ...editingEntry, selective: e.target.checked })}
-                        className="w-4 h-4 rounded border-ink bg-deep text-green-500 focus:ring-green-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border bg-deep text-green-500 focus:ring-green-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-green-200 transition-colors duration-300">{t("worldBook.selectiveLabel")}</span>
                     </label>
                 
-                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-lg bg-muted-surface/40 border border-ink/40 hover:bg-muted-surface/60 hover:border-ink/60 transition-all duration-300 group ${fontClass}`}>
+                    <label className={`flex items-center space-x-3 cursor-pointer p-3 rounded-md bg-muted-surface/40 border border-border/40 hover:bg-muted-surface/60 hover:border-border/60 transition-all duration-300 group ${fontClass}`}>
                       <input
                         type="checkbox"
                         checked={editingEntry.constant}
                         onChange={(e) => onEntryChange({ ...editingEntry, constant: e.target.checked })}
-                        className="w-4 h-4 rounded border-ink bg-deep text-purple-500 focus:ring-purple-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border bg-deep text-purple-500 focus:ring-purple-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-purple-200 transition-colors duration-300">{t("worldBook.constantLabel")}</span>
                     </label>
@@ -291,7 +291,7 @@ export default function WorldBookEntryEditor({
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <label className={`block text-sm font-medium text-amber-soft ${fontClass}`}>
+                      <label className={`block text-sm font-medium text-primary-soft ${fontClass}`}>
                         {t("worldBook.contentLabel")}
                       </label>
                       <div className="flex items-center space-x-2">
@@ -310,24 +310,24 @@ export default function WorldBookEntryEditor({
                     <textarea
                       value={editingEntry.content}
                       onChange={(e) => onEntryChange({ ...editingEntry, content: e.target.value })}
-                      className={`w-full h-36 bg-muted-surface/80 border border-ink/60 rounded-lg px-3 py-3 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 resize-none fantasy-scrollbar backdrop-blur-sm ${fontClass}`}
+                      className={`w-full h-36 bg-muted-surface/80 border border-border/60 rounded-md px-3 py-3 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 resize-none fantasy-scrollbar backdrop-blur-sm ${fontClass}`}
                       placeholder={t("worldBook.contentPlaceholder")}
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 border-t border-ink/60 bg-deep/90 backdrop-blur-sm flex justify-end space-x-3 relative z-10">
+              <div className="p-4 border-t border-border/60 bg-deep/90 backdrop-blur-sm flex justify-end space-x-3 relative z-10">
                 <button
                   onClick={onClose}
                   disabled={isSaving}
-                  className={`px-4 py-2.5 text-sm text-ink-soft hover:text-cream-soft transition-all duration-300 disabled:opacity-50 rounded-lg hover:bg-stroke/30 ${fontClass}`}
+                  className={`px-4 py-2.5 text-sm text-ink-soft hover:text-cream-soft transition-all duration-300 disabled:opacity-50 rounded-md hover:bg-stroke/30 ${fontClass}`}
                 >
                   {t("worldBook.cancel")}
                 </button>
                 <button
                   onClick={onSave}
-                  className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${fontClass} ${"bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105"
+                  className={`px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-300 ${fontClass} ${"bg-gradient-to-r from-primary-600 to-orange-600 hover:from-primary-500 hover:to-orange-500 text-white  shadow-primary-500/25 hover:shadow-primary-500/40 hover:scale-105"
                   }`}
                 >
                   {isSaving ? (
@@ -347,13 +347,13 @@ export default function WorldBookEntryEditor({
 
       {/* 全屏模式 */}
       <Dialog open={isFullscreen && !!editingEntry} onOpenChange={(open) => !open && setIsFullscreen(false)}>
-        <DialogContent className="max-w-5xl p-0 overflow-hidden bg-deep border-ink gap-0 h-[85vh]">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
+        <DialogContent className="max-w-5xl p-0 overflow-hidden bg-deep border-border gap-0 h-[85vh]">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
           
-          <div className="p-4 bg-muted-surface/90 border-b border-ink/60 relative z-10">
+          <div className="p-4 bg-muted-surface/90 border-b border-border/60 relative z-10">
             <DialogHeader>
               <div className="flex items-center space-x-3">
-                <DialogTitle className={`text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 magical-text ${serifFontClass}`}>
+                <DialogTitle className={`text-lg font-semibold text-transparent `}>
                   {t("worldBook.contentLabel")} - {editingEntry?.comment || t("worldBook.newEntry")}
                 </DialogTitle>
                 <span className={`text-sm text-ink-soft/70 bg-muted-surface/60 px-3 py-1.5 rounded-md ${fontClass}`}>
@@ -368,7 +368,7 @@ export default function WorldBookEntryEditor({
               <textarea
                 value={editingEntry.content}
                 onChange={(e) => onEntryChange({ ...editingEntry, content: e.target.value })}
-                className={`w-full h-full bg-muted-surface/80 border border-ink/60 rounded-lg px-4 py-4 text-cream-soft focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300 resize-none fantasy-scrollbar backdrop-blur-sm text-[16px] leading-[1.6] ${fontClass}`}
+                className={`w-full h-full bg-muted-surface/80 border border-border/60 rounded-md px-4 py-4 text-cream-soft focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 resize-none fantasy-scrollbar backdrop-blur-sm text-[16px] leading-[1.6] ${fontClass}`}
                 placeholder={t("worldBook.contentPlaceholder")}
                 autoFocus
               />

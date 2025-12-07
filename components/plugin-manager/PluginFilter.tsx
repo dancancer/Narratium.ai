@@ -70,8 +70,8 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-2 bg-gradient-to-r from-ink/25 to-ink/15 hover:from-ink/35 hover:to-ink/25 text-cream px-4 py-2.5 rounded-xl border border-ink/40 hover:border-cream/30 transition-all duration-200 group min-w-[140px]">
-          <Filter className="w-4 h-4 text-amber-soft group-hover:text-cream transition-colors" />
+        <button className="flex items-center space-x-2 bg-gradient-to-r from-ink/25 to-ink/15 hover:from-ink/35 hover:to-ink/25 text-cream px-4 py-2.5 rounded-xl border border-border/40 hover:border-cream/30 transition-all duration-200 group min-w-[140px]">
+          <Filter className="w-4 h-4 text-primary-soft group-hover:text-cream transition-colors" />
           {currentFilter && (
             <>
               <div className="flex items-center space-x-2 flex-1">
@@ -79,17 +79,17 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
                 <span className={`text-sm font-medium ${fontClass}`}>
                   {t(currentFilter.labelKey)}
                 </span>
-                <span className="text-xs bg-ink/40 px-2 py-0.5 rounded-full text-amber-soft">
+                <span className="text-xs bg-ink/40 px-2 py-0.5 rounded-full text-primary-soft">
                   {pluginCounts[currentFilter.value]}
                 </span>
               </div>
-              <ChevronDown className="w-4 h-4 text-amber-soft transition-transform duration-200 group-data-[state=open]:rotate-180" />
+              <ChevronDown className="w-4 h-4 text-primary-soft transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </>
           )}
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-[200px] bg-deep border-ink/40">
+      <DropdownMenuContent className="w-[200px] bg-deep border-border/40">
         {FILTER_OPTIONS.map((option) => (
           <DropdownMenuItem
             key={option.value}
@@ -103,7 +103,7 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
             <option.icon className={`w-4 h-4 ${option.color}`} />
             <span
               className={`text-sm flex-1 ${
-                value === option.value ? "text-cream font-medium" : "text-amber-soft"
+                value === option.value ? "text-cream font-medium" : "text-primary-soft"
               } ${fontClass}`}
             >
               {t(option.labelKey)}
@@ -112,7 +112,7 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
               className={`text-xs px-2 py-1 rounded-full ${
                 value === option.value
                   ? "bg-cream/20 text-cream"
-                  : "bg-ink/30 text-amber-soft"
+                  : "bg-ink/30 text-primary-soft"
               }`}
             >
               {pluginCounts[option.value]}

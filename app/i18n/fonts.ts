@@ -6,12 +6,12 @@ export const languageFontMap: Record<Language, string> = {
 };
 
 export const languageSerifFontMap: Record<Language, string> = {
-  "zh": "font-noto-serif-sc",
-  "en": "font-source-serif",
+  "zh": "font-source-sans",
+  "en": "font-source-sans",
 };
 
 export const languageTitleFontMap: Record<Language, string> = {
-  "zh": "font-noto-serif-sc",
+  "zh": "font-cinzel",
   "en": "font-cinzel",
 };
 
@@ -28,5 +28,5 @@ export const getLanguageTitleFont = (language: Language): string => {
 };
 
 export const fontClass = "font-sans";
-export const serifFontClass = "font-serif";
+export const serifFontClass = "font-sans";
 export const titleFontClass = "font-title";

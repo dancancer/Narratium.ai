@@ -49,30 +49,30 @@ export default function CreatorAreaBanner({
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-deep border-b border-ink p-4 flex items-center"
+      className="bg-deep border-b border-border p-4 flex items-center"
     >
       <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 flex-1">
         <div className="flex items-center space-x-4">
           <button
             onClick={onBack}
-            className="group p-2.5 bg-black/40 border border-amber-500/30 rounded-xl hover:bg-black/50 hover:border-amber-400/50 transition-all duration-200 backdrop-blur-sm flex-shrink-0"
+            className="group p-2.5 bg-black/40 border border-primary-500/30 rounded-xl hover:bg-black/50 hover:border-primary-400/50 transition-all duration-200 backdrop-blur-sm flex-shrink-0"
           >
-            <ArrowLeft className="w-4 h-4 text-amber-soft group-hover:text-amber-400 transition-colors" />
+            <ArrowLeft className="w-4 h-4 text-primary-soft group-hover:text-primary-400 transition-colors" />
           </button>
           
           <div className="flex items-center space-x-3">
-            <h2 className={`text-lg md:text-xl text-cream-soft magical-text ${serifFontClass} truncate max-w-[200px] md:max-w-[300px]`}>
+            <h2 className={`text-lg md:text-xl text-cream-soft magical-text  truncate max-w-[200px] md:max-w-[300px]`}>
               {session?.title || "创作工坊"}
             </h2>
-            <div className="p-1.5 rounded-lg bg-gradient-to-r from-amber-500/20 to-orange-400/20 border border-amber-500/30 flex-shrink-0">
-              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-amber-400 fantasy-glow" />
+            <div className="p-1.5 rounded-md bg-gradient-to-r from-primary-500/20 to-orange-400/20 border border-primary-500/30 flex-shrink-0">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400 fantasy-glow" />
             </div>
           </div>
         </div>
 
         {session?.research_state?.main_objective && (
           <div className="flex-1 min-w-0">
-            <p className={`text-amber-soft/80 text-xs md:text-sm leading-relaxed line-clamp-1 ${fontClass}`}>
+            <p className={`text-primary-soft/80 text-xs md:text-sm leading-relaxed line-clamp-1 ${fontClass}`}>
               {session.research_state.main_objective}
             </p>
           </div>
@@ -82,8 +82,8 @@ export default function CreatorAreaBanner({
       {/* Right side - Optional status indicator */}
       <div className="flex items-center space-x-2 flex-shrink-0">
         <div className="hidden sm:flex items-center space-x-2">
-          <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-          <span className={`text-xs text-amber-soft/70 ${fontClass}`}>
+          <div className="w-2 h-2 bg-primary-400 rounded-full animate-pulse"></div>
+          <span className={`text-xs text-primary-soft/70 ${fontClass}`}>
             Active
           </span>
         </div>

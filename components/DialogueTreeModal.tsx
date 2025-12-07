@@ -287,15 +287,15 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <DialogueFlowStyles />
       <div className="absolute inset-0 backdrop-blur-sm"></div>
-      <div className="bg-deep bg-opacity-75 border border-ink rounded-lg shadow-lg p-4 w-[90%] h-[80%] max-w-5xl mx-4 fantasy-bg relative z-10 backdrop-filter backdrop-blur-sm">
+      <div className="bg-deep bg-opacity-75 border border-border rounded-md  p-4 w-[90%] h-[80%] max-w-5xl mx-4  relative z-10 backdrop-filter backdrop-blur-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className={`text-cream text-lg ${serifFontClass}`}>{t("dialogue.treeVisualization")}</h3>
+          <h3 className={`text-cream text-lg `}>{t("dialogue.treeVisualization")}</h3>
           <button
             onClick={() => {
               trackButtonClick("DialogueTreeModal", "close_modal");
               onClose();
             }}
-            className="text-text-muted hover:text-amber-400 transition-colors duration-300"
+            className="text-text-muted hover:text-primary-400 transition-colors duration-300"
           >
             <X size={20} />
           </button>
@@ -349,31 +349,31 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
             >
               <MiniMap
                 nodeStrokeWidth={3}
-                nodeColor="var(--color-amber)"
+                nodeColor="var(--color-primary)"
                 maskColor="rgba(30, 28, 27, 0.5)"
-                className="fantasy-bg border border-ink rounded-md shadow-md overflow-hidden bg-[rgba(28,28,27,0.7)]"
+                className=" border border-border rounded-md  overflow-hidden bg-[rgba(28,28,27,0.7)]"
               />
               <Background color="var(--color-ink)" gap={16} size={1.5} />
-              <Panel position="top-right" className="fantasy-bg border border-ink p-3 rounded-md shadow-md flex items-center gap-2">
-                <span className={`text-amber text-xs ${fontClass}`}>
+              <Panel position="top-right" className=" border border-border p-3 rounded-md  flex items-center gap-2">
+                <span className={`text-primary text-xs ${fontClass}`}>
                   {layoutMethod === "elk" ? "ELK" : "Grid"} · {manualCount} {t("dialogue.manualPositions")}
                 </span>
                 <button
                   onClick={() => handleResetLayout()}
-                  className={`text-text-muted hover:text-amber-400 transition-colors duration-300 text-xs ${fontClass} px-2 py-1 rounded hover:bg-muted-surface`}
+                  className={`text-text-muted hover:text-primary-400 transition-colors duration-300 text-xs ${fontClass} px-2 py-1 rounded hover:bg-muted-surface`}
                 >
                   {t("dialogue.resetLayout")}
                 </button>
                 <button
                   onClick={() => loadDialogue(dataLoaded ? "incremental" : "full")}
-                  className={`px-3 py-1 rounded-md border border-ink text-cream hover:text-amber-300 hover:border-amber-500 transition-colors text-xs ${fontClass}`}
+                  className={`px-3 py-1 rounded-md border border-border text-cream hover:text-primary-300 hover:border-primary-500 transition-colors text-xs ${fontClass}`}
                   disabled={isRefreshing}
                 >
                   {isRefreshing ? t("common.loading") : t("common.refresh")}
                 </button>
                 <button
                   onClick={handleHighlightPath}
-                  className={`px-3 py-1 rounded-md border border-ink text-cream hover:text-amber-300 hover:border-amber-500 transition-colors text-xs ${fontClass}`}
+                  className={`px-3 py-1 rounded-md border border-border text-cream hover:text-primary-300 hover:border-primary-500 transition-colors text-xs ${fontClass}`}
                 >
                   {t("dialogue.highlightPath")}
                 </button>

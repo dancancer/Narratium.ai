@@ -8,12 +8,13 @@
  */
 
 import React, { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * 类型定义
  * ───────────────────────────────────────────────────────────────────────────── */
 
-type AccentColor = "amber" | "purple" | "blue";
+type AccentColor = "primary" | "purple" | "blue";
 
 interface SidebarMenuItemProps {
   /** 图标元素 */
@@ -42,32 +43,19 @@ interface SidebarMenuItemProps {
  * 颜色映射 - 简洁的数据驱动而非条件分支
  * ───────────────────────────────────────────────────────────────────────────── */
 
-const colorMap: Record<AccentColor, { gradient: string; text: string; shadow: string }> = {
-  amber: {
-    gradient: "from-amber-500/10",
-    text: "group-hover:text-amber-400",
-    shadow: "group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]",
+const colorMap: Record<AccentColor, { gradient: string; line: string }> = {
+  primary: {
+    gradient: "from-primary-500/10",
+    line: "via-primary-400",
   },
   purple: {
     gradient: "from-purple-500/10",
-    text: "group-hover:text-purple-400",
-    shadow: "group-hover:shadow-[0_0_8px_rgba(167,139,250,0.4)]",
+    line: "via-purple-400",
   },
   blue: {
     gradient: "from-blue-500/10",
-    text: "group-hover:text-blue-400",
-    shadow: "group-hover:shadow-[0_0_8px_rgba(96,165,250,0.4)]",
+    line: "via-blue-400",
   },
-};
-
-/* ─────────────────────────────────────────────────────────────────────────────
- * 底部渐变线颜色
- * ───────────────────────────────────────────────────────────────────────────── */
-
-const lineColorMap: Record<AccentColor, string> = {
-  amber: "via-amber-400",
-  purple: "via-purple-400",
-  blue: "via-blue-400",
 };
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -82,13 +70,15 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   href,
   isCollapsed = false,
   isMobile = false,
-  accentColor = "amber",
+  accentColor = "primary",
   isActive = false,
   suffix,
 }) => {
   const colors = colorMap[accentColor];
-  const lineColor = lineColorMap[accentColor];
   const iconSize = isMobile ? "w-6 h-6" : "w-8 h-8";
+  const focusRing =
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  const interactiveState = isActive ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground";
 
   /* ─── 折叠态：仅显示图标 ─── */
   if (isCollapsed) {
@@ -98,10 +88,20 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     return (
       <Wrapper
         {...wrapperProps}
-        className="menu-item flex justify-center p-2 rounded-md cursor-pointer hover:bg-muted-surface transition-all duration-300"
+        className={cn(
+          "menu-item flex justify-center p-2 rounded-md cursor-pointer transition-all duration-300",
+          interactiveState,
+          focusRing,
+        )}
       >
         <div
-          className={`${iconSize} flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]`}
+          className={cn(
+            iconSize,
+            "flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300",
+            isActive
+              ? "border-accent text-accent-foreground shadow-[0_0_10px_rgba(0,0,0,0.35)]"
+              : "hover:text-accent-foreground hover:border-accent ",
+          )}
         >
           {icon}
         </div>
@@ -114,25 +114,48 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     <>
       {/* 背景渐变层 */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} via-transparent to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0`}
+        className={cn(
+          "absolute inset-0 bg-gradient-to-br via-transparent to-transparent rounded-md transition-opacity duration-300 z-0",
+          colors.gradient,
+          isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+        )}
       />
       {/* 背景色层 */}
-      <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+      <div
+        className={cn(
+          "absolute inset-0 w-full h-full bg-stroke transition-opacity duration-300 z-0",
+          isActive ? "opacity-10" : "opacity-0 group-hover:opacity-10",
+        )}
+      />
       {/* 底部渐变线 */}
       <div
-        className={`absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent ${lineColor} to-transparent w-0 group-hover:w-full transition-all duration-500 z-5`}
+        className={cn(
+          "absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent to-transparent transition-all duration-500 z-5",
+          colors.line,
+          isActive ? "w-full opacity-100" : "w-0 group-hover:w-full",
+        )}
       />
       {/* 内容区 */}
       <div className="relative z-5 flex items-center justify-between w-full">
         <div className="flex items-center">
           <div
-            className={`${iconSize} flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong ${colors.text} ${colors.shadow}`}
+            className={cn(
+              iconSize,
+              "flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-md border border-stroke  transition-all duration-300",
+              isActive
+                ? "border-accent text-accent-foreground shadow-[0_0_10px_rgba(0,0,0,0.35)]"
+                : "group-hover:border-accent group-hover:text-accent-foreground group-",
+            )}
           >
             {icon}
           </div>
           <div className="ml-2 transition-all duration-300 ease-in-out overflow-hidden">
             <span
-              className={`magical-text whitespace-nowrap block text-xs md:text-sm ${colors.text} transition-colors duration-300 ${fontClass}`}
+              className={cn(
+                "magical-text whitespace-nowrap block text-xs md:text-sm transition-colors duration-300",
+                fontClass,
+                isActive ? "text-accent-foreground" : "group-hover:text-accent-foreground",
+              )}
             >
               {label}
             </span>
@@ -143,7 +166,11 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     </>
   );
 
-  const baseClassName = `menu-item relative group flex items-center w-full p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 cursor-pointer ${isActive ? "bg-muted-surface" : ""}`;
+  const baseClassName = cn(
+    "menu-item relative group flex items-center w-full p-2 rounded-md overflow-hidden transition-all duration-300 cursor-pointer",
+    interactiveState,
+    focusRing,
+  );
 
   /* ─── 链接 or 按钮 ─── */
   if (href) {

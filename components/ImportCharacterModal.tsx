@@ -194,20 +194,20 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
         <div className="p-6">
           <DialogHeader className="mb-4">
-            <DialogTitle className={`text-xl text-cream-soft magical-text ${serifFontClass}`}>
+            <DialogTitle className={`text-xl text-cream-soft magical-text `}>
               {t("importCharacterModal.title")}
             </DialogTitle>
           </DialogHeader>
           
-          <p className={`text-amber-soft mb-6 text-sm ${fontClass}`}>
+          <p className={`text-primary-soft mb-6 text-sm ${fontClass}`}>
             {t("importCharacterModal.description")}
           </p>
               
           <div
-            className={`border-2 border-dashed rounded-lg p-8 mb-4 text-center transition-colors duration-300 ${isDragging ? "border-amber-bright bg-muted-surface" : "border-ink hover:border-ink-soft"}`}
+            className={`border-2 border-dashed rounded-md p-8 mb-4 text-center transition-colors duration-300 ${isDragging ? "border-primary-bright bg-muted-surface" : "border-border hover:border-border"}`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -223,7 +223,7 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
             />
                 
             <div className="flex flex-col items-center justify-center">
-              <UploadCloud className={`w-12 h-12 mb-3 ${selectedFiles.length > 0 ? "text-amber-bright" : "text-ink-soft"}`} strokeWidth={1.5} />
+              <UploadCloud className={`w-12 h-12 mb-3 ${selectedFiles.length > 0 ? "text-primary-bright" : "text-ink-soft"}`} strokeWidth={1.5} />
                   
               {selectedFiles.length > 0 ? (
                 <div className={`text-cream-soft ${fontClass} max-w-full`}>
@@ -240,7 +240,7 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
                       </p>
                       <div className="mt-2 max-h-16 overflow-y-auto text-xs space-y-1">
                         {selectedFiles.slice(0, 3).map((file, index) => (
-                          <p key={index} className="text-amber-soft truncate">{file.name}</p>
+                          <p key={index} className="text-primary-soft truncate">{file.name}</p>
                         ))}
                         {selectedFiles.length > 3 && (
                           <p className="text-ink-soft">... and {selectedFiles.length - 3} more</p>
@@ -268,7 +268,7 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
           <div className="flex justify-end space-x-3">
             <button
               onClick={() => handleOpenChange(false)}
-              className={`px-4 py-2 text-amber-soft hover:text-highlight transition-colors ${fontClass}`}
+              className={`px-4 py-2 text-primary-soft hover:text-highlight transition-colors ${fontClass}`}
             >
               {t("common.cancel")}  
             </button>
@@ -276,11 +276,11 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
             <button
               onClick={(e) => {trackButtonClick("ImportCharacterModal", "导入角色");handleUpload();}}
               disabled={selectedFiles.length === 0 || isUploading}
-              className={`px-4 py-2 bg-muted-surface hover:bg-muted-surface border border-ink rounded-md text-amber-bright transition-colors ${fontClass} ${(selectedFiles.length === 0 || isUploading) ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`px-4 py-2 bg-muted-surface hover:bg-muted-surface border border-border rounded-md text-primary-bright transition-colors ${fontClass} ${(selectedFiles.length === 0 || isUploading) ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {isUploading ? (
                 <div className="flex items-center">
-                  <div className="w-4 h-4 mr-2 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+                  <div className="w-4 h-4 mr-2 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
                   {selectedFiles.length > 1 
                     ? `${t("importCharacterModal.uploading")} (${selectedFiles.length} files)`
                     : t("importCharacterModal.uploading")

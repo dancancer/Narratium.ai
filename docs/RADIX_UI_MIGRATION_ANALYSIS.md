@@ -247,7 +247,7 @@ export default function PluginManagerModal({ isOpen, onClose }: Props) {
           <DialogTitle>{t("plugins.title")}</DialogTitle>
         </DialogHeader>
         
-        <div className="px-6 py-3 border-b border-ink/30">
+        <div className="px-6 py-3 border-b border-border/30">
           <PluginFilter value={filter} onChange={setFilter} />
         </div>
         
@@ -255,7 +255,7 @@ export default function PluginManagerModal({ isOpen, onClose }: Props) {
           <PluginList plugins={plugins} filter={filter} />
         </div>
         
-        <div className="px-6 py-4 border-t border-ink/30">
+        <div className="px-6 py-4 border-t border-border/30">
           <PluginStats plugins={plugins} />
         </div>
       </DialogContent>
@@ -344,7 +344,7 @@ export default function ScriptDebugPanel({ isOpen, onClose, scripts }: Props) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] p-0">
-        <DialogHeader className="p-4 border-b border-ink">
+        <DialogHeader className="p-4 border-b border-border">
           <DialogTitle>Script Execution Debugger</DialogTitle>
         </DialogHeader>
         

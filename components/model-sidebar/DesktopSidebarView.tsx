@@ -67,15 +67,15 @@ export function DesktopSidebarView(props: SidebarViewProps) {
 
   return (
     <div
-      className={`h-full magic-border border-l border-ink breathing-bg text-text transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-0"
+      className={`h-full magic-border border-l border-border breathing-bg text-text transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-0"
       }`}
     >
       <div className={`w-64 h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-y-auto fantasy-scrollbar`}>
-        <div className="flex justify-between items-center p-3 border-b border-ink bg-gradient-to-r from-canvas to-input">
-          <h1 className={`text-base magical-text ${serifFontClass}`}>{t("modelSettings.title")}</h1>
+        <div className="flex justify-between items-center p-3 border-b border-border bg-gradient-to-r from-canvas to-input">
+          <h1 className={`text-base magical-text `}>{t("modelSettings.title")}</h1>
           <button
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
-            className="w-6 h-6 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+            className="w-6 h-6 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
           >
             <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300" />
           </button>
@@ -88,7 +88,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </label>
               <button 
                 onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
-                className="text-xs sm:text-xs text-2xs text-amber hover:text-cream transition-all duration-200 px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 rounded border border-ink hover:border-amber hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
+                className="text-xs sm:text-xs text-2xs text-primary hover:text-cream transition-all duration-200 px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 rounded border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
               >
                 <Plus className="sm:w-2.5 sm:h-2.5 w-2 h-2" />
                 <span className="sm:block hidden">{t("modelSettings.newConfig") || "New Config"}</span>
@@ -98,7 +98,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
             
             {!showNewConfigForm && configs.length > 0 && (
               <div className="mb-1.5 sm:mb-1.5 mb-1">
-                <p className={`text-xs sm:text-xs text-2xs italic transition-colors duration-200 ${isConfigHovered ? "text-amber" : "text-text-muted"}`}>
+                <p className={`text-xs sm:text-xs text-2xs italic transition-colors duration-200 ${isConfigHovered ? "text-primary" : "text-text-muted"}`}>
                   {t("modelSettings.doubleClickToEditName") || "Double-click configuration name to edit"}
                 </p>
               </div>
@@ -111,8 +111,8 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                     key={config.id} 
                     className={`flex items-center justify-between p-1.5 sm:p-1.5 p-1 rounded-md cursor-pointer text-sm sm:text-sm text-xs transition-all duration-200 group ${
                       activeConfigId === config.id 
-                        ? "bg-muted-surface border border-amber shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
-                        : "bg-card hover:bg-stroke border border-transparent hover:border-ink"
+                        ? "bg-muted-surface border border-primary shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
+                        : "bg-card hover:bg-stroke border border-transparent hover:border-border"
                     }`}
                     onClick={() => handleSwitchConfig(config.id)}
                     onMouseEnter={() => setIsConfigHovered(true)}
@@ -126,7 +126,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                           onChange={(e) => setEditingName(e.target.value)}
                           onBlur={handleSaveName}
                           onKeyDown={handleKeyDown}
-                          className="bg-surface border border-ink rounded py-0.5 px-1 sm:py-0.5 sm:px-1 py-0 px-0.5 text-xs sm:text-xs text-2xs text-cream w-full focus:border-amber focus:outline-none"
+                          className="bg-surface border border-border rounded py-0.5 px-1 sm:py-0.5 sm:px-1 py-0 px-0.5 text-xs sm:text-xs text-2xs text-cream w-full focus:border-primary focus:outline-none"
                           onClick={e => e.stopPropagation()}
                           autoFocus
                         />
@@ -140,7 +140,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                           </span>
                           {showEditHint && configs.length > 1 && (
                             <span
-                              className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-6"} left-0 z-[9999] bg-overlay text-amber text-2xs sm:text-2xs text-3xs px-2 py-1 sm:px-2 sm:py-1 px-1 py-0.5 rounded border border-amber whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_color-mix(in srgb,var(--color-amber) 20%,transparent)]`}
+                              className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-6"} left-0 z-[9999] bg-overlay text-primary text-2xs sm:text-2xs text-3xs px-2 py-1 sm:px-2 sm:py-1 px-1 py-0.5 rounded border border-primary whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_color-mix(in srgb,var(--color-primary) 20%,transparent)]`}
                             >
                               {t("modelSettings.doubleClickToEditName")}
                             </span>
@@ -163,7 +163,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
           </div>
 
           {!showNewConfigForm && activeConfigId && (
-            <div className="border border-ink rounded-md p-2.5 sm:p-2.5 p-2 mb-3 sm:mb-3 mb-2 bg-surface bg-opacity-50 backdrop-blur-sm">
+            <div className="border border-border rounded-md p-2.5 sm:p-2.5 p-2 mb-3 sm:mb-3 mb-2 bg-surface bg-opacity-50 backdrop-blur-sm">
               <div className="mb-1.5 sm:mb-1.5 mb-1">
                 <span className="text-xs sm:text-xs text-2xs text-text-muted">{t("modelSettings.llmType") || "API Type"}:</span>
                 <span className="ml-2 text-xs sm:text-xs text-2xs text-cream">{describeLlmType(llmType)}</span>
@@ -188,7 +188,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   <select
                     value={model}
                     onChange={(e) => handleInlineModelChange(e.target.value)}
-                    className="bg-card border border-ink rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] truncate focus:border-amber focus:outline-none transition-colors"
+                    className="bg-card border border-border rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] truncate focus:border-primary focus:outline-none transition-colors"
                   >
                     <option value="" disabled className="truncate">{t("modelSettings.selectModel") || "Select a model..."}</option>
                     {availableModels.map((option) => (
@@ -200,7 +200,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                     type="text"
                     value={model}
                     onChange={(e) => handleInlineModelChange(e.target.value)}
-                    className="bg-card border border-ink rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] focus:border-amber focus:outline-none transition-colors"
+                    className="bg-card border border-border rounded py-0.5 px-1.5 sm:py-0.5 sm:px-1.5 py-0 px-1 text-cream text-xs sm:text-xs text-2xs max-w-[200px] sm:max-w-[200px] max-w-[150px] focus:border-primary focus:outline-none transition-colors"
                     placeholder={getModelPlaceholder(llmType)}
                   />
                 )}
@@ -216,7 +216,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 </label>
                 <input
                   type="text"
-                  className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                  className="bg-card border border-border rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                   placeholder={t("modelSettings.configNamePlaceholder")}
                   value={newConfigName}
                   onChange={(e) => setNewConfigName(e.target.value)}
@@ -232,7 +232,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   onChange={(e) => {
                     setLlmType(e.target.value as LLMType);
                   }}
-                  className="w-full bg-card border border-ink rounded py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                  className="w-full bg-card border border-border rounded py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                 >
                   <option value="openai">OpenAI API</option>
                   <option value="ollama">Ollama API</option>
@@ -248,7 +248,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   <input
                     type="text"
                     id="baseUrl"
-                    className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                    className="bg-card border border-border rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                     placeholder={getBaseUrlPlaceholder(llmType)}
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
@@ -264,7 +264,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   <input
                     type="text"
                     id="apiKey"
-                    className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                    className="bg-card border border-border rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                     placeholder="sk-..."
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
@@ -276,7 +276,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <div className="relative">
                   {llmType !== "ollama" && (
                     <button 
-                      className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-colors magical-text ${fontClass}`} 
+                      className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-colors magical-text ${fontClass}`} 
                       onClick={() => handleGetModelList(llmType, baseUrl, apiKey)}
                     >{t("modelSettings.getModelList") || "Get Model List"}</button>
                   )}
@@ -312,7 +312,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <input
                   type="text"
                   id="model"
-                  className="bg-card border border-ink rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                  className="bg-card border border-border rounded w-full py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                   placeholder={getModelPlaceholder(llmType)}
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
@@ -326,7 +326,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                         trackButtonClick("ModelSidebar", t("modelSettings.selectModel") || "Select a model...");
                         setModel(e.target.value);
                       }}
-                      className="w-full bg-card border border-ink rounded py-2 px-3 sm:py-2 sm:px-3 py-1.5 px-2 text-text text-sm sm:text-sm text-xs leading-tight focus:outline-none focus:border-amber transition-colors"
+                      className="w-full bg-card border border-border rounded py-2 px-3 sm:py-2 sm:px-3 py-1.5 px-2 text-text text-sm sm:text-sm text-xs leading-tight focus:outline-none focus:border-primary transition-colors"
                     >
                       <option value="" disabled className="text-text-muted">
                         {t("modelSettings.selectModel") || "Select a model..."}
@@ -348,14 +348,14 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <div className="flex gap-2 sm:gap-2 gap-1">
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建配置"); e.stopPropagation(); handleSave();}}
-                  className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-amber transition-colors magical-text ${fontClass}`}
+                  className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-primary transition-colors magical-text ${fontClass}`}
                 >
                   <span className="sm:block hidden">{t("modelSettings.createConfig") || "Create Configuration"}</span>
                   <span className="sm:hidden block">Create</span>
                 </button>
                 <button
                   onClick={() => {trackButtonClick("cancel_create_config_btn", "取消创建配置"); handleCancelCreate();}}
-                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 bg-card text-xs sm:text-xs text-2xs text-text rounded border border-ink hover:bg-stroke transition-colors ${fontClass}`}
+                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 bg-card text-xs sm:text-xs text-2xs text-text rounded border border-border hover:bg-stroke transition-colors ${fontClass}`}
                 >
                   {t("common.cancel") || "Cancel"}
                 </button>
@@ -368,7 +368,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <div className="relative">
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "保存配置"); e.stopPropagation(); handleSave();}}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                 >
                   {t("modelSettings.saveSettings") || "Save Settings"}
                 </button>
@@ -389,7 +389,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                 <button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "测试模型"); e.stopPropagation(); handleTestModel();}}
                   disabled={isTesting || (!baseUrl && llmType !== "gemini") || !model}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isTesting ? (
                     <span className="flex items-center justify-center">
@@ -434,7 +434,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </p>
               <button
                 onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
-                className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-amber transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
+                className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-primary transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
               >
                 <Plus className="sm:w-2.5 sm:h-2.5 w-2 h-2" />
                 <span className="sm:block hidden">{t("modelSettings.createFirstConfig") || "Create Your First Configuration"}</span>

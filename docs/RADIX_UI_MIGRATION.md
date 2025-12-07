@@ -108,10 +108,10 @@ export default function YourModal({ isOpen, onClose }: YourModalProps) {
   
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
-        <div className="p-4 border-b border-ink">
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+        <div className="p-4 border-b border-border">
           <DialogHeader>
-            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text ${serifFontClass}`}>
+            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text `}>
               {t("your.title")}
             </DialogTitle>
           </DialogHeader>
@@ -146,7 +146,7 @@ return (
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-deep border border-ink rounded-lg shadow-xl w-full max-w-md relative z-10"
+          className="bg-deep border border-border rounded-md shadow-xl w-full max-w-md relative z-10"
         >
           {/* 内容 */}
         </motion.div>
@@ -161,7 +161,7 @@ return (
 // ✅ 好品味：统一的 API，无特殊情况
 return (
   <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-    <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
+    <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
       {/* 内容 */}
     </DialogContent>
   </Dialog>
@@ -289,7 +289,7 @@ const handleOpenChange = (open: boolean) => {
 ## 📝 注意事项
 
 ### 样式保持
-- 保留 Fantasy 主题的样式类（`magical-text`, `fantasy-bg` 等）
+- 保留 Fantasy 主题的样式类（`magical-text`, `` 等）
 - 使用 `className` prop 覆盖默认样式
 - 保持渐变、阴影等视觉效果
 

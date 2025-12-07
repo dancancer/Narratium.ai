@@ -49,7 +49,7 @@ export function PresetTable({
   return (
     <div className="h-full overflow-y-auto fantasy-scrollbar pb-15">
       <table className="w-full table-fixed">
-        <thead className="sticky top-0 bg-muted-surface border-b border-ink z-10">
+        <thead className="sticky top-0 bg-muted-surface border-b border-border z-10">
           <tr>
             <th className={`w-12 sm:w-16 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
               {t("preset.toggle")}
@@ -77,34 +77,34 @@ export function PresetTable({
             const isSelected = selectedPreset?.id === preset.id;
             return (
               <React.Fragment key={preset.id}>
-                <tr className="border-b border-ink hover:bg-muted-surface transition-all duration-300 group">
+                <tr className="border-b border-border hover:bg-muted-surface transition-all duration-300 group">
                   <td className="p-1.5 sm:p-3">
                     <button
                       onClick={() => onTogglePreset(preset.id, preset.enabled === false)}
-                      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-deep backdrop-blur-sm ${
+                      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full border transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                         preset.enabled !== false
-                          ? "bg-gradient-to-r from-slate-700/80 via-amber-800/60 to-slate-700/80 border border-amber-600/40 focus:ring-amber-500/50"
-                          : "bg-gradient-to-r from-slate-700/60 via-stone-600/40 to-slate-700/60 border border-stone-500/30 focus:ring-stone-400/50"
+                          ? "bg-primary text-primary-foreground border-primary/70"
+                          : "bg-muted text-foreground border-border"
                       }`}
                       title={preset.enabled !== false ? t("preset.disablePreset") : t("preset.enablePreset")}
-                    >
-                      <span
-                        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full shadow-lg transition-all duration-300 ${
-                          preset.enabled !== false
-                            ? "translate-x-5 sm:translate-x-6 bg-gradient-to-br from-amber-300 via-amber-200 to-amber-300 shadow-amber-400/30"
-                            : "translate-x-1 bg-gradient-to-br from-stone-300 via-stone-200 to-stone-300 shadow-stone-400/30"
-                        }`}
-                      />
-                    </button>
+                      >
+                        <span
+                          className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full border transition-all duration-200 ${
+                            preset.enabled !== false
+                            ? "translate-x-5 sm:translate-x-6 bg-primary-foreground border-primary/60"
+                            : "translate-x-1 bg-background border-border/70"
+                          }`}
+                        />
+                      </button>
                   </td>
 
                   <td className="p-1.5 sm:p-3">
                     <div className="flex items-center space-x-1 sm:space-x-2">
                       <span
-                        className={`inline-flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-2xs sm:text-xs font-medium whitespace-nowrap transition-all duration-300 backdrop-blur-sm border ${
+                        className={`inline-flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-2xs sm:text-xs font-medium whitespace-nowrap transition-all duration-300 backdrop-blur-sm border ${
                           preset.enabled !== false
                             ? preset.totalPrompts > 0
-                              ? "bg-gradient-to-br from-slate-800/60 via-amber-900/40 to-slate-800/60 text-amber-200/90 border-amber-600/30"
+                              ? "bg-gradient-to-br from-slate-800/60 via-primary-900/40 to-slate-800/60 text-primary-200/90 border-primary-600/30"
                               : "bg-gradient-to-br from-slate-800/60 via-blue-900/40 to-slate-800/60 text-blue-200/90 border-blue-600/30"
                             : "bg-gradient-to-br from-slate-800/60 via-stone-700/40 to-slate-800/60 text-stone-300/90 border-stone-500/30"
                         }`}
@@ -113,9 +113,9 @@ export function PresetTable({
                           className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mr-1 sm:mr-2 ${
                             preset.enabled !== false
                               ? preset.totalPrompts > 0
-                                ? "bg-amber-400/80 shadow-sm shadow-amber-400/50"
-                                : "bg-blue-400/80 shadow-sm shadow-blue-400/50"
-                              : "bg-stone-400/80 shadow-sm shadow-stone-400/50"
+                                ? "bg-primary-400/90 border border-primary-500/60"
+                                : "bg-blue-400/90 border border-blue-500/60"
+                              : "bg-stone-400/90 border border-stone-500/60"
                           }`}
                         ></span>
                         <span className="hidden sm:inline">
@@ -141,11 +141,11 @@ export function PresetTable({
                       {preset.name.length > 8 ? `${preset.name.substring(0, 8)}...` : preset.name}
                     </span>
                   </td>
-                  <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">
-                    <span className="text-amber-400">{preset.enabledPrompts}</span>
+                  <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-primary-soft">
+                    <span className="text-primary-400">{preset.enabledPrompts}</span>
                     <span className="text-ink-soft"> / {preset.totalPrompts}</span>
                   </td>
-                  <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">
+                  <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-primary-soft">
                     <span className="hidden sm:inline">{new Date(preset.lastUpdated).toLocaleDateString()}</span>
                     <span className="sm:hidden">
                       {new Date(preset.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -175,7 +175,7 @@ export function PresetTable({
                 </tr>
 
                 {isExpanded && isSelected && (
-                  <tr className="border-b border-ink bg-gradient-to-b from-deep to-coal transition-all duration-300">
+                  <tr className="border-b border-border bg-gradient-to-b from-deep to-coal transition-all duration-300">
                     <td colSpan={6} className="p-2 sm:p-4">
                       <div className="space-y-2 sm:space-y-3">
                         <div className="flex justify-between items-center">
@@ -268,32 +268,32 @@ function PromptCard({
   onDelete: (presetId: string, promptId: string) => void;
 }) {
   return (
-    <div className="border border-ink rounded p-2 sm:p-3 bg-muted-surface">
+    <div className="border border-border rounded p-2 sm:p-3 bg-muted-surface">
       <div className="flex justify-between items-start mb-1.5 sm:mb-2">
         <div className="flex items-center space-x-1 sm:space-x-2">
           <button
             onClick={() => onToggle(presetId, prompt.identifier, prompt.enabled === false)}
             className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-2xs sm:text-xs font-medium cursor-pointer transition-all duration-300 ${
               prompt.enabled !== false
-                ? "bg-amber-900/40 text-amber-200/90 border border-amber-600/30 hover:bg-amber-800/50"
+                ? "bg-primary-900/40 text-primary-200/90 border border-primary-600/30 hover:bg-primary-800/50"
                 : "bg-stone-700/40 text-stone-300/90 border border-stone-500/30 hover:bg-stone-600/50"
             }`}
           >
             <div
               className={`relative mr-1 sm:mr-2 w-6 sm:w-8 h-3 sm:h-4 rounded-full transition-all duration-300 ${
-                prompt.enabled !== false ? "bg-amber-500/40" : "bg-stone-500/40"
+                prompt.enabled !== false ? "bg-primary-500/40" : "bg-stone-500/40"
               }`}
             >
               <div
                 className={`absolute top-0.5 w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                  prompt.enabled !== false ? "left-3 sm:left-4 bg-amber-400" : "left-0.5 bg-gray-400"
+                  prompt.enabled !== false ? "left-3 sm:left-4 bg-primary-400" : "left-0.5 bg-gray-400"
                 }`}
               ></div>
             </div>
             <span className="hidden sm:inline">{prompt.enabled !== false ? t("preset.enabled_prompt") : t("preset.disabled_prompt")}</span>
             <span className="sm:hidden">{prompt.enabled !== false ? "On" : "Off"}</span>
           </button>
-          <span className={`text-xs sm:text-sm text-amber-soft ${serifFontClass}`}>{prompt.name}</span>
+          <span className={`text-xs sm:text-sm text-primary-soft `}>{prompt.name}</span>
           {prompt.system_prompt && (
             <span className="text-[10px] sm:text-2xs px-1.5 py-0.5 rounded bg-blue-900/40 text-blue-200 border border-blue-700/40">
               {t("preset.systemPrompt")}

@@ -16,6 +16,59 @@
 - ESLint rules: 2-space indentation, double quotes, semicolons required, trailing commas on multi-line, spaced object braces, single blank line separation, newline at EOF.
 - Components PascalCase in `components/`, hooks prefixed with `use`, utilities camelCase; prefer function components and absolute imports via `@/`.
 
+## UI Composition & Styling
+### Radix UI Composition (Shadcn)
+- Always compose UI from existing primitives in `components/ui` (import via `@/components/ui/...`); do not fork or reimplement modals, dropdowns, dialogs, etc.
+- Example:
+```tsx
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
+export function UserDialog({ user }: Props) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>View</Button>
+      </DialogTrigger>
+      <DialogContent>{/* Content */}</DialogContent>
+    </Dialog>
+  );
+}
+```
+
+### Styling with Tailwind
+- Use Tailwind utilities only (no separate CSS files); rely on theme tokens such as `bg-primary`, `text-foreground`, `border`, `ring`, `accent`, `muted`, `destructive`, `sidebar`, etc.—avoid hardcoded colors.
+- Use `cn()` from `@/lib/utils` for conditional classes:
+```tsx
+import { cn } from "@/lib/utils";
+
+<Button
+  className={cn(
+    "rounded-md px-4 py-2",
+    variant === "default" && "bg-primary text-white",
+    variant === "outline" && "border border-border",
+    className
+  )}
+/>;
+```
+- Prefer mobile-first responsive utilities:
+```tsx
+<div className="flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8">
+  <aside className="w-full md:w-64" />
+  <main className="flex-1" />
+</div>
+```
+- Animations use Tailwind only (avoid framer-motion); examples:
+```tsx
+<div className="transition-all duration-300 hover:-translate-y-0.5 hover:" />
+<div className="animate-in fade-in slide-in-from-bottom-2 duration-500" />
+```
+- Handy animation classes:
+  - Fade In: `animate-in fade-in duration-300`
+  - Slide Up: `animate-in slide-in-from-bottom-2 duration-500`
+  - Hover Lift: `hover:-translate-y-0.5 duration-200`
+  - Hover Scale: `hover:scale-105 duration-150`
+  - Color Fade: `transition-colors duration-200`
+
 ## Testing Guidelines
 - Vitest + jsdom; tests are `.test.ts[x]` (see `components/__tests__/ChatHtmlBubble.test.ts`).
 - Add or extend tests for new logic and edge cases (string parsing, provider selection, state transitions). Run `pnpm test` locally before submitting.

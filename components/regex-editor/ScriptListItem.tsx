@@ -57,9 +57,9 @@ export const ScriptListItem = forwardRef<HTMLDivElement, ScriptListItemProps>(
     return (
       <div
         ref={ref}
-        className={`rounded-lg border transition-all duration-300 ${
+        className={`rounded-md border transition-all duration-300 ${
           script.disabled
-            ? "bg-deep border-ink opacity-60"
+            ? "bg-deep border-border opacity-60"
             : "bg-deep border-stroke-strong/30"
         } ${animationComplete ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}
         style={{ transitionDelay: `${index * 50}ms` }}
@@ -67,7 +67,7 @@ export const ScriptListItem = forwardRef<HTMLDivElement, ScriptListItemProps>(
         {/* ─────────────────────────────────────────────────────────────────────
             头部：标题 + 操作按钮
             ───────────────────────────────────────────────────────────────────── */}
-        <div className="p-2 sm:p-4 border-b border-ink/50">
+        <div className="p-2 sm:p-4 border-b border-border/50">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
               <button
@@ -76,7 +76,7 @@ export const ScriptListItem = forwardRef<HTMLDivElement, ScriptListItemProps>(
               >
                 <ChevronRight className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`} />
               </button>
-              <h4 className={`font-medium ${serifFontClass} ${script.disabled ? "text-ink-soft" : "text-amber-soft"} text-sm sm:text-base truncate flex-1 min-w-0`}>
+              <h4 className={`font-medium  ${script.disabled ? "text-ink-soft" : "text-primary-soft"} text-sm sm:text-base truncate flex-1 min-w-0`}>
                 {script.scriptName}
               </h4>
             </div>
@@ -104,7 +104,7 @@ export const ScriptListItem = forwardRef<HTMLDivElement, ScriptListItemProps>(
             <div className={`text-xs sm:text-sm ${fontClass}`}>
               <span className="text-ink-soft">{t("regexScriptEditor.findRegex")}:</span>
               <code
-                className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-deep rounded text-amber-bright font-mono text-2xs sm:text-xs cursor-pointer hover:bg-muted-surface transition-colors break-all"
+                className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-deep rounded text-primary-bright font-mono text-2xs sm:text-xs cursor-pointer hover:bg-muted-surface transition-colors break-all"
                 onClick={() => onToggleExpand(scriptId)}
               >
                 {truncateText(script.findRegex, isMobile ? 30 : 50)}
@@ -151,9 +151,9 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
         onClick={() => onEdit({ ...script, scriptKey: scriptId })}
         className={`text-2xs sm:text-xs px-1.5 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay
           text-success hover:text-success rounded-md transition-all duration-300 font-medium
-          shadow-lg hover:shadow-success/20 group flex-shrink-0 border border-ink`}
+           hover:shadow-success/20 group flex-shrink-0 border border-border`}
       >
-        <span className={`flex items-center ${serifFontClass}`}>
+        <span className={`flex items-center `}>
           <Edit3 className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           {t("regexScriptEditor.edit")}
         </span>
@@ -162,13 +162,13 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
       {/* 启用/禁用按钮 */}
       <button
         onClick={() => onToggle(scriptId)}
-        className={`text-2xs sm:text-xs px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all duration-300 font-medium shadow-lg group flex-shrink-0 ${
+        className={`text-2xs sm:text-xs px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md transition-all duration-300 font-medium  group flex-shrink-0 ${
           script.disabled
-            ? "bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success border border-ink hover:shadow-success/20"
-            : "bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft border border-ink hover:shadow-amber-bright/20"
+            ? "bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success border border-border hover:shadow-success/20"
+            : "bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft border border-border hover:shadow-primary-bright/20"
         }`}
       >
-        <span className={`flex items-center ${serifFontClass}`}>
+        <span className={`flex items-center `}>
           {script.disabled ? (
             <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           ) : (
@@ -183,9 +183,9 @@ function ActionButtons({ scriptId, script, fontClass, serifFontClass, t, onEdit,
         onClick={() => onDelete(scriptId)}
         className={`text-2xs sm:text-xs px-1.5 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-layer hover:to-deep
           text-rose-300 hover:text-rose-200 rounded-md transition-all duration-300 font-medium
-          shadow-lg hover:shadow-rose-400/20 group flex-shrink-0 border border-ink`}
+           hover:shadow-rose-400/20 group flex-shrink-0 border border-border`}
       >
-        <span className={`flex items-center ${serifFontClass}`}>
+        <span className={`flex items-center `}>
           <Trash2 className="w-2 h-2 sm:w-2.5 sm:h-2.5 mr-0.5 sm:mr-1 transition-transform duration-300 group-hover:scale-110" />
           {t("regexScriptEditor.delete")}
         </span>
@@ -206,20 +206,20 @@ interface StatusBadgesProps {
 function StatusBadges({ script, t }: StatusBadgesProps) {
   return (
     <div className="flex items-center space-x-1.5 sm:space-x-2 mb-1.5 sm:mb-2 flex-wrap">
-      <span className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-2xs sm:text-xs font-medium transition-all duration-300 backdrop-blur-sm border ${
+      <span className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-2xs sm:text-xs font-medium transition-all duration-300 backdrop-blur-sm border ${
         !script.disabled
-          ? "bg-gradient-to-br from-slate-800/60 via-amber-900/40 to-slate-800/60 text-amber-200/90 border-amber-600/30"
+          ? "bg-gradient-to-br from-slate-800/60 via-primary-900/40 to-slate-800/60 text-primary-200/90 border-primary-600/30"
           : "bg-gradient-to-br from-slate-800/60 via-stone-700/40 to-slate-800/60 text-stone-300/90 border-stone-500/30"
       }`}>
         <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mr-1 sm:mr-2 ${
-          !script.disabled ? "bg-amber-400/80" : "bg-stone-400/80"
+          !script.disabled ? "bg-primary-400/80" : "bg-stone-400/80"
         }`} />
         {script.disabled ? t("regexScriptEditor.disabled") : t("regexScriptEditor.enabled")}
       </span>
 
       {script.extensions?.imported && (
-        <span className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-2xs sm:text-xs font-medium transition-all duration-300 backdrop-blur-sm border bg-gradient-to-br from-slate-800/60 via-blue-700/40 to-slate-800/60 text-blue-300/90 border-blue-500/30 hover:from-slate-700/70 hover:via-blue-600/50 hover:to-slate-700/70 hover:border-blue-400/40 hover:text-blue-200 hover:shadow-lg hover:shadow-blue-500/10">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400/80 rounded-full mr-1 sm:mr-2 shadow-sm shadow-blue-400/50" />
+        <span className="inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-2xs sm:text-xs font-medium transition-all duration-300 backdrop-blur-sm border bg-gradient-to-br from-slate-800/60 via-blue-700/40 to-slate-800/60 text-blue-300/90 border-blue-500/30 hover:from-slate-700/70 hover:via-blue-600/50 hover:to-slate-700/70 hover:border-blue-400/40 hover:text-blue-200 hover: hover:shadow-blue-500/10">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400/80 rounded-full mr-1 sm:mr-2  shadow-blue-400/50" />
           {t("worldBook.imported")}
         </span>
       )}
@@ -242,14 +242,14 @@ function ExpandedContent({ script, fontClass, t }: ExpandedContentProps) {
     <div className="p-2 sm:p-4 space-y-2 sm:space-y-3 bg-deep/50">
       <div className={`text-xs sm:text-sm ${fontClass}`}>
         <span className="text-ink-soft block mb-1">{t("regexScriptEditor.findRegex")}:</span>
-        <code className="block px-2 sm:px-3 py-1.5 sm:py-2 bg-deep rounded text-amber-bright font-mono text-2xs sm:text-xs border border-ink/30 break-all">
+        <code className="block px-2 sm:px-3 py-1.5 sm:py-2 bg-deep rounded text-primary-bright font-mono text-2xs sm:text-xs border border-border/30 break-all">
           {script.findRegex}
         </code>
       </div>
 
       <div className={`text-xs sm:text-sm ${fontClass}`}>
         <span className="text-ink-soft block mb-1">{t("regexScriptEditor.replaceString")}:</span>
-        <code className="block px-2 sm:px-3 py-1.5 sm:py-2 bg-deep rounded text-sky font-mono text-2xs sm:text-xs border border-ink/30 break-all whitespace-pre-wrap">
+        <code className="block px-2 sm:px-3 py-1.5 sm:py-2 bg-deep rounded text-sky font-mono text-2xs sm:text-xs border border-border/30 break-all whitespace-pre-wrap">
           {script.replaceString}
         </code>
       </div>
@@ -259,7 +259,7 @@ function ExpandedContent({ script, fontClass, t }: ExpandedContentProps) {
           <span className="text-ink-soft block mb-1">{t("regexScriptEditor.trimStrings")}:</span>
           <div className="flex flex-wrap gap-1">
             {script.trimStrings.map((trimStr, idx) => (
-              <code key={idx} className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-deep rounded text-info font-mono text-2xs sm:text-xs border border-ink/30 break-all">
+              <code key={idx} className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-deep rounded text-info font-mono text-2xs sm:text-xs border border-border/30 break-all">
                 {trimStr}
               </code>
             ))}

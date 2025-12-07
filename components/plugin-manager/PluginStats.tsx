@@ -33,7 +33,7 @@ export function PluginStats({ plugins }: PluginStatsProps) {
 
   return (
     <div className="flex items-center justify-between text-xs">
-      <div className="flex items-center space-x-3 text-amber-soft">
+      <div className="flex items-center space-x-3 text-primary-soft">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span>{t("plugins.systemStatus")}</span>
@@ -45,7 +45,7 @@ export function PluginStats({ plugins }: PluginStatsProps) {
             .replace("{total}", plugins.length.toString())}
         </span>
       </div>
-      <div className="text-amber-soft/70">
+      <div className="text-primary-soft/70">
         <span>v1.0.0</span>
       </div>
     </div>

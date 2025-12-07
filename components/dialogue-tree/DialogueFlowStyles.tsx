@@ -24,13 +24,13 @@ export function DialogueFlowStyles() {
       .react-flow__edge.root-source path {
         stroke-dasharray: 10, 5 !important;
         animation: flowLineRoot 1.5s linear infinite !important;
-        filter: drop-shadow(0 0 2px rgba(167, 139, 250, 0.5)) !important;
+        filter: none !important;
       }
 
       .react-flow__edge.current-path path {
         stroke-dasharray: 8, 4 !important;
         animation: flowLineCurrent 1.8s linear infinite !important;
-        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.5)) !important;
+        filter: none !important;
       }
 
       .react-flow__edge.other-path path {

@@ -220,7 +220,7 @@ export default function LoadingTransition({
     
     // 路径描边动画
     const strokeTween = gsap.to(pathsRef.current, {
-      stroke: "var(--color-amber-bright)",
+      stroke: "var(--color-primary-bright)",
       strokeWidth: (i: number) => i === 0 ? 2 : 4,
       duration: 0.3,
       ease: "power1.in",
@@ -317,10 +317,10 @@ export default function LoadingTransition({
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden [background-color:var(--color-layer)]"
     >
       <div
-        className="absolute inset-0 z-0 opacity-35 bg-[url('/loading_yellow.png')] bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 z-0 opacity-35 "
       />
       <div
-        className="absolute inset-0 z-1 opacity-45 bg-[url('/loading_red.png')] bg-cover bg-center bg-no-repeat mix-blend-multiply"
+        className="absolute inset-0 z-1 opacity-45 mix-blend-multiply"
       />
       <audio  
         ref={movementSoundRef} 
@@ -366,7 +366,7 @@ export default function LoadingTransition({
         </svg>
         <div 
           ref={circleRef}
-          className="loading_circle absolute w-[min(10rem,25vw)] h-[min(10rem,25vw)] rounded-full bg-[rgba(251,165,61,0.1)] border-2 border-[var(--color-amber-bright)] shadow-[0_0_15px_rgba(251,146,60,0.5)] opacity-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="loading_circle absolute w-[min(10rem,25vw)] h-[min(10rem,25vw)] rounded-full bg-[rgba(251,165,61,0.1)] border-2 border-[var(--color-primary-bright)] shadow-[0_0_15px_rgba(251,146,60,0.5)] opacity-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         ></div>
         <Image 
           ref={logoRef}
@@ -387,7 +387,7 @@ export default function LoadingTransition({
         </div>
         <p
           ref={textRef}
-          className="absolute bottom-[5%] text-[var(--color-amber-bright)] text-[clamp(0.8rem,3vw,1.2rem)] font-[var(--font-cinzel)] text-center opacity-0 z-[11] left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap [text-shadow:0_0_5px_rgba(255,215,0,0.7)] px-4 max-w-[90vw] overflow-hidden text-ellipsis"
+          className="absolute bottom-[5%] text-[var(--color-primary-bright)] text-[clamp(0.8rem,3vw,1.2rem)] font-[var(--font-cinzel)] text-center opacity-0 z-[11] left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap  px-4 max-w-[90vw] overflow-hidden text-ellipsis"
         >
           To build a time machine takes only two steps: dream it, then do it.
         </p>

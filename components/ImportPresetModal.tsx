@@ -154,10 +154,10 @@ export default function ImportPresetModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-ink gap-0">
-        <div className="p-3 border-b border-ink/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
+      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-border gap-0">
+        <div className="p-3 border-b border-border/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
           <DialogHeader>
-            <DialogTitle className={`text-base font-semibold text-cream-soft magical-text ${serifFontClass} bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent`}>
+            <DialogTitle className={`text-base font-semibold text-cream-soft `}>
               {t("importPreset.title")}
             </DialogTitle>
           </DialogHeader>
@@ -171,23 +171,23 @@ export default function ImportPresetModal({
               onDrop={handleDrop}
               className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
                 isDragging
-                  ? "border-amber-500/60 bg-amber-500/10 scale-[1.02]"
-                  : "border-ink/60 hover:border-amber-500/40 hover:bg-amber-500/5"
+                  ? "border-primary-500/60 bg-primary-500/10 scale-[1.02]"
+                  : "border-border/60 hover:border-primary-500/40 hover:bg-primary-500/5"
               }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-amber-500/5 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-primary-500/5 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               
               <div className="relative z-10 space-y-3">
                 <div className="flex justify-center">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/30 flex items-center justify-center transition-transform duration-300 ${
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-primary-500/20 to-primary-600/30 flex items-center justify-center transition-transform duration-300 ${
                     isDragging ? "scale-110 animate-pulse" : ""
                   }`}>
-                    <FileText className="h-6 w-6 text-amber-400" />
+                    <FileText className="h-6 w-6 text-primary-400" />
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className={`text-lg font-medium text-cream-soft ${serifFontClass}`}>
+                  <h3 className={`text-lg font-medium text-cream-soft `}>
                     {isDragging ? t("importPreset.dropFileHere") : t("importPreset.dragDropFile")}
                   </h3>
                   <p className={`text-sm text-ink-soft mt-1 ${fontClass}`}>
@@ -199,7 +199,7 @@ export default function ImportPresetModal({
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isImporting}
-                    className="px-4 py-2 bg-gradient-to-r from-amber-600/80 to-amber-500/80 hover:from-amber-500/90 hover:to-amber-400/90 text-white font-medium rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium rounded-md transition-all duration-300   disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isImporting ? t("importPreset.importing") : t("importPreset.browseFiles")}
                   </button>
@@ -215,8 +215,8 @@ export default function ImportPresetModal({
             </div>
             
             {jsonData && !importResult && (
-              <div className="p-4 bg-muted-surface/50 backdrop-blur-sm border border-ink/40 rounded-lg animate-fadeIn">
-                <h4 className={`text-sm font-medium text-cream-soft mb-3 ${serifFontClass}`}>{t("importPreset.customizePreset")}</h4>
+              <div className="p-4 bg-muted-surface/50 backdrop-blur-sm border border-border/40 rounded-md animate-fadeIn">
+                <h4 className={`text-sm font-medium text-cream-soft mb-3 `}>{t("importPreset.customizePreset")}</h4>
                 
                 <div className="space-y-4">
                   <div>
@@ -229,7 +229,7 @@ export default function ImportPresetModal({
                       value={customName}
                       onChange={(e) => setCustomName(e.target.value)}
                       placeholder={fileName}
-                      className="w-full px-3 py-2 bg-deep/80 border border-ink/60 rounded-lg text-cream-soft placeholder-ink/80 focus:outline-none focus:ring-1 focus:ring-amber-500/40 transition-all duration-300"
+                      className="w-full px-3 py-2 bg-deep/80 border border-border/60 rounded-md text-cream-soft placeholder-ink/80 focus:outline-none focus:ring-1 focus:ring-primary-500/40 transition-all duration-300"
                     />
                     <p className={`mt-1 text-xs text-ink-soft/70 ${fontClass}`}>{t("importPreset.presetNameDesc")}</p>
                   </div>
@@ -237,14 +237,14 @@ export default function ImportPresetModal({
                   <div className="flex justify-end space-x-2 pt-2">
                     <button
                       onClick={() => handleOpenChange(false)}
-                      className="px-3 py-1.5 bg-muted-surface/80 hover:bg-muted-surface border border-ink/60 text-ink-soft hover:text-cream-soft rounded-lg transition-all duration-300"
+                      className="px-3 py-1.5 bg-muted-surface/80 hover:bg-muted-surface border border-border/60 text-ink-soft hover:text-cream-soft rounded-md transition-all duration-300"
                     >
                       {t("importPreset.cancel")}
                     </button>
                     <button
                       onClick={handleImport}
                       disabled={isImporting}
-                      className="px-4 py-1.5 bg-gradient-to-r from-amber-600/80 to-amber-500/80 hover:from-amber-500/90 hover:to-amber-400/90 text-white font-medium rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-1.5 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium rounded-md transition-all duration-300   disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isImporting ? t("importPreset.importing") : t("importPreset.confirmImport")}
                     </button>
@@ -254,7 +254,7 @@ export default function ImportPresetModal({
             )}
             
             {importResult && (
-              <div className={`p-4 rounded-lg border ${
+              <div className={`p-4 rounded-md border ${
                 importResult.success
                   ? "bg-emerald-900/20 border-emerald-500/30 text-emerald-200"
                   : "bg-red-900/20 border-red-500/30 text-red-200"
@@ -269,7 +269,7 @@ export default function ImportPresetModal({
                       <X className="h-3 w-3 text-red-400" />
                     )}
                   </div>
-                  <h4 className={`font-medium ${serifFontClass}`}>
+                  <h4 className={`font-medium `}>
                     {importResult.success ? t("importPreset.importSuccess") : t("importPreset.importFailed")}
                   </h4>
                 </div>
@@ -279,8 +279,8 @@ export default function ImportPresetModal({
               </div>
             )}
             
-            <div className="bg-muted-surface/40 backdrop-blur-sm border border-ink/30 rounded-lg p-4">
-              <h4 className={`text-sm font-medium text-cream-soft mb-2 ${serifFontClass}`}>{t("importPreset.guidelines")}</h4>
+            <div className="bg-muted-surface/40 backdrop-blur-sm border border-border/30 rounded-md p-4">
+              <h4 className={`text-sm font-medium text-cream-soft mb-2 `}>{t("importPreset.guidelines")}</h4>
               <ul className={`text-xs text-ink-soft space-y-1 ${fontClass}`}>
                 <li>• {t("importPreset.jsonFormat")}</li>
                 <li>• {t("importPreset.validStructure")}</li>
@@ -291,7 +291,7 @@ export default function ImportPresetModal({
           </div>
         </div>
         
-        <div className="p-3 border-t border-ink/40 bg-gradient-to-r from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm">
+        <div className="p-3 border-t border-border/40 bg-gradient-to-r from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm">
           <div className="flex justify-end space-x-2">
             <button
               onClick={() => handleOpenChange(false)}

@@ -38,16 +38,16 @@ export function DialogueEditModal({
 }: DialogueEditModalProps) {
   return (
     <div className="absolute inset-0 flex items-center justify-center backdrop-blur-md z-20">
-      <div ref={modalRef} className="bg-deep bg-opacity-85 border border-ink rounded-lg p-6 w-[80%] max-w-2xl backdrop-filter backdrop-blur-sm shadow-lg">
+      <div ref={modalRef} className="bg-deep bg-opacity-85 border border-border rounded-md p-6 w-[80%] max-w-2xl backdrop-filter backdrop-blur-sm ">
         <div className="flex justify-between items-center mb-4">
-          <h4 className={`text-cream text-lg ${serifFontClass}`}>{t("dialogue.editNode")}</h4>
-          <button onClick={onClose} className="text-text-muted hover:text-amber-400 transition-colors duration-300" aria-label={t("common.close")}>
+          <h4 className={`text-cream text-lg `}>{t("dialogue.editNode")}</h4>
+          <button onClick={onClose} className="text-text-muted hover:text-primary-400 transition-colors duration-300" aria-label={t("common.close")}>
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="fantasy-bg border border-ink rounded-md p-3 mb-4 shadow-inner">
-          <h5 className={`text-amber-400 text-sm mb-2 ${serifFontClass}`}>{t("dialogue.memorySummary")}:</h5>
+        <div className=" border border-border rounded-md p-3 mb-4 ">
+          <h5 className={`text-primary-400 text-sm mb-2 `}>{t("dialogue.memorySummary")}:</h5>
           <div className="ml-2">
             <ol className={`list-decimal list-inside ${fontClass} text-cream text-sm`}>
               {node.data.label.split(/——>|-->|->|→/).map((step, index) => (
@@ -61,7 +61,7 @@ export function DialogueEditModal({
 
         <div className="space-y-4">
           <div>
-            <label className={`block text-amber text-sm mb-2 ${serifFontClass}`}>
+            <label className={`block text-primary text-sm mb-2 `}>
               <span className="flex items-center">
                 <MessageSquare className="w-3.5 h-3.5 mr-1" />
                 {t("dialogue.response")}
@@ -70,23 +70,23 @@ export function DialogueEditModal({
             <textarea
               value={editContent}
               onChange={(e) => onChange(e.target.value)}
-              className={`w-full h-64 p-3 bg-coal border border-stroke-strong rounded-md text-cream fantasy-scrollbar focus:outline-none focus:border-amber-400 ${fontClass} text-sm leading-relaxed`}
+              className={`w-full h-64 p-3 bg-coal border border-stroke-strong rounded-md text-cream fantasy-scrollbar focus:outline-none focus:border-primary-400 ${fontClass} text-sm leading-relaxed`}
               placeholder={t("dialogue.responsePlaceholder")}
             />
           </div>
         </div>
 
         <div className="flex justify-end gap-5 mt-4">
-          <button onClick={onClose} className={`text-text-muted hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`} aria-label={t("common.cancel")} disabled={isSaving}>
+          <button onClick={onClose} className={`text-text-muted hover:text-primary-400 transition-colors duration-300 `} aria-label={t("common.cancel")} disabled={isSaving}>
             {t("common.cancel")}
           </button>
           {isSaving ? (
             <div className="relative w-8 h-8">
-              <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-              <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
+              <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+              <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
             </div>
           ) : (
-            <button onClick={onSave} className={`text-amber-400 hover:text-amber-300 transition-colors duration-300 ${serifFontClass}`} aria-label={t("common.save")}>
+            <button onClick={onSave} className={`text-primary-400 hover:text-primary-300 transition-colors duration-300 `} aria-label={t("common.save")}>
               {t("common.save")}
             </button>
           )}

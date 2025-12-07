@@ -90,12 +90,12 @@ export default function ControlPanel({
     <div className="relative">
       {/* 展开的控制按钮 */}
       <div className={`absolute bottom-full left-0 mb-2 z-50 transition-all duration-300 ease-in-out ${isExpanded ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"}`}>
-        <div className="flex flex-col gap-2 bg-canvas/95 backdrop-blur-sm rounded-lg p-2 border border-ink/50 shadow-lg">
+        <div className="flex flex-col gap-2 bg-canvas/95 backdrop-blur-sm rounded-md p-2 border border-border/50 ">
           {/* 剧情推进 */}
           <ControlButton
             active={activeModes["story-progress"]}
             onClick={toggleStoryProgress}
-            activeColor="amber"
+            activeColor="primary"
             icon={<ArrowRight size={12} className="mr-1" />}
             label={t("characterChat.storyProgress") || "剧情推进"}
           />
@@ -123,8 +123,8 @@ export default function ControlPanel({
           <ControlButton
             active={false}
             onClick={handleUserNameClick}
-            activeColor="amber"
-            inactiveColor="amber-bright"
+            activeColor="primary"
+            inactiveColor="primary-bright"
             icon={<User size={12} className="mr-1" />}
             label={t("characterChat.userNameSetting")}
           />
@@ -135,7 +135,7 @@ export default function ControlPanel({
       <button
         type="button"
         onClick={togglePanel}
-        className={`px-1.5 sm:px-2 md:px-4 py-1.5 text-xs rounded-full border transition-all duration-300 ${isExpanded ? "bg-amber text-overlay border-amber shadow-[0_0_8px_rgba(209,163,92,0.5)]" : "bg-overlay text-amber border-ink hover:border-amber shadow-sm hover:shadow-md"}`}
+        className={`px-1.5 sm:px-2 md:px-4 py-1.5 text-xs rounded-full border transition-all duration-300 ${isExpanded ? "bg-primary text-overlay border-primary shadow-[0_0_8px_rgba(209,163,92,0.5)]" : "bg-overlay text-primary border-border hover:border-primary  hover:"}`}
       >
         <span className="flex items-center">
           <ChevronUp size={12} className={`mr-1 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
@@ -147,7 +147,7 @@ export default function ControlPanel({
       <button
         type="button"
         onClick={onOpenScriptDebug}
-        className="ml-2 px-2 py-1.5 text-xs rounded-full border border-ink bg-overlay text-ink-soft hover:text-amber hover:border-amber transition-all"
+        className="ml-2 px-2 py-1.5 text-xs rounded-full border border-border bg-overlay text-ink-soft hover:text-primary hover:border-primary transition-all"
         title="Script Debugger"
       >
         <Link2 size={12} />
@@ -163,7 +163,7 @@ export default function ControlPanel({
 interface ControlButtonProps {
   active: boolean;
   onClick: () => void;
-  activeColor: "amber" | "success" | "info";
+  activeColor: "primary" | "success" | "info";
   inactiveColor?: string;
   icon: React.ReactNode;
   label: string;
@@ -171,17 +171,17 @@ interface ControlButtonProps {
 
 function ControlButton({ active, onClick, activeColor, inactiveColor, icon, label }: ControlButtonProps) {
   const colorMap = {
-    amber: {
-      active: "bg-amber text-overlay border-amber shadow-[0_0_8px_rgba(209,163,92,0.5)]",
-      inactive: `bg-overlay text-${inactiveColor || "amber"} border-ink hover:border-amber shadow-sm hover:shadow-md`,
+    primary: {
+      active: "bg-primary text-overlay border-primary shadow-[0_0_8px_rgba(209,163,92,0.5)]",
+      inactive: `bg-overlay text-${inactiveColor || "primary"} border-border hover:border-primary  hover:`,
     },
     success: {
       active: "bg-success text-overlay border-success shadow-[0_0_8px_color-mix(in_srgb,var(--color-success)_45%,transparent)]",
-      inactive: `bg-overlay text-${inactiveColor || "success"} border-ink hover:border-success shadow-sm hover:shadow-md`,
+      inactive: `bg-overlay text-${inactiveColor || "success"} border-border hover:border-success  hover:`,
     },
     info: {
       active: "bg-info text-overlay border-info shadow-[0_0_8px_color-mix(in_srgb,var(--color-info)_45%,transparent)]",
-      inactive: `bg-overlay text-${inactiveColor || "info"} border-ink hover:border-info shadow-sm hover:shadow-md`,
+      inactive: `bg-overlay text-${inactiveColor || "info"} border-border hover:border-info  hover:`,
     },
   };
 

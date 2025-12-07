@@ -14,7 +14,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import "@/app/styles/fantasy-ui.css";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { DesktopSidebarView } from "./model-sidebar/DesktopSidebarView";

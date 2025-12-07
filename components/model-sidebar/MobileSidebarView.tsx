@@ -71,11 +71,11 @@ export function MobileSidebarView(props: SidebarViewProps) {
     <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm">
       <div className="relative w-full h-full bg-deep breathing-bg text-text flex flex-col">
         {/* ===== 头部 ===== */}
-        <div className="flex-shrink-0 flex justify-between items-center p-4 border-b border-ink bg-gradient-to-r from-canvas to-input">
-          <h1 className={`text-lg magical-text ${serifFontClass}`}>{t("modelSettings.title")}</h1>
+        <div className="flex-shrink-0 flex justify-between items-center p-4 border-b border-border bg-gradient-to-r from-canvas to-input">
+          <h1 className={`text-lg magical-text `}>{t("modelSettings.title")}</h1>
           <button
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
-            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
           >
             <X className="w-4 h-4" />
           </button>
@@ -91,7 +91,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 </label>
                 <button 
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
-                  className="text-sm text-amber hover:text-cream transition-all duration-200 px-3 py-2 rounded border border-ink hover:border-amber hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-2"
+                  className="text-sm text-primary hover:text-cream transition-all duration-200 px-3 py-2 rounded border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-2"
                 >
                   <Plus className="w-3 h-3" />
                   {t("modelSettings.newConfig") || "New Config"}
@@ -100,7 +100,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
               
               {!showNewConfigForm && configs.length > 0 && (
                 <div className="mb-2">
-                  <p className={`text-sm italic transition-colors duration-200 ${isConfigHovered ? "text-amber" : "text-text-muted"}`}>
+                  <p className={`text-sm italic transition-colors duration-200 ${isConfigHovered ? "text-primary" : "text-text-muted"}`}>
                     {t("modelSettings.doubleClickToEditName") || "Double-click configuration name to edit"}
                   </p>
                 </div>
@@ -113,8 +113,8 @@ export function MobileSidebarView(props: SidebarViewProps) {
                       key={config.id} 
                       className={`flex items-center justify-between p-3 rounded-md cursor-pointer text-sm transition-all duration-200 group ${
                         activeConfigId === config.id 
-                          ? "bg-muted-surface border border-amber shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
-                          : "bg-card hover:bg-stroke border border-transparent hover:border-ink"
+                          ? "bg-muted-surface border border-primary shadow-[0_0_8px_rgba(209,163,92,0.2)]" 
+                          : "bg-card hover:bg-stroke border border-transparent hover:border-border"
                       }`}
                       onClick={() => handleSwitchConfig(config.id)}
                       onMouseEnter={() => setIsConfigHovered(true)}
@@ -128,7 +128,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                             onChange={(e) => setEditingName(e.target.value)}
                             onBlur={handleSaveName}
                             onKeyDown={handleKeyDown}
-                            className="bg-surface border border-ink rounded py-1 px-2 text-sm text-cream w-full focus:border-amber focus:outline-none"
+                            className="bg-surface border border-border rounded py-1 px-2 text-sm text-cream w-full focus:border-primary focus:outline-none"
                             onClick={e => e.stopPropagation()}
                             autoFocus
                           />
@@ -142,7 +142,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                             </span>
                             {showEditHint && configs.length > 1 && (
                               <span
-                                className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-8"} left-0 z-[9999] bg-overlay text-amber text-xs px-2 py-1 rounded border border-amber whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_color-mix(in srgb,var(--color-amber) 20%,transparent)]`}
+                                className={`absolute ${idx === 0 ? "top-full mt-1" : "-top-8"} left-0 z-[9999] bg-overlay text-primary text-xs px-2 py-1 rounded border border-primary whitespace-nowrap opacity-0 group-hover/name:opacity-100 transition-all duration-200 pointer-events-none shadow-[0_0_8px_color-mix(in srgb,var(--color-primary) 20%,transparent)]`}
                               >
                                 {t("modelSettings.doubleClickToEditName")}
                               </span>
@@ -164,7 +164,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
             </div>
 
             {!showNewConfigForm && activeConfigId && (
-              <div className="border border-ink rounded-md p-4 mb-4 bg-surface bg-opacity-50 backdrop-blur-sm">
+              <div className="border border-border rounded-md p-4 mb-4 bg-surface bg-opacity-50 backdrop-blur-sm">
                 <div className="mb-3">
                   <span className="text-sm text-text-muted">{t("modelSettings.llmType") || "API Type"}:</span>
                   <span className="ml-2 text-sm text-cream">{describeLlmType(llmType)}</span>
@@ -189,7 +189,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     <select
                       value={model}
                       onChange={(e) => handleInlineModelChange(e.target.value)}
-                      className="bg-card border border-ink rounded py-2 px-3 text-cream text-sm w-full truncate focus:border-amber focus:outline-none transition-colors"
+                      className="bg-card border border-border rounded py-2 px-3 text-cream text-sm w-full truncate focus:border-primary focus:outline-none transition-colors"
                     >
                       <option value="" disabled className="truncate">{t("modelSettings.selectModel") || "Select a model..."}</option>
                       {availableModels.map((option) => (
@@ -201,7 +201,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                       type="text"
                       value={model}
                       onChange={(e) => handleInlineModelChange(e.target.value)}
-                      className="bg-card border border-ink rounded py-2 px-3 text-cream text-sm w-full focus:border-amber focus:outline-none transition-colors"
+                      className="bg-card border border-border rounded py-2 px-3 text-cream text-sm w-full focus:border-primary focus:outline-none transition-colors"
                       placeholder={getModelPlaceholder(llmType)}
                     />
                   )}
@@ -217,7 +217,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   </label>
                   <input
                     type="text"
-                    className="bg-card border border-ink rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                    className="bg-card border border-border rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                     placeholder={t("modelSettings.configNamePlaceholder")}
                     value={newConfigName}
                     onChange={(e) => setNewConfigName(e.target.value)}
@@ -233,7 +233,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     onChange={(e) => {
                       setLlmType(e.target.value as LLMType);
                     }}
-                    className="w-full bg-card border border-ink rounded py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                    className="w-full bg-card border border-border rounded py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="openai">OpenAI API</option>
                     <option value="ollama">Ollama API</option>
@@ -249,7 +249,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     <input
                       type="text"
                       id="baseUrl"
-                      className="bg-card border border-ink rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                      className="bg-card border border-border rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                       placeholder={getBaseUrlPlaceholder(llmType)}
                       value={baseUrl}
                       onChange={(e) => setBaseUrl(e.target.value)}
@@ -265,7 +265,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     <input
                       type="text"
                       id="apiKey"
-                      className="bg-card border border-ink rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                      className="bg-card border border-border rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                       placeholder="sk-..."
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
@@ -277,7 +277,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   <div className="relative">
                     {llmType !== "ollama" && (
                       <button 
-                        className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-amber w-full transition-colors magical-text ${fontClass}`} 
+                        className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-colors magical-text ${fontClass}`} 
                         onClick={() => handleGetModelList(llmType, baseUrl, apiKey)}
                       >{t("modelSettings.getModelList") || "Get Model List"}</button>
                     )}
@@ -313,7 +313,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   <input
                     type="text"
                     id="model"
-                    className="bg-card border border-ink rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-amber transition-colors"
+                    className="bg-card border border-border rounded w-full py-3 px-3 text-sm text-text leading-tight focus:outline-none focus:border-primary transition-colors"
                     placeholder={getModelPlaceholder(llmType)}
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
@@ -327,7 +327,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                           trackButtonClick("ModelSidebar", t("modelSettings.selectModel") || "Select a model...");
                           setModel(e.target.value);
                         }}
-                        className="w-full bg-card border border-ink rounded py-3 px-3 text-text text-sm leading-tight focus:outline-none focus:border-amber transition-colors"
+                        className="w-full bg-card border border-border rounded py-3 px-3 text-text text-sm leading-tight focus:outline-none focus:border-primary transition-colors"
                       >
                         <option value="" disabled className="text-text-muted">
                           {t("modelSettings.selectModel") || "Select a model..."}
@@ -349,13 +349,13 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 <div className="flex gap-3">
                   <button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "创建配置"); e.stopPropagation(); handleSave();}}
-                    className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-3 px-4 text-sm rounded border border-amber transition-colors magical-text ${fontClass}`}
+                    className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-3 px-4 text-sm rounded border border-primary transition-colors magical-text ${fontClass}`}
                   >
                     {t("modelSettings.createConfig") || "Create Configuration"}
                   </button>
                   <button
                     onClick={() => {trackButtonClick("cancel_create_config_btn", "取消创建配置"); handleCancelCreate();}}
-                    className={`px-4 py-3 bg-card text-sm text-text rounded border border-ink hover:bg-stroke transition-colors ${fontClass}`}
+                    className={`px-4 py-3 bg-card text-sm text-text rounded border border-border hover:bg-stroke transition-colors ${fontClass}`}
                   >
                     {t("common.cancel") || "Cancel"}
                   </button>
@@ -368,7 +368,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 <div className="relative">
                   <button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "保存配置"); e.stopPropagation(); handleSave();}}
-                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
+                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                   >
                     {t("modelSettings.saveSettings") || "Save Settings"}
                   </button>
@@ -389,7 +389,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   <button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "测试模型"); e.stopPropagation(); handleTestModel();}}
                     disabled={isTesting || (!baseUrl && llmType !== "gemini") || !model}
-                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-amber w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {isTesting ? (
                       <span className="flex items-center justify-center">
@@ -433,7 +433,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 </p>
                 <button
                   onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded border border-amber transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-2`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded border border-primary transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-2`}
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t("modelSettings.createFirstConfig") || "Create Your First Configuration"}

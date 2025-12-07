@@ -47,7 +47,7 @@ export function CharacterCard({
 
   return (
     <div
-      className={`bg-muted-surface rounded-lg border border-ink hover:border-amber-soft transition-all duration-200 hover:shadow-lg animate-in fade-in zoom-in-95 ${
+      className={`bg-muted-surface rounded-md border border-border hover:border-primary-soft transition-all duration-200 hover: animate-in fade-in zoom-in-95 ${
         isMobile ? "p-3 flex gap-3" : "p-4"
       }`}
       style={{ animationDelay: `${index * 20}ms` }}
@@ -117,7 +117,7 @@ function CharacterImage({
 }: CharacterImageProps) {
   return (
     <div
-      className={`relative rounded-lg overflow-hidden ${
+      className={`relative rounded-md overflow-hidden ${
         isMobile ? "w-20 h-20 flex-shrink-0" : "h-56 mb-3"
       }`}
     >
@@ -125,7 +125,7 @@ function CharacterImage({
       {!isImageLoaded && (
         <div className="absolute inset-0 bg-deep flex items-center justify-center">
           <div
-            className={`animate-spin border-2 border-amber-soft border-t-transparent rounded-full ${
+            className={`animate-spin border-2 border-primary-soft border-t-transparent rounded-full ${
               isMobile ? "w-4 h-4" : "w-6 h-6"
             }`}
           />
@@ -230,12 +230,12 @@ function DownloadButton({
   t,
   onClick,
 }: DownloadButtonProps) {
-  const baseClass = `group w-full rounded-lg transition-all duration-200 ${fontClass}`;
+  const baseClass = `group w-full rounded-md transition-all duration-200 ${fontClass}`;
   const sizeClass = isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm";
 
   const stateClass = isImporting
-    ? "bg-ink text-amber-soft cursor-wait"
-    : "bg-gradient-to-br from-sand to-amber-bright text-ink hover:shadow-lg hover:shadow-sand/20";
+    ? "bg-ink text-primary-soft cursor-wait"
+    : "bg-gradient-to-br from-sand to-primary-bright text-ink hover: hover:";
 
   return (
     <button
@@ -246,7 +246,7 @@ function DownloadButton({
       {isImporting ? (
         <div className="flex items-center justify-center gap-2">
           <div
-            className={`animate-spin border-2 border-amber-soft border-t-transparent rounded-full ${
+            className={`animate-spin border-2 border-primary-soft border-t-transparent rounded-full ${
               isMobile ? "w-3 h-3" : "w-4 h-4"
             }`}
           />

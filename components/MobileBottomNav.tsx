@@ -18,7 +18,7 @@
  * Dependencies:
  * - useLanguage: For internationalization
  * - useRouter, usePathname: For navigation
- * - fantasy-ui.css: For styling
+ * - Tailwind + global theme tokens for styling
  */
 
 "use client";
@@ -29,7 +29,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { Home, IdCard, LogIn, Sparkles, UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { useAuth } from "@/hooks/useAuth";
-import "@/app/styles/fantasy-ui.css";
 
 /**
  * Interface definitions for the component's props
@@ -89,17 +88,17 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       {/* Background with blur effect */}
-      <div className="absolute inset-0 bg-deep/95 backdrop-blur-md border-t border-ink/50"></div>
+      <div className="absolute inset-0 bg-deep/95 backdrop-blur-md border-t border-border/50"></div>
       
       {/* Navigation items */}
       <div className="relative flex items-center justify-around px-2 py-3">
         {/* Home */}
         <Link
           href="/"
-          className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center p-2 rounded-md transition-all duration-300 ${
             isActive("/") 
-              ? "text-amber-bright bg-overlay/50" 
-              : "text-ink-soft hover:text-amber-bright hover:bg-overlay/30"
+              ? "text-primary-bright bg-overlay/50" 
+              : "text-ink-soft hover:text-primary-bright hover:bg-overlay/30"
           }`}
         >
           <div className="w-6 h-6 flex items-center justify-center mb-1">
@@ -111,10 +110,10 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
         {/* Character Cards */}
         <Link
           href="/character-cards"
-          className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center p-2 rounded-md transition-all duration-300 ${
             isActive("/character-cards") 
-              ? "text-amber-bright bg-overlay/50" 
-              : "text-ink-soft hover:text-amber-bright hover:bg-overlay/30"
+              ? "text-primary-bright bg-overlay/50" 
+              : "text-ink-soft hover:text-primary-bright hover:bg-overlay/30"
           }`}
         >
           <div className="w-6 h-6 flex items-center justify-center mb-1">
@@ -126,10 +125,10 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
         {/* Creator */}
         <Link
           href="/creator-input"
-          className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center p-2 rounded-md transition-all duration-300 ${
             isActive("/creator-input") 
-              ? "text-amber-bright bg-overlay/50" 
-              : "text-ink-soft hover:text-amber-bright hover:bg-overlay/30"
+              ? "text-primary-bright bg-overlay/50" 
+              : "text-ink-soft hover:text-primary-bright hover:bg-overlay/30"
           }`}
         >
           <div className="w-6 h-6 flex items-center justify-center mb-1">
@@ -141,10 +140,10 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
         {/* Login/User */}
         <button
           onClick={isAuthenticated ? handleOpenAccount : openLoginModal}
-          className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center p-2 rounded-md transition-all duration-300 ${
             isAuthenticated 
-              ? "text-amber-bright hover:bg-overlay/30" 
-              : "text-ink-soft hover:text-amber-bright hover:bg-overlay/30"
+              ? "text-primary-bright hover:bg-overlay/30" 
+              : "text-ink-soft hover:text-primary-bright hover:bg-overlay/30"
           }`}
         >
           <div className="w-6 h-6 flex items-center justify-center mb-1">

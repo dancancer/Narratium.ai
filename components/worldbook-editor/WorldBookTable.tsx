@@ -15,6 +15,7 @@
 import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronRight, Edit3, Trash2 } from "lucide-react";
 import { WorldBookEntryData } from "./index";
+import { Badge } from "@/components/ui/badge";
 
 // ============================================================================
 //                              类型定义
@@ -132,24 +133,24 @@ const TableHeader = memo(function TableHeader({
   t: (key: string) => string;
 }) {
   return (
-    <thead className="sticky top-0 bg-muted-surface border-b border-ink z-10">
+    <thead className="sticky top-0 bg-muted-surface border-b border-border z-10">
       <tr>
-        <th className={`w-12 sm:w-16 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-10 sm:w-12 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.status")}
         </th>
-        <th className={`w-28 sm:w-32 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-32 sm:w-48 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.keyword")}
         </th>
-        <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-10 sm:w-12 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.position")}
         </th>
-        <th className={`w-20 sm:w-20 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-10 sm:w-12 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.depth")}
         </th>
-        <th className={`w-20 sm:w-24 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-10 sm:w-12 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.length")}
         </th>
-        <th className={`w-16 sm:w-20 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
+        <th className={`w-10 sm:w-12 p-1.5 sm:p-3 text-left text-2xs sm:text-xs font-medium text-ink-soft uppercase tracking-wider whitespace-nowrap ${fontClass}`}>
           {t("worldBook.actions")}
         </th>
       </tr>
@@ -172,7 +173,7 @@ const LoadingRow = memo(function LoadingRow({
     <tr>
       <td colSpan={6} className="p-4 text-center">
         <div className="flex items-center justify-center space-x-2 text-ink-soft text-xs">
-          <div className="w-3 h-3 border-2 border-t-amber-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" />
+          <div className="w-3 h-3 border-2 border-t-primary-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin" />
           <span>加载中... ({renderedCount} / {total})</span>
         </div>
       </td>
@@ -225,7 +226,7 @@ const MemoizedTableRow = memo(
 
     return (
       <React.Fragment>
-        <tr className="border-b border-ink hover:bg-muted-surface transition-all duration-300 group">
+        <tr className="border-b border-border hover:bg-muted-surface transition-all duration-300 group">
           <td className="p-1.5 sm:p-3">
             <ToggleSwitch isActive={entry.isActive} onToggle={handleToggle} t={t} />
           </td>
@@ -237,11 +238,11 @@ const MemoizedTableRow = memo(
               t={t}
             />
           </td>
-          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">
+          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-primary-soft">
             {getPositionText(entry.position, t)}
           </td>
-          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">{entry.depth}</td>
-          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-amber-soft">{entry.contentLength}</td>
+          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-primary-soft">{entry.depth}</td>
+          <td className="p-1.5 sm:p-3 text-xs sm:text-sm text-primary-soft">{entry.contentLength}</td>
           <td className="p-1.5 sm:p-3">
             <ActionButtons onEdit={handleEdit} onDelete={handleDelete} t={t} />
           </td>
@@ -283,18 +284,18 @@ const ToggleSwitch = memo(function ToggleSwitch({
   return (
     <button
       onClick={onToggle}
-      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-deep backdrop-blur-sm ${
+      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full border transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
         isActive
-          ? "bg-gradient-to-r from-slate-700/80 via-amber-800/60 to-slate-700/80 border border-amber-600/40 focus:ring-amber-500/50"
-          : "bg-gradient-to-r from-slate-700/60 via-stone-600/40 to-slate-700/60 border border-stone-500/30 focus:ring-stone-400/50"
+          ? "bg-primary text-primary-foreground border-primary/70"
+          : "bg-muted text-foreground border-border"
       }`}
       title={isActive ? t("worldBook.disable") : t("worldBook.enable")}
     >
       <span
-        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full shadow-lg transition-all duration-300 ${
+        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full border transition-all duration-200 ${
           isActive
-            ? "translate-x-5 sm:translate-x-6 bg-gradient-to-br from-amber-300 via-amber-200 to-amber-300 shadow-amber-400/30"
-            : "translate-x-1 bg-gradient-to-br from-stone-300 via-stone-200 to-stone-300 shadow-stone-400/30"
+            ? "translate-x-5 sm:translate-x-6 bg-primary-foreground border-primary/60"
+            : "translate-x-1 bg-background border-border/70"
         }`}
       />
     </button>
@@ -317,28 +318,30 @@ const KeywordCell = memo(function KeywordCell({
   t: (key: string) => string;
 }) {
   return (
-    <div className="flex items-center gap-1 sm:gap-1.5">
-      <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded bg-coal text-amber-200 text-2xs sm:text-xs border border-ink">
-        {entry.primaryKey || t("worldBook.noKeyword")}
-      </span>
-      {entry.constant && (
-        <span className="text-[10px] sm:text-2xs px-1.5 py-0.5 rounded bg-blue-900/40 text-blue-200 border border-blue-700/40">
-          {t("worldBook.constant")}
-        </span>
-      )}
-      {entry.selective && (
-        <span className="text-[10px] sm:text-2xs px-1.5 py-0.5 rounded bg-green-900/40 text-green-200 border border-green-700/40">
-          {t("worldBook.selective")}
-        </span>
-      )}
-      {entry.use_regex && (
-        <span className="text-[10px] sm:text-2xs px-1.5 py-0.5 rounded bg-purple-900/40 text-purple-200 border border-purple-700/40">
-          regex
-        </span>
-      )}
+    <div className="flex items-center justify-between gap-2 max-w-full">
+      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 max-w-full min-w-0">
+        <Badge>
+          {entry.primaryKey || t("worldBook.noKeyword")}
+        </Badge>
+        {entry.constant && (
+          <Badge variant="info">
+            {t("worldBook.constant")}
+          </Badge>
+        )}
+        {entry.selective && (
+          <Badge variant="success">
+            {t("worldBook.selective")}
+          </Badge>
+        )}
+        {entry.use_regex && (
+          <Badge variant="primary">
+            regex
+          </Badge>
+        )}
+      </div>
       <button
         onClick={onExpand}
-        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke ml-1 sm:ml-2"
+        className="flex-none w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke"
         title={isExpanded ? t("worldBook.collapse") : t("worldBook.expand")}
       >
         <ChevronRight className={`w-2.5 h-2.5 transition-transform duration-300 ${isExpanded ? "rotate-90" : ""}`} />
@@ -394,7 +397,7 @@ const ExpandedRow = memo(function ExpandedRow({
   t: (key: string) => string;
 }) {
   return (
-    <tr className="border-b border-ink bg-gradient-to-b from-deep to-coal transition-all duration-300">
+    <tr className="border-b border-border bg-gradient-to-b from-deep to-coal transition-all duration-300">
       <td colSpan={6} className="p-2 sm:p-4">
         <div className="space-y-2 sm:space-y-3">
           <div className="flex flex-wrap items-center gap-2 text-2xs sm:text-xs text-ink-soft">
@@ -403,7 +406,7 @@ const ExpandedRow = memo(function ExpandedRow({
             <span>{t("worldBook.updatedAt")}: {new Date(entry.lastUpdated).toLocaleDateString()}</span>
           </div>
           {entry.comment && (
-            <div className="text-ink-soft text-2xs sm:text-xs bg-overlay/40 border border-ink rounded p-2 sm:p-3">
+            <div className="text-ink-soft text-2xs sm:text-xs bg-overlay/40 border border-border rounded p-2 sm:p-3">
               {entry.comment}
             </div>
           )}

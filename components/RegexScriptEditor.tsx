@@ -260,10 +260,10 @@ function LoadingSpinner({ t }: { t: (key: string) => string }) {
     <div className="h-full flex items-center justify-center bg-deep">
       <div className="flex flex-col items-center">
         <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin" />
-          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow" />
+          <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin" />
+          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow" />
         </div>
-        <p className="mt-4 text-amber-soft">{t("regexScriptEditor.loading") || "Loading..."}</p>
+        <p className="mt-4 text-primary-soft">{t("regexScriptEditor.loading") || "Loading..."}</p>
       </div>
     </div>
   );
@@ -286,24 +286,24 @@ interface HeaderBarProps {
 
 function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontClass, fontClass, t, onClose }: HeaderBarProps) {
   return (
-    <div className="p-2 sm:p-3 border-b border-ink bg-muted-surface relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-50" />
+    <div className="p-2 sm:p-3 border-b border-border bg-muted-surface relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-transparent opacity-50" />
       <div className="relative z-10 flex justify-between items-center min-h-[2rem]">
         <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
           <h2 className="text-base sm:text-lg font-medium text-cream-soft flex-shrink-0">
-            <span className={`bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300 ${serifFontClass}`}>
+            <span className={` `}>
               {t("regexScriptEditor.title")}
             </span>
-            <span className={`ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft ${serifFontClass} inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom`} title={characterName}>
+            <span className={`ml-1 sm:ml-2 text-xs sm:text-sm text-ink-soft  inline-block truncate max-w-[100px] sm:max-w-[150px] align-bottom`} title={characterName}>
               - {characterName}
             </span>
           </h2>
 
           {/* 桌面端统计 */}
-          <div className={`hidden md:flex items-center space-x-2 text-xs text-ink-soft ${serifFontClass} flex-shrink-0`}>
+          <div className={`hidden md:flex items-center space-x-2 text-xs text-ink-soft  flex-shrink-0`}>
             <span className="whitespace-nowrap">{t("regexScriptEditor.totalCount")} {stats.total}</span>
             <span>•</span>
-            <span className="text-amber-400 whitespace-nowrap">{t("regexScriptEditor.enabledCount")} {stats.enabled}</span>
+            <span className="text-primary-400 whitespace-nowrap">{t("regexScriptEditor.enabledCount")} {stats.enabled}</span>
             <span>•</span>
             <span className="text-rose-400 whitespace-nowrap">{t("regexScriptEditor.disabledCount")} {stats.disabled}</span>
             {filterBy !== "all" && (
@@ -316,7 +316,7 @@ function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontCla
 
           {/* 移动端统计 */}
           <div className={`md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft ${fontClass} flex-shrink-0`}>
-            <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-ink whitespace-nowrap">
+            <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
               {stats.total} / {stats.enabled} / {stats.disabled}
               {filterBy !== "all" && ` (${filteredCount})`}
             </span>
@@ -349,35 +349,35 @@ interface ToolbarProps {
 
 function Toolbar({ settings, serifFontClass, fontClass, t, onAddNew, onOpenImport }: ToolbarProps) {
   return (
-    <div className="p-2 sm:p-3 border-b border-ink bg-deep">
+    <div className="p-2 sm:p-3 border-b border-border bg-deep">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
         <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
-          <button onClick={onAddNew} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 group flex-shrink-0 border border-ink">
-            <span className={`flex items-center ${serifFontClass}`}>
+          <button onClick={onAddNew} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  group flex-shrink-0 border border-border">
+            <span className={`flex items-center `}>
               <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.addNewScript")}
             </span>
           </button>
 
-          <button onClick={onOpenImport} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-coal text-sky-300 hover:text-sky-200 rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-sky-400/20 group flex-shrink-0 border border-stroke-strong">
-            <span className={`flex items-center ${serifFontClass}`}>
+          <button onClick={onOpenImport} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-coal text-sky-300 hover:text-sky-200 rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  hover:shadow-sky-400/20 group flex-shrink-0 border border-stroke-strong">
+            <span className={`flex items-center `}>
               <Download size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.importScript")}
             </span>
           </button>
         </div>
 
-        <div className="flex items-center space-x-2 sm:space-x-4 text-2xs sm:text-xs text-ink-soft bg-muted-surface px-2 sm:px-3 py-1.5 sm:py-2 rounded border border-ink flex-shrink-0 overflow-hidden">
+        <div className="flex items-center space-x-2 sm:space-x-4 text-2xs sm:text-xs text-ink-soft bg-muted-surface px-2 sm:px-3 py-1.5 sm:py-2 rounded border border-border flex-shrink-0 overflow-hidden">
           <div className="flex items-center space-x-1 sm:space-x-2">
             <span className={`whitespace-nowrap ${fontClass} truncate`}>{t("regexScriptEditor.globalEnabled")}:</span>
-            <span className={`${settings.enabled ? "text-amber-400" : "text-rose-400"} font-medium flex-shrink-0`}>
+            <span className={`${settings.enabled ? "text-primary-400" : "text-rose-400"} font-medium flex-shrink-0`}>
               {settings.enabled ? t("regexScriptEditor.yes") : t("regexScriptEditor.no")}
             </span>
           </div>
           <span className="hidden sm:inline">•</span>
           <div className="flex items-center space-x-1 sm:space-x-2">
             <span className={`whitespace-nowrap ${fontClass} truncate`}>{t("regexScriptEditor.applyToResponse")}:</span>
-            <span className={`${settings.applyToResponse ? "text-amber-400" : "text-rose-400"} font-medium flex-shrink-0`}>
+            <span className={`${settings.applyToResponse ? "text-primary-400" : "text-rose-400"} font-medium flex-shrink-0`}>
               {settings.applyToResponse ? t("regexScriptEditor.yes") : t("regexScriptEditor.no")}
             </span>
           </div>

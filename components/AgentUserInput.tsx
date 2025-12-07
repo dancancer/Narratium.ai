@@ -32,14 +32,14 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
   };
 
   return (
-    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300">
+    <div className="bg-blue-500/10 border border-blue-500/20 rounded-md p-4 mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300">
       <div className="flex items-start space-x-3 mb-4">
-        <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
+        <div className="p-2 rounded-md bg-blue-500/20 text-blue-400">
           <ArrowRight className="w-4 h-4" />
         </div>
         <div className="flex-1">
-          <h4 className="text-amber-soft font-medium text-sm mb-2">Agent is asking for input:</h4>
-          <p className="text-amber-soft text-sm whitespace-pre-wrap">{question}</p>
+          <h4 className="text-primary-soft font-medium text-sm mb-2">Agent is asking for input:</h4>
+          <p className="text-primary-soft text-sm whitespace-pre-wrap">{question}</p>
         </div>
       </div>
 
@@ -51,8 +51,8 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               onClick={() => setInputMode("options")}
               className={`px-3 py-1 rounded-full transition-colors ${
                 inputMode === "options"
-                  ? "bg-amber-500/20 text-amber-400"
-                  : "bg-black/20 text-amber-soft/60 hover:text-amber-soft"
+                  ? "bg-primary-500/20 text-primary-400"
+                  : "bg-black/20 text-primary-soft/60 hover:text-primary-soft"
               }`}
             >
               Choose from options
@@ -61,8 +61,8 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               onClick={() => setInputMode("custom")}
               className={`px-3 py-1 rounded-full transition-colors ${
                 inputMode === "custom"
-                  ? "bg-amber-500/20 text-amber-400"
-                  : "bg-black/20 text-amber-soft/60 hover:text-amber-soft"
+                  ? "bg-primary-500/20 text-primary-400"
+                  : "bg-black/20 text-primary-soft/60 hover:text-primary-soft"
               }`}
             >
               Custom input
@@ -75,17 +75,17 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
                 <button
                   key={index}
                   onClick={() => setSelectedOption(option)}
-                  className={`text-left p-3 rounded-lg border transition-all animate-in fade-in slide-in-from-left-5 ${
+                  className={`text-left p-3 rounded-md border transition-all animate-in fade-in slide-in-from-left-5 ${
                     selectedOption === option
-                      ? "bg-amber-500/20 border-amber-500/40 text-amber-soft"
-                      : "bg-black/20 border-amber-500/20 text-amber-soft/80 hover:bg-black/30 hover:border-amber-500/30"
+                      ? "bg-primary-500/20 border-primary-500/40 text-primary-soft"
+                      : "bg-black/20 border-primary-500/20 text-primary-soft/80 hover:bg-black/30 hover:border-primary-500/30"
                   }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm">{option}</span>
                     {selectedOption === option && (
-                      <div className="w-2 h-2 bg-amber-400 rounded-full" />
+                      <div className="w-2 h-2 bg-primary-400 rounded-full" />
                     )}
                   </div>
                 </button>
@@ -104,7 +104,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               onChange={(e) => setCustomInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your response..."
-              className="w-full bg-black/20 border border-amber-500/20 rounded-lg p-3 text-amber-soft text-sm placeholder-amber-soft/40 resize-none min-h-[80px] max-h-[160px] focus:outline-none focus:border-amber-500/40"
+              className="w-full bg-black/20 border border-primary-500/20 rounded-md p-3 text-primary-soft text-sm placeholder-primary-soft/40 resize-none min-h-[80px] max-h-[160px] focus:outline-none focus:border-primary-500/40"
               disabled={isLoading}
             />
           </div>
@@ -120,7 +120,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
             (inputMode === "options" && !selectedOption) || 
             (inputMode === "custom" && !customInput.trim())
           }
-          className="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-400 text-black rounded-lg py-2 px-4 font-medium text-sm hover:from-amber-400 hover:to-orange-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-orange-400 text-black rounded-md py-2 px-4 font-medium text-sm hover:from-primary-400 hover:to-orange-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
           {isLoading ? (
             <>

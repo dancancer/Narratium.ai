@@ -9,45 +9,55 @@
  */
 
 // 从 app/globals.css 提取的CSS变量定义
-// 深色主题默认值
+// 深色主题默认值（与 shadcn 默认色阶对齐）
 const CSS_VARIABLES = {
-  // 背景色
-  "--color-canvas": "#171717",
-  "--color-surface": "#1c1c1c",
-  "--color-layer": "#232323",
-  "--color-deep": "#1a1816",
-  "--color-ember": "#1f1c1a",
-  "--color-coal": "#13100e",
-  "--color-muted-surface": "#252220",
-  "--color-overlay": "#2a261f",
-  "--color-card": "#292929",
-  "--color-input": "#2a2a2a",
-  
+  // 背景层级
+  "--color-canvas": "oklch(0.145 0 0)",
+  "--color-surface": "oklch(0.187 0 0)",
+  "--color-layer": "oklch(0.212 0 0)",
+  "--color-deep": "oklch(0.246 0 0)",
+  "--color-ember": "oklch(0.238 0 0)",
+  "--color-coal": "oklch(0.296 0 0)",
+  "--color-muted-surface": "oklch(0.259 0 0)",
+  "--color-overlay": "oklch(0.254 0 0)",
+  "--color-card": "oklch(0.205 0 0)",
+  "--color-input": "oklch(1 0 0 / 15%)",
+
   // 边框和线条
-  "--color-stroke": "#333333",
-  "--color-stroke-strong": "#444444",
-  
+  "--color-stroke": "oklch(1 0 0 / 10%)",
+  "--color-stroke-strong": "oklch(0.65 0 0)",
+
   // 文本颜色
-  "--color-text": "#d0d0d0",
-  "--color-text-muted": "#8a8a8a",
-  "--color-ink": "#534741",
-  "--color-ink-soft": "#a18d6f",
-  
+  "--color-text": "oklch(0.985 0 0)",
+  "--color-text-muted": "oklch(0.708 0 0)",
+  "--color-ink": "oklch(0.785 0 0)",
+  "--color-ink-soft": "oklch(0.641 0 0)",
+
   // 主题色
-  "--color-amber-soft": "#c0a480",
-  "--color-cream": "#f4e8c1",
-  "--color-cream-soft": "#eae6db",
-  "--color-amber": "#d1a35c",
-  "--color-amber-bright": "#f9c86d",
-  "--color-highlight": "#ffd475",
-  "--color-sand": "#e0cfa0",
-  
+  "--color-primary-soft": "#e2e8f0",
+  "--color-cream": "#f8fafc",
+  "--color-cream-soft": "#e2e8f0",
+  "--color-primary": "#f8fafc",
+  "--color-primary-bright": "#f8fafc",
+  "--color-primary-50": "#f8fafc",
+  "--color-primary-100": "#e2e8f0",
+  "--color-primary-200": "#cbd5e1",
+  "--color-primary-300": "#94a3b8",
+  "--color-primary-400": "#64748b",
+  "--color-primary-500": "#475569",
+  "--color-primary-600": "#334155",
+  "--color-primary-700": "#1e293b",
+  "--color-primary-800": "#0f172a",
+  "--color-primary-900": "#0b1220",
+  "--color-highlight": "oklch(0.269 0 0)",
+  "--color-sand": "oklch(0.269 0 0)",
+
   // 状态色
-  "--color-success": "#aef6da",
-  "--color-info": "#c093ff",
-  "--color-sky-strong": "#3b82f6",
-  "--color-sky": "#93c5fd",
-  "--color-danger": "#ef4444",
+  "--color-success": "oklch(0.696 0.17 162.48)",
+  "--color-info": "oklch(0.769 0.188 70.08)",
+  "--color-sky-strong": "oklch(0.739 0.17 162.48)",
+  "--color-sky": "oklch(0.696 0.17 162.48)",
+  "--color-danger": "oklch(0.704 0.191 22.216)",
 } as const;
 
 type CssVariableName = keyof typeof CSS_VARIABLES;
@@ -60,7 +70,7 @@ type CssVariableName = keyof typeof CSS_VARIABLES;
  * 
  * @example
  * inlineCssVariables("color: var(--color-danger);")
- * // 返回 "color: #ef4444;"
+ * // 返回 "color: oklch(0.704 0.191 22.216);"
  */
 export function inlineCssVariables(cssText: string): string {
   if (!cssText || !cssText.includes("var(--")) {

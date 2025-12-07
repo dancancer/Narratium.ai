@@ -70,7 +70,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <div className="relative magical-input min-h-[60px] flex items-center justify-center">
           <input
             type={type}
-            className={`bg-transparent border-0 outline-none w-full text-center text-base text-cream-soft placeholder-ink-soft shadow-none focus:ring-0 focus:border-0 caret-[var(--color-amber-bright)] tracking-[0.05em] ${serifFontClass}`}
+            className={`bg-transparent border-0 outline-none w-full text-center text-base text-cream-soft placeholder-ink-soft shadow-none focus:ring-0 focus:border-0 caret-[var(--color-primary-bright)] tracking-[0.05em] `}
             placeholder={placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -78,7 +78,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             autoComplete="off"
           />
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5 opacity-100 transition-opacity duration-300">
-            <div className="w-full h-full bg-gradient-to-r from-transparent via-amber-soft to-transparent"></div>
+            <div className="w-full h-full bg-gradient-to-r from-transparent via-primary-soft to-transparent"></div>
           </div>
         </div>
       </div>
@@ -120,10 +120,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0 fantasy-bg">
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0 ">
         <div className="p-4 sm:p-8">
           <DialogHeader className="mb-6">
-            <DialogTitle className="text-2xl sm:text-3xl font-bold text-amber-bright text-center magical-text font-cinzel">
+            <DialogTitle className="text-2xl sm:text-3xl font-bold text-primary-bright text-center magical-text font-cinzel">
               {t("auth.guestLogin")}
             </DialogTitle>
           </DialogHeader>
@@ -143,15 +143,15 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`group relative px-6 py-2.5 bg-transparent border border-amber-soft text-amber-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-amber-bright hover:text-amber-bright hover:shadow-lg hover:shadow-amber-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden ${serifFontClass}`}
+                  className={`group relative px-6 py-2.5 bg-transparent border border-primary-soft text-primary-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-primary-bright hover:text-primary-bright hover: hover:shadow-primary-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden `}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-soft/0 via-amber-soft/10 to-amber-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-amber-bright/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-soft/0 via-primary-soft/10 to-primary-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-primary-bright/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   
                   <div className="relative z-10 flex items-center justify-center gap-2">
                     {isLoading ? (
                       <>
-                        <div className="animate-spin w-3.5 h-3.5 border border-amber-soft border-t-transparent rounded-full"></div>
+                        <div className="animate-spin w-3.5 h-3.5 border border-primary-soft border-t-transparent rounded-full"></div>
                         <span className="tracking-wide">{t("auth.entering")}</span>
                       </>
                     ) : (
@@ -162,7 +162,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     )}
                   </div>
                   
-                  <div className="absolute inset-0 rounded-full border border-amber-bright/20 scale-105 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                  <div className="absolute inset-0 rounded-full border border-primary-bright/20 scale-105 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                 </button>
               </div>
             </div>

@@ -9,7 +9,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "@/lib/store/toast-store";
-import "@/app/styles/fantasy-ui.css";
 import ImportPresetModal from "@/components/ImportPresetModal";
 import CreatePresetModal from "@/components/CreatePresetModal";
 import EditPresetNameModal from "@/components/EditPresetNameModal";
@@ -234,10 +233,10 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
       <div className="h-full flex items-center justify-center breathing-bg">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-            <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow"></div>
+            <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
+            <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
           </div>
-          <p className="mt-4 text-amber-soft magical-text">{t("preset.loading")}</p>
+          <p className="mt-4 text-primary-soft magical-text">{t("preset.loading")}</p>
         </div>
       </div>
     );

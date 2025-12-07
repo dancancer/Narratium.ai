@@ -72,7 +72,7 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
   /* ─── 空状态 ─── */
   if (presets.length === 0) {
     return (
-      <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md shadow-lg z-10 overflow-hidden">
+      <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md  z-10 overflow-hidden">
         <div className="p-3 text-center text-ink-soft">
           <span className={`text-2xs md:text-xs ${fontClass}`}>{emptyText}</span>
         </div>
@@ -81,7 +81,7 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
   }
 
   return (
-    <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md shadow-lg z-10 overflow-hidden max-h-[240px]">
+    <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md  z-10 overflow-hidden max-h-[240px]">
       <div className="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong">
         {presets.map((preset, index) => {
           const isSelected = selectedPreset === preset.name;
@@ -110,7 +110,7 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
                         e.stopPropagation();
                         onShowInfo(preset.name);
                       }}
-                      className="ml-2 w-4 h-4 flex items-center justify-center text-ink-soft hover:text-amber-bright transition-all duration-300 rounded-full hover:bg-stroke/50 group/info"
+                      className="ml-2 w-4 h-4 flex items-center justify-center text-ink-soft hover:text-primary-bright transition-all duration-300 rounded-full hover:bg-stroke/50 group/info"
                     >
                       <InfoIcon />
                     </button>

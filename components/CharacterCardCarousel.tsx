@@ -117,15 +117,12 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
           let opacityClass, boxShadowClass, scale;
           if (isCentered) {
             opacityClass = "opacity-100";
-            boxShadowClass = "shadow-[0_8px_25px_rgba(0,0,0,0.4)]";
             scale = 1;
           } else if (isSideface) {
             opacityClass = "opacity-70";
-            boxShadowClass = "shadow-[0_4px_15px_rgba(0,0,0,0.2)]";
             scale = 0.9;
           } else {
             opacityClass = "opacity-40";
-            boxShadowClass = "shadow-[0_2px_10px_rgba(0,0,0,0.1)]";
             scale = 0.8;
           }
           
@@ -146,15 +143,15 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                   <Link
                     href={`/character?id=${character.id}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                     title={t("characterCardsPage.chat")}
                     aria-label={t("characterCardsPage.chat")}
                   >
-                    <MessageCircle className="h-3.5 w-3.5 text-amber-soft hover:text-highlight transition-colors" />
+                    <MessageCircle className="h-3.5 w-3.5 text-primary-soft hover:text-highlight transition-colors" />
                   </Link>
                   <button
                     onClick={(e) => {trackButtonClick("edit_character_btn", "编辑角色"); onEditClick(character, e);}}
-                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                     title={t("characterCardsPage.edit")}
                     aria-label={t("characterCardsPage.edit")}
                   >
@@ -166,7 +163,7 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                       e.stopPropagation();
                       onDeleteClick(character.id);
                     }}
-                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                     title={t("characterCardsPage.delete")}
                     aria-label={t("characterCardsPage.delete")}
                   >
@@ -191,7 +188,7 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                 
                   {/* Character info */}
                   <div className="p-4 relative">
-                    <h2 className={`text-lg text-cream-soft line-clamp-1 magical-text ${serifFontClass}`}>{character.name}</h2>
+                    <h2 className={`text-lg text-cream-soft line-clamp-1 magical-text `}>{character.name}</h2>
                     <div className={`text-xs text-ink-soft mt-2 italic ${fontClass}`}>
                       <span className="inline-block mr-1 opacity-70">✨</span>
                       <span className="line-clamp-2">{character.personality}</span>
@@ -207,7 +204,7 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                             handleRotateLeft();
                           }}
                           disabled={isAnimating}
-                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-amber-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed "
                           aria-label="向左旋转"
                         >
                           <ArrowLeft className="h-4 w-4" />
@@ -220,7 +217,7 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                             handleRotateRight();
                           }}
                           disabled={isAnimating}
-                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-amber-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed "
                           aria-label="向右旋转"
                         >
                           <ArrowRight className="h-4 w-4" />

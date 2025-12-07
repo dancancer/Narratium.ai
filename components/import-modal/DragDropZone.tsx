@@ -49,24 +49,24 @@ export function DragDropZone({
 
   return (
     <div
-      className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-300 cursor-pointer group ${
+      className={`relative border-2 border-dashed rounded-md p-4 text-center transition-all duration-300 cursor-pointer group ${
         isDragging
-          ? "border-amber-500/60 bg-amber-500/10 shadow-lg shadow-amber-500/20"
-          : "border-ink/60 hover:border-ink/80 hover:bg-muted-surface/30"
+          ? "border-primary-500/60 bg-primary-500/10  shadow-primary-500/20"
+          : "border-border/60 hover:border-border/80 hover:bg-muted-surface/30"
       }`}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
       onClick={() => fileInputRef.current?.click()}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-blue-500/5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative flex flex-col items-center space-y-2">
         <div className="relative">
-          <FileText className="h-8 w-8 text-ink-soft group-hover:text-amber-400 transition-colors duration-300" strokeWidth={1.5} />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+          <FileText className="h-8 w-8 text-ink-soft group-hover:text-primary-400 transition-colors duration-300" strokeWidth={1.5} />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
         </div>
         <div>
-          <p className={`text-cream-soft font-medium text-sm ${serifFontClass}`}>{description}</p>
+          <p className={`text-cream-soft font-medium text-sm `}>{description}</p>
           <p className="text-ink-soft text-xs mt-0.5">{hint}</p>
           {multiple && multipleHint && (
             <p className="text-ink-soft text-xs mt-0.5 font-medium">✨ {multipleHint}</p>

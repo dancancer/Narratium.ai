@@ -123,14 +123,14 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
           isMobile
             ? `fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg ${isCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`
             : `w-[18rem] text-sm leading-normal breathing-bg ${isCollapsed ? "pointer-events-none -translate-x-full opacity-0" : "translate-x-0 opacity-100"}`
-        } relative overflow-hidden border-r border-ink h-full flex flex-col magic-border transition-[transform,opacity] duration-300 ease-out`}
+        } relative overflow-hidden border-r border-border h-full flex flex-col magic-border transition-[transform,opacity] duration-300 ease-out`}
       >
         {/* 移动端关闭按钮 */}
         {isMobile && !isCollapsed && (
           <div className="absolute top-4 right-4 z-10">
             <button
               onClick={() => { trackButtonClick("CharacterSidebar", "移动端关闭侧边栏"); toggleSidebar(); }}
-              className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+              className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke  transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:border-accent  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <X size={16} />
             </button>
@@ -171,8 +171,8 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         {!isCollapsed && (
           <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
             <div className="space-y-1 my-2">
-              <div className="menu-item flex p-2 rounded-md hover:bg-muted-surface overflow-hidden transition-all duration-300 group">
-                <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mr-3 flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]">
+              <div className="menu-item flex p-2 rounded-md hover:bg-accent hover:text-accent-foreground overflow-hidden transition-all duration-300 group">
+                <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mr-3 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 group-hover:border-accent group-hover:text-accent-foreground group-">
                   {character.avatar_path ? (
                     <CharacterAvatarBackground avatarPath={character.avatar_path} />
                   ) : (
@@ -180,7 +180,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
-                  <span className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-amber-400 transition-colors duration-300 ${serifFontClass}`}>
+                  <span className={`magical-text whitespace-nowrap overflow-hidden text-ellipsis block text-xs md:text-sm text-cream group-hover:text-accent-foreground transition-colors duration-300 `}>
                     {truncate(character.name, nameLimit)}
                   </span>
                   <p className={`text-ink-soft text-2xs md:text-xs ${fontClass} whitespace-nowrap overflow-hidden text-ellipsis mt-1`}>

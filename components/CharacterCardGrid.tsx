@@ -99,7 +99,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                 {/* move character to top of the screen */}
                 <button
                   onClick={(e) => {e.stopPropagation(); trackButtonClick("move_to_top_character_btn", "置顶角色"); onMoveToTopClick(character.id);}}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.move_to_top")}
                   aria-label={t("characterCardsPage.move_to_top")}
                 >
@@ -107,7 +107,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                 </button>
                 <button
                   onClick={(e) => {trackButtonClick("edit_character_btn", "编辑角色"); onEditClick(character, e);}}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.edit")}
                   aria-label={t("characterCardsPage.edit")}
                 >
@@ -119,7 +119,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                     e.stopPropagation();
                     onDeleteClick(character.id);
                   }}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-amber-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
                   title={t("characterCardsPage.delete")}
                   aria-label={t("characterCardsPage.delete")}
                 >
@@ -143,7 +143,7 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
                 </div>
               
                 <div className="p-2 sm:p-4">
-                  <h2 className={`text-sm sm:text-lg text-cream-soft line-clamp-1 magical-text ${serifFontClass}`}>{character.name}</h2>
+                  <h2 className={`text-sm sm:text-lg text-cream-soft line-clamp-1 magical-text `}>{character.name}</h2>
                   <div className={`text-2xs sm:text-xs text-ink-soft mt-1 sm:mt-2 italic ${fontClass}`}>
                     <span className="inline-block mr-1 opacity-70">✨</span>
                     <span className="line-clamp-2">{character.personality}</span>

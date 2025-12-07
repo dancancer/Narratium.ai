@@ -29,7 +29,7 @@ interface Props {
 
 const STATUS_UI: Record<ScriptStatus["status"], { card: string; badge: string; label: string }> = {
   running: {
-    card: "border-ink bg-overlay",
+    card: "border-border bg-overlay",
     badge: "bg-ink/20 text-ink-soft",
     label: "RUNNING",
   },
@@ -88,7 +88,7 @@ export default function ScriptDebugPanel({ isOpen, onClose, scripts }: Props) {
         {/* ═══════════════════════════════════════════════════════════
             头部区域 - Header Section
             ═══════════════════════════════════════════════════════════ */}
-        <DialogHeader className="p-4 border-b border-ink">
+        <DialogHeader className="p-4 border-b border-border">
           <DialogTitle className="text-lg font-medium text-cream">
             Script Execution Debugger
           </DialogTitle>

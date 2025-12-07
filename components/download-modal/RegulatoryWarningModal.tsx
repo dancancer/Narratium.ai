@@ -45,20 +45,20 @@ export function RegulatoryWarningModal({
       <div className="absolute inset-0 backdrop-blur-sm bg-black/70 animate-in fade-in duration-200" />
 
       {/* 弹窗内容 */}
-      <div className="bg-deep rounded-lg shadow-2xl border border-ink relative z-10 max-w-md w-full mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-deep rounded-md  border border-border relative z-10 max-w-md w-full mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
         <div className="text-center">
           {/* 警告图标 */}
           <div className="mb-4">
-            <div className="w-12 h-12 mx-auto mb-3 bg-amber-100 rounded-full flex items-center justify-center">
-              <AlertTriangle size={24} className="text-amber-600" />
+            <div className="w-12 h-12 mx-auto mb-3 bg-primary-100 rounded-full flex items-center justify-center">
+              <AlertTriangle size={24} className="text-primary-600" />
             </div>
-            <h3 className={`text-lg font-semibold text-cream-soft mb-2 ${serifFontClass}`}>
+            <h3 className={`text-lg font-semibold text-cream-soft mb-2 `}>
               {t("downloadModal.regulatoryWarning.title")}
             </h3>
           </div>
 
           {/* 警告信息 */}
-          <p className={`text-amber-soft text-sm mb-6 leading-relaxed ${fontClass}`}>
+          <p className={`text-primary-soft text-sm mb-6 leading-relaxed ${fontClass}`}>
             {t("downloadModal.regulatoryWarning.message")}
           </p>
 
@@ -66,14 +66,14 @@ export function RegulatoryWarningModal({
           <div className="flex flex-col gap-3">
             <button
               onClick={() => handleClose(false)}
-              className={`w-full bg-gradient-to-br from-sand to-amber-bright text-ink font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-sand/20 ${fontClass}`}
+              className={`w-full bg-gradient-to-br from-sand to-primary-bright text-ink font-semibold py-2.5 px-4 rounded-md transition-all duration-200 hover: hover: ${fontClass}`}
             >
               {t("downloadModal.regulatoryWarning.understand")}
             </button>
 
             <button
               onClick={() => handleClose(true)}
-              className={`w-full text-ink-soft hover:text-amber-soft py-2 px-4 rounded-lg transition-colors duration-200 text-sm ${fontClass}`}
+              className={`w-full text-ink-soft hover:text-primary-soft py-2 px-4 rounded-md transition-colors duration-200 text-sm ${fontClass}`}
             >
               {t("downloadModal.regulatoryWarning.doNotShowAgain")}
             </button>

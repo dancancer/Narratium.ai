@@ -119,7 +119,7 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
         <DropdownMenuTrigger asChild>
           <button
             data-tour="settings-button"
-            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)] outline-none focus:ring-2 focus:ring-amber-500/50"
+            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)] outline-none focus:ring-2 focus:ring-primary-500/50"
             aria-label={t("common.settings")}
           >
             <Settings size={16} className="transition-transform duration-300 group-data-[state=open]:rotate-90" />

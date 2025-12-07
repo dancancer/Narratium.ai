@@ -49,7 +49,7 @@ const ResponseLengthSlider: React.FC<ResponseLengthSliderProps> = ({
         {/* 填充区域 + 隐藏的原生滑块 */}
         <div className="relative w-full h-1.5 rounded-full overflow-hidden">
           <div
-            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-200"
+            className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-200"
             style={{
               width: `${percentage}%`,
               clipPath: "polygon(0 100%, calc(100% - 5px) 100%, 100% 0, 5px 0, 0 100%)",
@@ -73,7 +73,7 @@ const ResponseLengthSlider: React.FC<ResponseLengthSliderProps> = ({
           {min}
         </span>
         <div className="flex items-center">
-          <span className="text-2xs md:text-xs font-medium bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
+          <span className="text-2xs md:text-xs font-medium ">
             {value}
           </span>
           <span className="text-2xs md:text-xs font-medium text-slate-400 ml-1">

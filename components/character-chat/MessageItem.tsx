@@ -262,7 +262,7 @@ function MessageHeader({
 
       {/* 名称和控制按钮 */}
       <div className="flex items-center">
-        <span className={`text-sm font-medium text-cream ${serifFontClass}`}>
+        <span className={`text-sm font-medium text-cream `}>
           {character.name}
         </span>
         {showRegenerateButton && headerSlot}
@@ -316,10 +316,10 @@ function ActionButton({ onClick, tooltip, icon, hoverColor }: ActionButtonProps)
   return (
     <button
       onClick={onClick}
-      className={`ml-1 w-6 h-6 flex items-center justify-center text-ink-soft bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 hover:border-stroke-strong group relative ${colorClass}`}
+      className={`ml-1 w-6 h-6 flex items-center justify-center text-ink-soft bg-surface rounded-md border border-stroke  transition-all duration-300 hover:border-stroke-strong group relative ${colorClass}`}
       data-tooltip={tooltip}
     >
-      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-ink">
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border">
         {tooltip}
       </div>
       {icon}

@@ -107,11 +107,11 @@ export default function EditPresetNameModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
-        <div className="p-4 border-b border-ink bg-gradient-to-r from-amber-500/5 to-transparent">
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+        <div className="p-4 border-b border-border bg-gradient-to-r from-primary-500/5 to-transparent">
           <DialogHeader>
-            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text ${serifFontClass}`}>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300">
+            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text `}>
+              <span className="">
                 {t("preset.editPresetName")}
               </span>
             </DialogTitle>
@@ -130,10 +130,10 @@ export default function EditPresetNameModal({
               placeholder={t("preset.presetNamePlaceholder")}
               disabled={isUpdating}
               className={`w-full px-3 py-2 bg-gradient-to-br from-deep via-muted-surface to-deep 
-                text-cream-soft rounded-md border border-ink 
-                focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 
-                transition-all duration-300 hover:border-ink backdrop-blur-sm
-                shadow-inner ${fontClass}
+                text-cream-soft rounded-md border border-border 
+                focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 
+                transition-all duration-300 hover:border-border backdrop-blur-sm
+                 ${fontClass}
                 disabled:opacity-50 disabled:cursor-not-allowed`}
               autoFocus
             />
@@ -149,8 +149,8 @@ export default function EditPresetNameModal({
               disabled={isUpdating}
               className={`px-4 py-2 text-sm font-medium text-ink-soft hover:text-cream-soft 
                 bg-gradient-to-br from-deep via-muted-surface to-deep 
-                border border-ink rounded-md 
-                hover:border-ink transition-all duration-300 backdrop-blur-sm
+                border border-border rounded-md 
+                hover:border-border transition-all duration-300 backdrop-blur-sm
                 disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}`}
             >
               {t("preset.cancel")}
@@ -161,15 +161,15 @@ export default function EditPresetNameModal({
               className={`px-4 py-2 text-sm font-medium 
                 bg-gradient-to-r from-ember to-coal 
                 hover:from-muted-surface hover:to-ember 
-                text-amber-soft hover:text-amber-soft 
+                text-primary-soft hover:text-primary-soft 
                 rounded-md transition-all duration-300 
-                shadow-lg hover:shadow-amber-bright/20 
-                border border-ink
+                 
+                border border-border
                 disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}
                 flex items-center`}
             >
               {isUpdating && (
-                <div className="w-4 h-4 mr-2 border-2 border-amber-soft border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 mr-2 border-2 border-primary-soft border-t-transparent rounded-full animate-spin"></div>
               )}
               {isUpdating ? t("preset.updating") : t("preset.update")}
             </button>

@@ -21,7 +21,7 @@ interface SaveAsGlobalCheckboxProps {
 
 export function SaveAsGlobalCheckbox({ checked, label, serifFontClass, onChange, children }: SaveAsGlobalCheckboxProps) {
   return (
-    <div className="bg-gradient-to-br from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm border border-ink/40 rounded-lg p-3">
+    <div className="bg-gradient-to-br from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm border border-border/40 rounded-md p-3">
       <label className="flex items-center space-x-2 cursor-pointer group">
         <div className="relative">
           <input
@@ -32,13 +32,13 @@ export function SaveAsGlobalCheckbox({ checked, label, serifFontClass, onChange,
           />
           <div className={`w-4 h-4 rounded border-2 transition-all duration-300 ${
             checked
-              ? "bg-gradient-to-br from-amber-500 to-amber-600 border-amber-500 shadow-lg shadow-amber-500/30"
-              : "border-ink group-hover:border-ink"
+              ? "bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500  shadow-primary-500/30"
+              : "border-border group-hover:border-border"
           }`}>
             {checked && <Check className="absolute inset-0 h-3 w-3 text-white" strokeWidth={3} />}
           </div>
         </div>
-        <span className={`text-cream-soft text-sm font-medium ${serifFontClass}`}>{label}</span>
+        <span className={`text-cream-soft text-sm font-medium `}>{label}</span>
       </label>
 
       {checked && children && (
@@ -80,23 +80,23 @@ export function GlobalFormFields({
   return (
     <div className="space-y-2">
       <div>
-        <label className={`block text-xs font-medium text-ink-soft mb-1 ${serifFontClass}`}>{nameLabel}</label>
+        <label className={`block text-xs font-medium text-ink-soft mb-1 `}>{nameLabel}</label>
         <input
           type="text"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           placeholder={namePlaceholder}
-          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-ink/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300"
+          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300"
         />
       </div>
       <div>
-        <label className={`block text-xs font-medium text-ink-soft mb-1 ${serifFontClass}`}>{descriptionLabel}</label>
+        <label className={`block text-xs font-medium text-ink-soft mb-1 `}>{descriptionLabel}</label>
         <textarea
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
           placeholder={descriptionPlaceholder}
           rows={2}
-          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-ink/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-amber-500/60 focus:outline-none focus:ring-2 focus:ring-amber-500/20 resize-none transition-all duration-300"
+          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 resize-none transition-all duration-300"
         />
       </div>
     </div>

@@ -21,7 +21,6 @@ import { PluginRegistry } from "@/lib/plugins/plugin-registry";
 import { PluginDiscovery } from "@/lib/plugins/plugin-discovery";
 import { ToolRegistry } from "@/lib/tools/tool-registry";
 import { useUIStore } from "@/lib/store/ui-store";
-import "@/app/styles/fantasy-ui.css";
 
 /**
  * Main layout wrapper component that manages the application's core structure
@@ -93,7 +92,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div className="flex h-full overflow-hidden fantasy-bg relative"> 
+    <div className="flex h-full overflow-hidden bg-background relative"> 
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={() => setIsLoginModalOpen(false)} 

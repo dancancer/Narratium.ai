@@ -63,7 +63,7 @@ export default function ChatInput({
   const showSuggestions = suggestedInputs.length > 0 && !isSending;
 
   return (
-    <div className="sticky bottom-0 bg-deep border-t border-ink pt-6 pb-6 px-5 z-5 mt-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)]">
+    <div className="sticky bottom-0 border-t border-border pt-6 pb-6 px-5 z-5 mt-4 ">
       {/* 建议输入区域 */}
       {showSuggestions && (
         <SuggestionsArea
@@ -120,7 +120,7 @@ function SuggestionsArea({ suggestions, collapsed, onToggle, onSelect, isSending
       {/* 折叠按钮 */}
       <button
         onClick={onToggle}
-        className="absolute -top-10 right-0 bg-overlay hover:bg-muted-surface text-amber-soft hover:text-cream p-1.5 rounded-md border border-ink hover:border-ink-soft transition-all duration-300 shadow-sm hover:shadow z-10"
+        className="absolute -top-10 right-0 bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream p-1.5 rounded-md border border-border hover:border-border transition-all duration-300  hover:shadow z-10"
         aria-label={collapsed ? "展开建议" : "收起建议"}
       >
         <CollapseIcon collapsed={collapsed} />
@@ -134,7 +134,7 @@ function SuggestionsArea({ suggestions, collapsed, onToggle, onSelect, isSending
               key={index}
               onClick={() => onSelect(input)}
               disabled={isSending}
-              className={`bg-overlay hover:bg-muted-surface text-amber-soft hover:text-cream py-1.5 px-4 rounded-md text-xs border border-ink hover:border-ink-soft transition-all duration-300 shadow-sm hover:shadow menu-item ${isSending ? "opacity-50 cursor-not-allowed" : ""} ${fontClass}`}
+              className={`bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-1.5 px-4 rounded-md text-xs border border-border hover:border-border transition-all duration-300  hover:shadow menu-item ${isSending ? "opacity-50 cursor-not-allowed" : ""} ${fontClass}`}
             >
               {input}
             </button>
@@ -163,7 +163,7 @@ interface InputFieldProps {
 function InputField({ value, onChange, disabled, placeholder }: InputFieldProps) {
   return (
     <div className="flex-grow magical-input relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-400/20 via-amber-500/5 to-amber-400/10 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-300" />
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-400/20 via-primary-500/5 to-primary-400/10 rounded-md blur opacity-0 group-hover:opacity-100 transition duration-300" />
       <input
         type="text"
         value={value}
@@ -171,7 +171,7 @@ function InputField({ value, onChange, disabled, placeholder }: InputFieldProps)
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         data-tour="chat-input"
-        className="w-full bg-overlay border border-ink rounded-lg py-2 sm:py-2.5 px-3 sm:px-4 text-cream text-sm leading-tight focus:outline-none focus:border-amber-soft shadow-inner relative z-1 transition-all duration-300 group-hover:border-ink-soft"
+        className="w-full bg-overlay border border-border rounded-md py-2 sm:py-2.5 px-3 sm:px-4 text-cream text-sm leading-tight focus:outline-none focus:border-primary-soft  relative z-1 transition-all duration-300 group-hover:border-border"
         disabled={disabled}
       />
     </div>
@@ -193,7 +193,7 @@ function SubmitButton({ isSending, disabled, label }: SubmitButtonProps) {
     <button
       type="submit"
       disabled={disabled}
-      className={`portal-button relative overflow-hidden bg-overlay hover:bg-muted-surface text-amber-soft hover:text-cream py-2 px-3 sm:px-4 rounded-lg text-sm border border-ink hover:border-ink-soft shadow-md transition-all duration-300 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`portal-button relative overflow-hidden bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-2 px-3 sm:px-4 rounded-md text-sm border border-border hover:border-border  transition-all duration-300 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       {label}
     </button>
@@ -203,8 +203,8 @@ function SubmitButton({ isSending, disabled, label }: SubmitButtonProps) {
 function LoadingSpinner() {
   return (
     <div className="relative w-8 h-8 flex items-center justify-center">
-      <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin" />
-      <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow" />
+      <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin" />
+      <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow" />
     </div>
   );
 }

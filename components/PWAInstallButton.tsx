@@ -22,12 +22,12 @@ export default function PWAInstallButton({ isOpen, animationComplete, fontClass,
       >
         <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
         <div className="relative flex items-center justify-center transition-all duration-300 z-10">
-          <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-amber-bright group-hover:text-highlight transition-colors duration-300`}>
+          <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-primary-bright group-hover:text-highlight transition-colors duration-300`}>
             <Download size={isOpen ? 14 : 16} className="transition-transform duration-300 group-hover:scale-110" />
           </div>
           {isOpen && (
             <div className={`ml-2 transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
-              <span className={`magical-text whitespace-nowrap block text-xs font-medium bg-clip-text text-transparent bg-gradient-to-r from-amber-bright to-highlight ${fontClass}`}>
+              <span className={`magical-text whitespace-nowrap block text-xs font-medium  ${fontClass}`}>
                 {isOpen && t("sidebar.downloadApp").split("").map((char, index) => (
                   <span 
                     key={index} 
@@ -47,7 +47,7 @@ export default function PWAInstallButton({ isOpen, animationComplete, fontClass,
           )}
         </div>
         <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-        <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-bright to-transparent w-0 group-hover:w-full transition-all duration-500"></div>
+        <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-primary-bright to-transparent w-0 group-hover:w-full transition-all duration-500"></div>
       </button>
     </div>
   );

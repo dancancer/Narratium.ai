@@ -174,10 +174,10 @@ interface EmptyStateProps {
 function EmptyState({ serifFontClass, t }: EmptyStateProps) {
   return (
     <div className="text-center py-12">
-      <div className="w-16 h-16 mx-auto mb-4 opacity-60 text-amber-bright">
+      <div className="w-16 h-16 mx-auto mb-4 opacity-60 text-primary-bright">
         <MessageCircle size={64} strokeWidth={1.5} />
       </div>
-      <p className={`text-amber-soft ${serifFontClass}`}>
+      <p className={`text-primary-soft `}>
         {t("characterChat.startConversation")}
       </p>
     </div>
@@ -202,9 +202,9 @@ function OpeningNavigator({
   t,
 }: OpeningNavigatorProps) {
   return (
-    <div className="flex items-center justify-center gap-3 text-amber-soft">
+    <div className="flex items-center justify-center gap-3 text-primary-soft">
       <NavButton direction="prev" onClick={() => onNavigate("prev")} disabled={isSending} />
-      <span className={`text-sm ${serifFontClass}`}>
+      <span className={`text-sm `}>
         {t("firstMessage") || "开场白"} {openingIndex + 1}/{totalOpenings}
       </span>
       <NavButton direction="next" onClick={() => onNavigate("next")} disabled={isSending} />
@@ -226,7 +226,7 @@ function NavButton({ direction, onClick, disabled }: NavButtonProps) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="w-8 h-8 flex items-center justify-center rounded-md border border-ink bg-surface hover:border-ink-soft hover:text-amber-bright disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+      className="w-8 h-8 flex items-center justify-center rounded-md border border-border bg-surface hover:border-border hover:text-primary-bright disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
       aria-label={isPrev ? "切换上一条开场" : "切换下一条开场"}
     >
       <Icon className="h-4 w-4" />
@@ -242,12 +242,12 @@ interface TypingIndicatorProps {
 
 function TypingIndicator({ characterName, serifFontClass, t }: TypingIndicatorProps) {
   return (
-    <div className="flex items-center space-x-2 text-amber-soft mb-8 pb-4 pt-2 min-h-[40px]">
+    <div className="flex items-center space-x-2 text-primary-soft mb-8 pb-4 pt-2 min-h-[40px]">
       <div className="relative w-6 h-6 flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full border-2 border-t-amber-bright border-r-amber-soft border-b-ink-soft border-l-transparent animate-spin" />
-        <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-amber-bright border-b-amber-soft border-l-transparent animate-spin-slow" />
+        <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin" />
+        <div className="absolute inset-1 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow" />
       </div>
-      <span className={`text-sm ${serifFontClass}`}>
+      <span className={`text-sm `}>
         {characterName} {t("characterChat.isTyping") || "is typing..."}
       </span>
     </div>
