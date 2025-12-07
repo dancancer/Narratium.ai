@@ -7,22 +7,22 @@
 
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 import "@/app/styles/fantasy-ui.css";
 import { useLanguage } from "@/app/i18n";
 import WorldBookEntryEditor from "@/components/WorldBookEntryEditor";
 import ImportWorldBookModal from "@/components/ImportWorldBookModal";
-import { Toast as ErrorToast } from "@/components/Toast";
+
 import { getWorldBookEntries } from "@/function/worldbook/info";
 import { deleteWorldBookEntry } from "@/function/worldbook/delete";
 import { saveAdvancedWorldBookEntry } from "@/function/worldbook/edit";
 import { bulkToggleWorldBookEntries } from "@/function/worldbook/bulk-operations";
 import { useTableSort, sortItems } from "@/hooks/useTableSort";
 import { useTableFilter, filterItems } from "@/hooks/useTableFilter";
-import { useRowExpansion } from "@/hooks/useRowExpansion";
-import { useErrorToast } from "@/hooks/useErrorToast";
+
+import React, { memo } from "react";
 import {
   WorldBookHeader,
   WorldBookControls,
@@ -30,6 +30,12 @@ import {
   WorldBookEntryData,
   EditingEntry,
 } from "@/components/worldbook-editor";
+
+// ============================================================================
+//                    Memo 包装：隔离表格与模态框状态
+// ============================================================================
+
+const MemoizedWorldBookTable = memo(WorldBookTable);
 
 interface WorldBookEditorProps {
   onClose: () => void;
@@ -55,8 +61,6 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
     storageKey: `worldbook_filter_${characterId}`,
     defaultFilter: "all",
   });
-  const { expandedRows, toggleRow, setExpandedRows } = useRowExpansion();
-  const { toast: errorToast, showToast: showErrorToast, hideToast: hideErrorToast } = useErrorToast();
 
   const sortComparators = useMemo(
     () => ({
@@ -112,60 +116,61 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
       if (result.success) {
         setEntries((result.entries || []).map(formatEntry));
       } else {
-        showErrorToast(t("worldBook.loadingFailed") || "Failed to load entries");
+        toast.error(t("worldBook.loadingFailed") || "Failed to load entries");
       }
     } catch (error) {
       console.error("Failed to load world book entries:", error);
-      showErrorToast(t("worldBook.loadingFailed") || "Failed to load entries");
+      toast.error(t("worldBook.loadingFailed") || "Failed to load entries");
     } finally {
       setIsLoading(false);
     }
-  }, [characterId, formatEntry, showErrorToast, t]);
+  }, [characterId, formatEntry, t]);
 
-  const handleEditEntry = useCallback(
-    (entry?: WorldBookEntryData) => {
-      if (entry) {
-        setEditingEntry({
-          entry_id: entry.entry_id,
-          id: entry.id,
-          comment: entry.comment || "",
-          keys: entry.keys || [],
-          secondary_keys: entry.secondary_keys || [],
-          content: entry.content || "",
-          position: Number(entry.position ?? 4),
-          depth: entry.depth || 1,
-          enabled: entry.enabled !== false,
-          use_regex: entry.use_regex || false,
-          selective: entry.selective || false,
-          constant: entry.constant || false,
-          insertion_order: entry.insertion_order || 0,
-        });
-      } else {
-        setEditingEntry({
-          entry_id: `entry_${uuidv4()}`,
-          id: entries.length + 1,
-          comment: "",
-          keys: [""],
-          secondary_keys: [],
-          content: "",
-          position: 4,
-          depth: 1,
-          enabled: true,
-          use_regex: false,
-          selective: false,
-          constant: false,
-          insertion_order: 0,
-        });
-      }
-      setIsEditModalOpen(true);
-    },
-    [entries.length],
-  );
+  // ========== 使用 ref 稳定回调引用 ==========
+  const entriesLengthRef = useRef(entries.length);
+  entriesLengthRef.current = entries.length;
+
+  const handleEditEntry = useCallback((entry?: WorldBookEntryData) => {
+    if (entry) {
+      setEditingEntry({
+        entry_id: entry.entry_id,
+        id: entry.id,
+        comment: entry.comment || "",
+        keys: entry.keys || [],
+        secondary_keys: entry.secondary_keys || [],
+        content: entry.content || "",
+        position: Number(entry.position ?? 4),
+        depth: entry.depth || 1,
+        enabled: entry.enabled !== false,
+        use_regex: entry.use_regex || false,
+        selective: entry.selective || false,
+        constant: entry.constant || false,
+        insertion_order: entry.insertion_order || 0,
+      });
+    } else {
+      setEditingEntry({
+        entry_id: `entry_${uuidv4()}`,
+        id: entriesLengthRef.current + 1,
+        comment: "",
+        keys: [""],
+        secondary_keys: [],
+        content: "",
+        position: 4,
+        depth: 1,
+        enabled: true,
+        use_regex: false,
+        selective: false,
+        constant: false,
+        insertion_order: 0,
+      });
+    }
+    setIsEditModalOpen(true);
+  }, []);
 
   const handleSaveEntry = useCallback(async () => {
     if (!editingEntry) return;
     if (!editingEntry.content.trim()) {
-      showErrorToast(t("worldBook.contentRequired") || "Content is required");
+      toast.error(t("worldBook.contentRequired") || "Content is required");
       return;
     }
 
@@ -191,11 +196,11 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
       await loadEntries();
     } catch (error) {
       console.error("Save failed:", error);
-      showErrorToast(t("worldBook.saveFailed") || "Failed to save entry");
+      toast.error(t("worldBook.saveFailed") || "Failed to save entry");
     } finally {
       setIsSaving(false);
     }
-  }, [characterId, editingEntry, loadEntries, showErrorToast, t]);
+  }, [characterId, editingEntry, loadEntries, t]);
 
   const handleDeleteEntry = useCallback(
     async (entryId: string) => {
@@ -204,49 +209,49 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
         if (result.success) {
           toast.success(t("worldBook.deleteSuccess"));
           setEntries((prev) => prev.filter((entry) => entry.entry_id !== entryId));
-          setExpandedRows((prev) => {
-            const next = new Set(prev);
-            next.delete(entryId);
-            return next;
-          });
         }
       } catch (error) {
         console.error("Delete failed:", error);
-        showErrorToast(t("worldBook.deleteFailed") || "Failed to delete entry");
+        toast.error(t("worldBook.deleteFailed") || "Failed to delete entry");
       }
     },
-    [characterId, setExpandedRows, showErrorToast, t],
+    [characterId, t],
   );
 
   const handleToggleEntry = useCallback(
     async (entryId: string, enabled: boolean) => {
+      // 乐观更新：立即更新 UI
       setEntries((prev) => prev.map((entry) => (entry.entry_id === entryId ? { ...entry, isActive: enabled, enabled } : entry)));
+      
       try {
         const result = await bulkToggleWorldBookEntries(characterId, [entryId], enabled);
         if (result.success) {
           toast.success(enabled ? t("worldBook.enabled") : t("worldBook.disabled"));
-          await loadEntries();
+          // 不需要重新加载全部数据，已经乐观更新了
         } else {
+          // 失败时回滚
           setEntries((prev) => prev.map((entry) => (entry.entry_id === entryId ? { ...entry, isActive: !enabled, enabled: !enabled } : entry)));
-          showErrorToast(t("worldBook.toggleFailed") || "Failed to toggle entry");
+          toast.error(t("worldBook.toggleFailed") || "Failed to toggle entry");
         }
       } catch (error) {
+        // 失败时回滚
         setEntries((prev) => prev.map((entry) => (entry.entry_id === entryId ? { ...entry, isActive: !enabled, enabled: !enabled } : entry)));
         console.error("Toggle failed:", error);
-        showErrorToast(t("worldBook.toggleFailed") || "Failed to toggle entry");
+        toast.error(t("worldBook.toggleFailed") || "Failed to toggle entry");
       }
     },
-    [characterId, loadEntries, showErrorToast, t],
+    [characterId, t],
   );
 
   const handleBulkToggle = useCallback(
     async (enabled: boolean) => {
       const entryIds = filterItems(entries, filterBy, filterMap).map((entry) => entry.entry_id);
       if (entryIds.length === 0) {
-        showErrorToast(t("worldBook.noEntries") || "No entries selected");
+        toast.error(t("worldBook.noEntries") || "No entries selected");
         return;
       }
 
+      // 乐观更新：立即更新 UI
       setEntries((prev) =>
         prev.map((entry) => (entryIds.includes(entry.entry_id) ? { ...entry, isActive: enabled, enabled } : entry)),
       );
@@ -255,30 +260,41 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
         const result = await bulkToggleWorldBookEntries(characterId, entryIds, enabled);
         if (result.success) {
           toast.success(enabled ? t("worldBook.enabledAll") : t("worldBook.disabledAll"));
-          await loadEntries();
+          // 不需要重新加载全部数据，已经乐观更新了
         } else {
+          // 失败时回滚
           setEntries((prev) =>
             prev.map((entry) => (entryIds.includes(entry.entry_id) ? { ...entry, isActive: !enabled, enabled: !enabled } : entry)),
           );
-          showErrorToast(t("worldBook.bulkOperationFailed") || "Bulk operation failed");
+          toast.error(t("worldBook.bulkOperationFailed") || "Bulk operation failed");
         }
       } catch (error) {
+        // 失败时回滚
         setEntries((prev) =>
           prev.map((entry) => (entryIds.includes(entry.entry_id) ? { ...entry, isActive: !enabled, enabled: !enabled } : entry)),
         );
         console.error("Bulk toggle failed:", error);
-        showErrorToast(t("worldBook.bulkOperationFailed") || "Bulk operation failed");
+        toast.error(t("worldBook.bulkOperationFailed") || "Bulk operation failed");
       }
     },
-    [characterId, entries, filterBy, filterMap, loadEntries, showErrorToast, t],
+    [characterId, entries, filterBy, filterMap, t],
   );
 
   useEffect(() => {
     loadEntries();
   }, [loadEntries]);
 
-  const filteredEntries = filterItems(entries, filterBy, filterMap);
-  const sortedEntries = sortItems(filteredEntries, sortBy, sortOrder, sortComparators);
+  // ========== 缓存过滤和排序结果 ==========
+  
+  const filteredEntries = useMemo(
+    () => filterItems(entries, filterBy, filterMap),
+    [entries, filterBy, filterMap],
+  );
+  
+  const sortedEntries = useMemo(
+    () => sortItems(filteredEntries, sortBy, sortOrder, sortComparators),
+    [filteredEntries, sortBy, sortOrder, sortComparators],
+  );
 
   if (isLoading) {
     return (
@@ -323,26 +339,15 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
         t={t}
       />
 
-      <WorldBookTable
+      <MemoizedWorldBookTable
         entries={sortedEntries}
-        expandedRows={expandedRows}
         fontClass={fontClass}
         serifFontClass={serifFontClass}
         t={t}
-        onToggleRow={toggleRow}
         onToggleEntry={handleToggleEntry}
-        onEdit={(entry) => handleEditEntry(entry)}
+        onEdit={handleEditEntry}
         onDelete={handleDeleteEntry}
       />
-
-      {errorToast.isVisible && (
-        <ErrorToast
-          message={errorToast.message}
-          isVisible={errorToast.isVisible}
-          onClose={hideErrorToast}
-          type="error"
-        />
-      )}
 
       {isImportModalOpen && (
         <ImportWorldBookModal

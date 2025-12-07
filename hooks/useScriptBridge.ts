@@ -125,9 +125,18 @@ export function useScriptBridge(options: UseScriptBridgeOptions): UseScriptBridg
   }, []);
 
   // 角色变更时广播
+  // 【修复】只在 characterId 真正变化时广播，避免函数重建导致的重复触发
   useEffect(() => {
-    broadcastCharacterChange();
-  }, [broadcastCharacterChange]);
+    if (!characterId) return;
+    window.dispatchEvent(
+      new CustomEvent("narratium:broadcast", {
+        detail: {
+          eventName: "character:changed",
+          data: { id: characterId, name: characterName },
+        },
+      })
+    );
+  }, [characterId, characterName]);
 
   return {
     scriptVariables,

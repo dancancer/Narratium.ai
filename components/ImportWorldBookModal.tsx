@@ -2,19 +2,23 @@
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║                    Import World Book Modal                                ║
  * ║                                                                          ║
- * ║  世界书导入弹窗 - 重构后的简洁版本                                           ║
- * ║  使用 import-modal 共享组件                                               ║
+ * ║  世界书导入弹窗 - 已迁移至 Radix UI Dialog                                   ║
+ * ║  使用 import-modal 共享组件 + 统一的 Dialog 实现                             ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 import { useLanguage } from "@/app/i18n";
 import { importWorldBookFromJson } from "@/function/worldbook/import";
 import { listGlobalWorldBooks, importFromGlobalWorldBook, GlobalWorldBook, deleteGlobalWorldBook } from "@/function/worldbook/global";
-import { Toast } from "@/components/Toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DragDropZone,
   ImportModalHeader,
@@ -77,11 +81,6 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
   const [isLoadingGlobal, setIsLoadingGlobal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // 错误提示
-  const [errorToast, setErrorToast] = useState({ isVisible: false, message: "" });
-  const showError = useCallback((msg: string) => setErrorToast({ isVisible: true, message: msg }), []);
-  const hideError = useCallback(() => setErrorToast({ isVisible: false, message: "" }), []);
-
   /* ─────────────────────────────────────────────────────────────────────────
      加载全局世界书
      ───────────────────────────────────────────────────────────────────────── */
@@ -91,14 +90,14 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
     try {
       const result = await listGlobalWorldBooks();
       if (result.success) setGlobalWorldBooks(result.globalWorldBooks);
-      else showError("Failed to load global world books");
+      else toast.error("Failed to load global world books");
     } catch (error) {
       console.error("Failed to load global world books:", error);
-      showError("Failed to load global world books");
+      toast.error("Failed to load global world books");
     } finally {
       setIsLoadingGlobal(false);
     }
-  }, [showError]);
+  }, []);
 
   useEffect(() => {
     if (activeTab === "global" && isOpen) loadGlobalWorldBooks();
@@ -110,7 +109,7 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
 
   const handleFilesSelect = useCallback(async (files: File[]) => {
     const file = files[0];
-    if (!file?.type.includes("json")) { showError("Please select a JSON file"); return; }
+    if (!file?.type.includes("json")) { toast.error("Please select a JSON file"); return; }
 
     setIsImporting(true);
     setImportResult(null);
@@ -122,22 +121,22 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
       const result = await importWorldBookFromJson(characterId, jsonData, options);
       setImportResult(result);
       if (result.success) { toast.success(result.message); onImportSuccess(); }
-      else showError(result.message);
+      else toast.error(result.message);
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Unknown error";
-      showError(`Failed to import: ${msg}`);
+      toast.error(`Failed to import: ${msg}`);
       setImportResult({ success: false, message: `Failed to import: ${msg}`, errors: [msg], importedCount: 0, skippedCount: 0 });
     } finally {
       setIsImporting(false);
     }
-  }, [characterId, saveAsGlobal, globalName, globalDescription, showError, onImportSuccess]);
+  }, [characterId, saveAsGlobal, globalName, globalDescription, onImportSuccess]);
 
   /* ─────────────────────────────────────────────────────────────────────────
      全局导入
      ───────────────────────────────────────────────────────────────────────── */
 
   const handleImportFromGlobal = useCallback(async () => {
-    if (!selectedGlobalId) { showError("Please select a global world book"); return; }
+    if (!selectedGlobalId) { toast.error("Please select a global world book"); return; }
 
     setIsImporting(true);
     try {
@@ -146,14 +145,14 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
         setImportResult({ success: true, message: result.message, importedCount: result.importedCount, skippedCount: 0, errors: [] });
         toast.success(result.message);
         onImportSuccess();
-      } else showError(result.message);
+      } else toast.error(result.message);
     } catch (error: any) {
       console.error("Import from global failed:", error);
-      showError(`Import failed: ${error.message}`);
+      toast.error(`Import failed: ${error.message}`);
     } finally {
       setIsImporting(false);
     }
-  }, [characterId, selectedGlobalId, showError, onImportSuccess]);
+  }, [characterId, selectedGlobalId, onImportSuccess]);
 
   /* ─────────────────────────────────────────────────────────────────────────
      删除全局
@@ -169,27 +168,29 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
         toast.success(t("worldBook.globalWorldBookDeleted"));
         loadGlobalWorldBooks();
         if (selectedGlobalId === globalId) setSelectedGlobalId("");
-      } else showError(result.message || t("worldBook.failedToDeleteGlobalWorldBook"));
+      } else toast.error(result.message || t("worldBook.failedToDeleteGlobalWorldBook"));
     } catch (error: any) {
       console.error("Failed to delete global world book:", error);
-      showError(`${t("worldBook.failedToDeleteGlobalWorldBook")}: ${error.message}`);
+      toast.error(`${t("worldBook.failedToDeleteGlobalWorldBook")}: ${error.message}`);
     } finally {
       setDeletingId(null);
     }
-  }, [t, loadGlobalWorldBooks, selectedGlobalId, showError]);
+  }, [t, loadGlobalWorldBooks, selectedGlobalId]);
 
   /* ─────────────────────────────────────────────────────────────────────────
      关闭弹窗
      ───────────────────────────────────────────────────────────────────────── */
 
-  const handleClose = useCallback(() => {
-    setImportResult(null);
-    setSaveAsGlobal(false);
-    setGlobalName("");
-    setGlobalDescription("");
-    setActiveTab("file");
-    setSelectedGlobalId("");
-    onClose();
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) {
+      setImportResult(null);
+      setSaveAsGlobal(false);
+      setGlobalName("");
+      setGlobalDescription("");
+      setActiveTab("file");
+      setSelectedGlobalId("");
+      onClose();
+    }
   }, [onClose]);
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -205,12 +206,15 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
     if (files.length > 0) handleFilesSelect(files);
   }, [handleFilesSelect]);
 
-  if (!isOpen) return null;
+  /* ─────────────────────────────────────────────────────────────────────────
+     渲染
+     ───────────────────────────────────────────────────────────────────────── */
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-      <div className="relative bg-gradient-to-br from-deep/95 via-muted-surface/95 to-deep/95 backdrop-blur-xl border border-ink/60 rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse" />
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-ink gap-0">
+        <DialogTitle className="sr-only">{t("worldBook.importWorldBook")}</DialogTitle>
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse pointer-events-none" />
 
         <ImportModalHeader
           title={t("worldBook.importWorldBook")}
@@ -221,10 +225,10 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
           ]}
           serifFontClass={serifFontClass}
           onTabChange={setActiveTab}
-          onClose={handleClose}
+          onClose={() => handleOpenChange(false)}
         />
 
-        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink">
+        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink z-10">
           {activeTab === "file" ? (
             <div className="space-y-3">
               <DragDropZone
@@ -288,12 +292,10 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
           importingLabel={t("worldBook.importing")}
           importLabel={t("worldBook.importFromGlobal")}
           serifFontClass={serifFontClass}
-          onClose={handleClose}
+          onClose={() => handleOpenChange(false)}
           onImport={handleImportFromGlobal}
         />
-      </div>
-
-      <Toast isVisible={errorToast.isVisible} message={errorToast.message} onClose={hideError} type="error" />
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

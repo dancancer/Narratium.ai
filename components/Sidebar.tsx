@@ -10,6 +10,16 @@ import "@/app/styles/fantasy-ui.css";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocalStorageString } from "@/hooks/useLocalStorage";
 import PWAInstallButton from "./PWAInstallButton";
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronDown, 
+  Home, 
+  Users, 
+  LogIn, 
+  Github,
+  Settings,
+} from "lucide-react";
 
 // Current app version from package.json
 const CURRENT_VERSION = "1.1.9";
@@ -107,13 +117,9 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
           aria-label={isOpen ? (language === "zh" ? "收起侧边栏" : "Collapse Sidebar") : (language === "zh" ? "展开侧边栏" : "Expand Sidebar")}
         >
           {isOpen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
+            <ChevronLeft size={16} className="transition-transform duration-300" />
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <ChevronRight size={16} className="transition-transform duration-300" />
           )}
         </button>
       </div>
@@ -130,9 +136,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                     className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-amber-400 transition-colors duration-300 login-fantasy-bg rounded-sm"
                     aria-label={isHomeOpen ? t("sidebar.collapseHome") : t("sidebar.expandHome")}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 ${isHomeOpen ? "rotate-180" : ""}`}>
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <ChevronDown size={12} className={`transition-transform duration-300 ${isHomeOpen ? "rotate-180" : ""}`} />
                   </button>
                 )}
               </div>
@@ -142,10 +146,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                   {!isOpen ? (
                     <Link href="/" className={`menu-item flex justify-center p-2 rounded-md cursor-pointer transition-all duration-300 ${isHomeActive ? "bg-amber-900/30" : "hover:bg-muted-surface"}`}>
                       <div className={`flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 w-8 h-8 ${isHomeActive ? "border-amber-500/80 text-amber-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]" : "group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                          <polyline points="9 22 9 12 15 12 15 22" />
-                        </svg>
+                        <Home size={16} />
                       </div>
                     </Link>
                   ) : (
@@ -155,10 +156,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                         <div className={`absolute inset-0 w-full h-full bg-stroke transition-opacity duration-300 ${isHomeActive ? "opacity-20" : "opacity-0 group-hover:opacity-10"}`}></div>
                         <div className={`absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-bright to-transparent transition-all duration-500 ${isHomeActive ? "w-full" : "w-0 group-hover:w-full"}`}></div>
                         <div className={`w-8 h-8 flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 ${isHomeActive ? "border-amber-500/80 text-amber-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]" : "group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"}`}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                            <polyline points="9 22 9 12 15 12 15 22" />
-                          </svg>
+                          <Home size={16} />
                         </div>
                         <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
                           <span className={`magical-text whitespace-nowrap block text-sm transition-colors duration-300 ${fontClass} ${isHomeActive ? "text-amber-300 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" : "group-hover:text-amber-400"}`}>
@@ -196,9 +194,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                     className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-amber-400 transition-colors duration-300 login-fantasy-bg rounded-sm"
                     aria-label={isGameOpen ? t("sidebar.collapseCreation") : t("sidebar.expandCreation")}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-300 ${isGameOpen ? "rotate-180" : ""}`}>
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <ChevronDown size={12} className={`transition-transform duration-300 ${isGameOpen ? "rotate-180" : ""}`} />
                   </button>
                 )}
               </div>
@@ -209,10 +205,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                   {!isOpen ? (
                     <Link href="/character-cards" className={`menu-item flex justify-center p-2 rounded-md cursor-pointer transition-all duration-300 ${isGameAreaActive ? "bg-amber-900/30" : "hover:bg-muted-surface"}`}>
                       <div className={`flex items-center justify-center text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 w-8 h-8 ${isGameAreaActive ? "border-amber-500/80 text-amber-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]" : "group-hover:border-stroke-strong hover:text-amber-400 hover:border-stroke-strong hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
+                        <Users size={16} />
                       </div>
                     </Link>
                   ) : (
@@ -222,10 +215,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
                         <div className={`absolute inset-0 w-full h-full bg-stroke transition-opacity duration-300 ${isGameAreaActive ? "opacity-20" : "opacity-0 group-hover:opacity-10"}`}></div>
                         <div className={`absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-amber-bright to-transparent transition-all duration-500 ${isGameAreaActive ? "w-full" : "w-0 group-hover:w-full"}`}></div>
                         <div className={`w-8 h-8 flex items-center justify-center flex-shrink-0 text-cream bg-surface rounded-lg border border-stroke shadow-inner transition-all duration-300 ${isGameAreaActive ? "border-amber-500/80 text-amber-400 shadow-[0_0_10px_rgba(251,146,60,0.5)]" : "group-hover:border-stroke-strong group-hover:text-amber-400 group-hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"}`}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                          </svg>
+                          <Users size={16} />
                         </div>
                         <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
                           <span className={`magical-text whitespace-nowrap block text-sm transition-colors duration-300 ${fontClass} ${isGameAreaActive ? "text-amber-300 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" : "group-hover:text-amber-400"}`}>
@@ -255,7 +245,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
         </ul>
       </nav>
       <div className="relative mt-auto pt-4 px-2 mb-3 transition-all duration-300 overflow-hidden group/footer">
-        <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-gradient-to-r from-transparent via-amber-bright to-transparent opacity-70"></div>
+        {/* <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-gradient-to-r from-transparent via-amber-bright to-transparent opacity-70"></div>
         <div className="absolute top-0 left-0 right-0 h-[0.5px] bg-gradient-to-r from-transparent via-amber-bright to-transparent opacity-40 blur-[1px] translate-y-[0.5px]"></div>
         <div className="absolute top-[-1px] w-8 h-[2px] bg-gradient-to-r from-transparent via-amber-bright to-transparent opacity-0 group-hover/footer:opacity-80 blur-[1px] transition-all duration-500 ease-in-out left-[-10%] animate-[moveRight_3s_ease-in-out_infinite]"></div>
 
@@ -268,7 +258,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
             0% { transform: translateX(0); }
             100% { transform: translateX(calc(100vw)); }
           }
-        `}</style>
+        `}</style> */}
         
         <div className="mb-2">
           {!isAuthenticated ? (
@@ -280,11 +270,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
               <div className="relative flex items-center justify-center w-full transition-all duration-300 z-10">
                 <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-amber-bright group-hover:text-highlight transition-colors duration-300`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width={isOpen ? "14" : "16"} height={isOpen ? "14" : "16"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                    <polyline points="10 17 15 12 10 7" />
-                    <line x1="15" y1="12" x2="3" y2="12" />
-                  </svg>
+                  <LogIn size={isOpen ? 14 : 16} className="transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 {isOpen && (
                   <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
@@ -318,10 +304,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
               <div className="relative flex items-center justify-center w-full transition-all duration-300 z-10">
                 <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-amber-bright group-hover:text-highlight transition-colors duration-300 `}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width={isOpen ? "14" : "16"} height={isOpen ? "14" : "16"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
+                  <Users size={isOpen ? 14 : 16} className="transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 {isOpen && (
                   <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
@@ -388,20 +371,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
             <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
             <div className="relative flex items-center justify-center transition-all duration-300 z-10">
               <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-amber-bright group-hover:text-highlight transition-colors duration-300`}>
-                <svg xmlns="http://www.w3.org/2000/svg" width={isOpen ? "14" : "16"} height={isOpen ? "14" : "16"} viewBox="0 0 24 24" fill="currentColor" className="transition-transform duration-300 group-hover:scale-110">
-                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 
-                  3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 
-                  0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.416-4.042-1.416 
-                  -.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.084-.729.084-.729 
-                  1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.304 
-                  3.495.997.108-.776.418-1.305.76-1.605-2.665-.3-5.466-1.334-5.466-5.93 
-                  0-1.31.468-2.38 1.236-3.22-.124-.303-.536-1.523.117-3.176 
-                  0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.018.005 2.045.138 3.003.404 
-                  2.29-1.552 3.295-1.23 3.295-1.23.655 1.653.243 2.873.12 3.176 
-                  .77.84 1.234 1.91 1.234 3.22 0 4.61-2.807 5.625-5.48 5.92.43.37.823 1.096.823 2.21 
-                  0 1.595-.015 2.88-.015 3.27 0 .32.216.694.825.576 
-                  C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
+                <Github size={isOpen ? 14 : 16} className="transition-transform duration-300 group-hover:scale-110" fill="currentColor" />
               </div>
               {isOpen && (
                 <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>
@@ -443,10 +413,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-green-400 to-transparent w-0 group-hover:w-full transition-all duration-500 z-5" />
               <div className="relative flex items-center justify-center transition-all duration-300 z-10">
                 <div className={`${isOpen ? "w-6 h-6" : "w-8 h-8"} flex items-center justify-center flex-shrink-0 text-green-400 group-hover:text-green-300 transition-colors duration-300`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width={isOpen ? "14" : "16"} height={isOpen ? "14" : "16"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-                    <path d="M21 12c0 1-.6 1.8-1.5 2.1l-.3.1c-.3.1-.6.4-.6.8 0 .3.1.6.3.8l.3.3c.6.6 1 1.4 1 2.2s-.4 1.6-1 2.2c-.6.6-1.4 1-2.2 1s-1.6-.4-2.2-1l-.3-.3c-.2-.2-.5-.3-.8-.3-.4 0-.7.3-.8.6l-.1.3C12.8 20.4 12 21 11 21s-1.8-.6-2.1-1.5l-.1-.3c-.1-.3-.4-.6-.8-.6-.3 0-.6.1-.8.3l-.3.3c-.6.6-1.4 1-2.2 1s-1.6-.4-2.2-1c-.6-.6-1-1.4-1-2.2s.4-1.6 1-2.2l.3-.3c.2-.2.3-.5.3-.8 0-.4-.3-.7-.6-.8l-.3-.1C3.6 13.8 3 13 3 12s.6-1.8 1.5-2.1l.3-.1c.3-.1.6-.4.6-.8 0-.3-.1-.6-.3-.8l-.3-.3C4.2 7.3 3.8 6.5 3.8 5.7s.4-1.6 1-2.2c.6-.6 1.4-1 2.2-1s1.6.4 2.2 1l.3.3c.2.2.5.3.8.3.4 0 .7-.3.8-.6l.1-.3C11.2 3.6 12 3 13 3s1.8.6 2.1 1.5l.1.3c.1.3.4.6.8.6.3 0 .6-.1.8-.3l.3-.3c.6-.6 1.4-1 2.2-1s1.6.4 2.2 1c.6.6 1 1.4 1 2.2s-.4 1.6-1 2.2l-.3.3c-.2.2-.3.5-.3.8 0 .4.3.7.6.8l.3.1c.9.3 1.5 1.1 1.5 2.1z"/>
-                    <path d="m9 12 2 2 4-4"/>
-                  </svg>
+                  <Settings size={isOpen ? 14 : 16} className="transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 {isOpen && (
                   <div className={`${sectionLabelWrapperClass} ${isOpen ? "opacity-100 delay-[50ms]" : "opacity-0 delay-0"}`}>

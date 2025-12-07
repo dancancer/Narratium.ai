@@ -24,7 +24,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Aperture, LayoutGrid } from "lucide-react";
+import { Aperture, LayoutGrid, Star } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { motion } from "framer-motion";
 import ImportCharacterModal from "@/components/ImportCharacterModal";
@@ -37,7 +37,7 @@ import { deleteCharacter } from "@/function/character/delete";
 import { handleCharacterUpload } from "@/function/character/import";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { moveToTop } from "@/function/character/move-to-top";
-import { Toast } from "@/components/Toast";
+import { toast } from "@/lib/store/toast-store";
 import { getBoolean, getString, setBoolean, setString } from "@/lib/storage/client-storage";
 
 /**
@@ -79,26 +79,6 @@ export default function CharacterCards() {
   const [isMobile, setIsMobile] = useState(false);
   const [isDownloadingPresets, setIsDownloadingPresets] = useState(false);
   const [hasAttemptedPresetDownload, setHasAttemptedPresetDownload] = useState(false);
-  
-  // ErrorToast state
-  const [errorToast, setErrorToast] = useState({
-    isVisible: false,
-    message: "",
-  });
-
-  const showErrorToast = (message: string) => {
-    setErrorToast({
-      isVisible: true,
-      message,
-    });
-  };
-
-  const hideErrorToast = () => {
-    setErrorToast({
-      isVisible: false,
-      message: "",
-    });
-  };
 
   useEffect(() => {
     const savedViewMode = getString("characterCardsViewMode");
@@ -148,7 +128,7 @@ export default function CharacterCards() {
       setCharacters(response);
     } catch (err) {
       console.error("Error fetching characters:", err);
-      showErrorToast(t("characterCardsPage.fetchError") || "Failed to fetch characters");
+      toast.error(t("characterCardsPage.fetchError") || "Failed to fetch characters");
       setCharacters([]);
     } finally {
       setIsLoading(false);
@@ -162,9 +142,10 @@ export default function CharacterCards() {
    */
   const migrateDataStructure = useCallback(async () => {
     const migrationFlag = getString("characterCardsDataMigration");
+    const migrationConfirmed = getBoolean("characterCardsDataMigrationConfirmed");
     
     // Check if migration is needed and hasn't been performed yet
-    if (migrationFlag !== "completed") {
+    if (migrationFlag !== "completed" && migrationConfirmed) {
       console.log("Starting data structure migration - deleting all character cards");
       
       try {
@@ -181,7 +162,7 @@ export default function CharacterCards() {
               console.log(`Deleted character: ${character.name}`);
             } catch (error) {
               console.error(`Failed to delete character ${character.name}:`, error);
-              showErrorToast(`Failed to delete character ${character.name}`);
+              toast.error(`Failed to delete character ${character.name}`);
             }
           }
         }
@@ -192,8 +173,10 @@ export default function CharacterCards() {
         
       } catch (error) {
         console.error("Error during data structure migration:", error);
-        showErrorToast(t("characterCardsPage.migrationError") || "Error during data migration");
+        toast.error(t("characterCardsPage.migrationError") || "Error during data migration");
       }
+    } else if (migrationFlag !== "completed" && !migrationConfirmed) {
+      console.warn("Skipped destructive character card migration because confirmation flag is missing. Set 'characterCardsDataMigrationConfirmed' in localStorage to proceed after manual backup.");
     }
   }, [t]);
     
@@ -209,7 +192,7 @@ export default function CharacterCards() {
       fetchCharacters();
     } catch (err) {
       console.error("Error deleting character:", err);
-      showErrorToast(t("characterCardsPage.deleteFailed") || "Failed to delete character");
+      toast.error(t("characterCardsPage.deleteFailed") || "Failed to delete character");
       setIsLoading(false);
     }
   };
@@ -226,7 +209,7 @@ export default function CharacterCards() {
       fetchCharacters();
     } catch (err) {
       console.error("Error moving character to top:", err);
-      showErrorToast(t("characterCardsPage.topFailed") || "Failed to move character to top");
+      toast.error(t("characterCardsPage.topFailed") || "Failed to move character to top");
       setIsLoading(false);
     }
   };
@@ -257,7 +240,7 @@ export default function CharacterCards() {
       
       if (!Array.isArray(data)) {
         console.error("Failed to fetch character files from GitHub");
-        showErrorToast(t("characterCardsPage.downloadError") || "Failed to fetch preset characters");
+        toast.error(t("characterCardsPage.downloadError") || "Failed to fetch preset characters");
         return;
       }
 
@@ -279,7 +262,7 @@ export default function CharacterCards() {
           const fileResponse = await fetch(file.download_url || `https://raw.githubusercontent.com/Narratium/Character-Card/main/${file.name}`);
           if (!fileResponse.ok) {
             console.error(`Failed to download ${file.name}`);
-            showErrorToast(`Failed to download ${file.name}`);
+            toast.error(`Failed to download ${file.name}`);
             continue;
           }
           
@@ -457,10 +440,8 @@ export default function CharacterCards() {
                 transition={{ duration: 0.5 }}
                 className="session-card p-8 text-center"
               >
-                <div className="mb-6 opacity-60">
-                  <svg className="mx-auto" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M32 0L38 20H60L42 32L48 52L32 40L16 52L22 32L4 20H26L32 0Z" fill="var(--color-amber-bright)" fillOpacity="0.3" />
-                  </svg>
+                <div className="mb-6 opacity-60 text-amber-bright">
+                  <Star size={64} fill="currentColor" fillOpacity={0.3} className="mx-auto" />
                 </div>
                 <p className={`text-cream-soft mb-6 ${serifFontClass}`}>{t("characterCardsPage.noCharacters")}</p>
                 <motion.div
@@ -514,13 +495,7 @@ export default function CharacterCards() {
               onSave={handleEditSuccess}
             />
           )}
-          
-          <Toast
-            isVisible={errorToast.isVisible}
-            message={errorToast.message}
-            onClose={hideErrorToast}
-            type="error"
-          />
+
         </div>
       </div>
     </div>

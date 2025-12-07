@@ -26,6 +26,7 @@ import {
   FilterType,
   ScriptWithKey,
 } from "@/hooks/useRegexScripts";
+import { X, Plus, Download, Code } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    类型定义
@@ -326,9 +327,7 @@ function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontCla
           onClick={() => { trackButtonClick("page", "关闭正则编辑器"); onClose(); }}
           className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group flex-shrink-0 ml-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:scale-110">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          <X size={12} className="transition-transform duration-300 group-hover:scale-110" />
         </button>
       </div>
     </div>
@@ -355,18 +354,14 @@ function Toolbar({ settings, serifFontClass, fontClass, t, onAddNew, onOpenImpor
         <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
           <button onClick={onAddNew} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 group flex-shrink-0 border border-ink">
             <span className={`flex items-center ${serifFontClass}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110">
-                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+              <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.addNewScript")}
             </span>
           </button>
 
           <button onClick={onOpenImport} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-coal text-sky-300 hover:text-sky-200 rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-sky-400/20 group flex-shrink-0 border border-stroke-strong">
             <span className={`flex items-center ${serifFontClass}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
+              <Download size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.importScript")}
             </span>
           </button>
@@ -399,9 +394,7 @@ function Toolbar({ settings, serifFontClass, fontClass, t, onAddNew, onOpenImpor
 function EmptyState({ fontClass, t }: { fontClass: string; t: (key: string) => string }) {
   return (
     <div className="flex flex-col items-center justify-center h-64 text-ink-soft">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50">
-        <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
-      </svg>
+      <Code size={48} strokeWidth={1} className="mb-4 opacity-50" />
       <p className={`text-lg mb-2 ${fontClass}`}>{t("regexScriptEditor.noScripts")}</p>
       <p className={`text-sm opacity-70 ${fontClass}`}>{t("regexScriptEditor.noScriptsDescription")}</p>
     </div>

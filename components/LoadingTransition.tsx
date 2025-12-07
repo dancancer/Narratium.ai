@@ -49,6 +49,12 @@ export default function LoadingTransition({
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressBarFillRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
+  
+  // ═══════════════════════════════════════════════════════════════
+  // GSAP Timeline 管理：统一清理所有动画，防止内存泄漏
+  // ═══════════════════════════════════════════════════════════════
+  const timelinesRef = useRef<gsap.core.Timeline[]>([]);
+  const tweensRef = useRef<gsap.core.Tween[]>([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -92,9 +98,13 @@ export default function LoadingTransition({
     };
   }, [logoShown, autoRedirect, redirectUrl, onAnimationComplete, router]);
 
+  // ═══════════════════════════════════════════════════════════════
+  // 完成动画：消除特殊情况，统一管理所有 tween
+  // ═══════════════════════════════════════════════════════════════
   const finishAnimation = useCallback(() => {
+    // 淡出移动音效
     if (soundEnabled && movementSoundRef.current) {
-      gsap.to(movementSoundRef.current, {
+      const volumeTween = gsap.to(movementSoundRef.current, {
         volume: 0,
         duration: 0.5,
         onComplete: () => {
@@ -102,9 +112,14 @@ export default function LoadingTransition({
           if (movementSoundRef.current) movementSoundRef.current.volume = 1;
         },
       });
+      tweensRef.current.push(volumeTween);
     }
     
-    const timeline = gsap.timeline()
+    // 主动画时间线
+    const timeline = gsap.timeline();
+    timelinesRef.current.push(timeline);
+    
+    timeline
       .to(pathsRef.current[1], {
         strokeWidth: 0,
         duration: 0.3,
@@ -139,32 +154,37 @@ export default function LoadingTransition({
           }
         },
         onComplete: () => {
-          gsap.to(circleRef.current, {
+          // 圆圈呼吸动画
+          const circleTween = gsap.to(circleRef.current, {
             scale: 1.03,
             duration: 1.2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
           });
+          tweensRef.current.push(circleTween);
           
+          // Logo 淡入 + 呼吸动画
           if (logoRef.current) {
-            gsap.to(logoRef.current, {
+            const logoFadeIn = gsap.to(logoRef.current, {
               opacity: 1,
               duration: 0.8,
               delay: 0,
               ease: "power2.out",
               onComplete: () => {
-                gsap.to(logoRef.current, {
+                const logoBreath = gsap.to(logoRef.current, {
                   scale: 1.05,
                   duration: 1.5,
                   repeat: -1,
                   yoyo: true,
                   ease: "sine.inOut",
                 });
+                tweensRef.current.push(logoBreath);
 
                 setLogoShown(true);
               },
             });
+            tweensRef.current.push(logoFadeIn);
           }
           
           if (!autoRedirect && onAnimationComplete) {
@@ -174,8 +194,13 @@ export default function LoadingTransition({
       }, "<0.3");
   }, [autoRedirect, onAnimationComplete, soundEnabled]);
 
+  // ═══════════════════════════════════════════════════════════════
+  // 启动动画：移除 finishAnimation 依赖，打破循环
+  // ═══════════════════════════════════════════════════════════════
   const startAnimation = useCallback(() => {
     if (!soundsLoaded) return;
+    
+    // 播放移动音效
     if (soundEnabled && soundsLoaded && movementSoundRef.current) {
       movementSoundRef.current.muted = true;
       movementSoundRef.current.currentTime = 0;
@@ -193,73 +218,98 @@ export default function LoadingTransition({
       }
     }
     
-    gsap.to(pathsRef.current, {
+    // 路径描边动画
+    const strokeTween = gsap.to(pathsRef.current, {
       stroke: "var(--color-amber-bright)",
       strokeWidth: (i: number) => i === 0 ? 2 : 4,
       duration: 0.3,
       ease: "power1.in",
     });
+    tweensRef.current.push(strokeTween);
 
-    const timeline = gsap.timeline()
-      .fromTo(
-        pathsRef.current,
-        {
-          strokeDashoffset: (i: number) => {
-            if (i === 0) return 0;
-            else return 480;
-          },
-        },
-        {
-          strokeDashoffset: (i: number) => {
-            if (i === 0) return -275;
-            else return 205;
-          },
-          duration: 0.8,
-          ease: "power2.inOut",
-          onComplete: () => {
-            finishAnimation();
-          },
-        },
-      );
+    // 主时间线
+    const timeline = gsap.timeline({
+      onComplete: () => {
+        finishAnimation();
+      },
+    });
+    timelinesRef.current.push(timeline);
+    
+    timeline.fromTo(
+      pathsRef.current,
+      {
+        strokeDashoffset: (i: number) => i === 0 ? 0 : 480,
+      },
+      {
+        strokeDashoffset: (i: number) => i === 0 ? -275 : 205,
+        duration: 0.8,
+        ease: "power2.inOut",
+      },
+    );
 
-    gsap.to(progressBarFillRef.current, {
+    // 进度条填充
+    const progressFillTween = gsap.to(progressBarFillRef.current, {
       width: "100%",
       duration: timeline.duration(),
       ease: "power2.inOut",
     });
+    tweensRef.current.push(progressFillTween);
 
-    gsap.to(progressBarFillRef.current, {
+    // 进度条样式
+    const progressStyleTween = gsap.to(progressBarFillRef.current, {
       background: "linear-gradient(90deg, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0.8) 50%, rgba(255,215,0,0.4) 100%)",
       boxShadow: "0 0 8px rgba(255,215,0,0.6)",
       duration: timeline.duration(),
       ease: "power2.inOut",
     });
+    tweensRef.current.push(progressStyleTween);
 
-    gsap.to(textRef.current, {
+    // 文字淡入
+    const textTween = gsap.to(textRef.current, {
       opacity: 1,
       duration: 0.5,
       delay: 0.3,
       ease: "power1.out",
     });
-  }, [finishAnimation, soundEnabled, soundsLoaded]);
+    tweensRef.current.push(textTween);
+  }, [soundEnabled, soundsLoaded, finishAnimation]);
 
+  // ═══════════════════════════════════════════════════════════════
+  // 动画初始化：只执行一次，避免循环依赖
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
     if (!soundsLoaded) return;
     
     pathsRef.current = Array.from(document.querySelectorAll(".loading_icon path"));
-
     startAnimation();
-  }, [startAnimation, soundsLoaded]);
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [soundsLoaded]); // 只依赖 soundsLoaded，打破循环
 
-  const fadeOut = () => {
-    if (containerRef.current) {
-      gsap.to(containerRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.inOut",
-      });
-    }
-  };
+  // ═══════════════════════════════════════════════════════════════
+  // 组件卸载清理：kill 所有 GSAP 动画，防止内存泄漏
+  // ═══════════════════════════════════════════════════════════════
+  useEffect(() => {
+    return () => {
+      // 清理所有 timeline
+      timelinesRef.current.forEach(tl => tl.kill());
+      timelinesRef.current = [];
+      
+      // 清理所有 tween
+      tweensRef.current.forEach(tw => tw.kill());
+      tweensRef.current = [];
+      
+      // 停止所有音频
+      if (movementSoundRef.current) {
+        movementSoundRef.current.pause();
+        movementSoundRef.current.currentTime = 0;
+      }
+      if (completionSoundRef.current) {
+        completionSoundRef.current.pause();
+        completionSoundRef.current.currentTime = 0;
+      }
+    };
+  }, []);
 
   return (
     <div 

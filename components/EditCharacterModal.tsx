@@ -26,13 +26,18 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { UserRound, X } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { updateCharacter } from "@/function/dialogue/update";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
-import { Toast } from "@/components/Toast";
+import { toast } from "@/lib/store/toast-store";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 /**
  * Interface definitions for the component's props
@@ -80,26 +85,6 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
   const [creatorComment, setCreatorComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Add ErrorToast state
-  const [errorToast, setErrorToast] = useState({
-    isVisible: false,
-    message: "",
-  });
-
-  const showErrorToast = useCallback((message: string) => {
-    setErrorToast({
-      isVisible: true,
-      message,
-    });
-  }, []);
-
-  const hideErrorToast = useCallback(() => {
-    setErrorToast({
-      isVisible: false,
-      message: "",
-    });
-  }, []);
-
   useEffect(() => {
     if (isOpen && characterData) {
       setName(characterData.name || "");
@@ -130,177 +115,154 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
       onSave();
       onClose();
     } catch (err: any) {
-      showErrorToast(err.message || "An error occurred");
+      toast.error(err.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      trackButtonClick("EditCharacterModal", "关闭编辑角色");
+      onClose();
+    }
+  };
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 backdrop-blur-sm"
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="relative w-full max-w-4xl bg-deep border border-ink rounded-lg shadow-xl z-10 overflow-hidden"
-          >
-            <div className="absolute top-2 right-2 z-20">
-              <button
-                onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
-                className="text-ink-soft hover:text-cream-soft transition-colors bg-deep rounded-full p-1"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-
-            <div className="flex flex-col md:flex-row">
-              <div className="md:w-2/5 lg:w-1/3 relative">
-                <div className="h-full">
-                  {characterData.avatar_path ? (
-                    <CharacterAvatarBackground avatarPath={characterData.avatar_path} />
-                  ) : (
-                    <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-muted-surface">
-                      <UserRound className="h-32 w-32 text-ink" strokeWidth={1.5} />
-                    </div>
-                  )}
-                  <div className={`absolute bottom-4 w-full text-center text-cream-soft ${serifFontClass} text-xl magical-text`}>
-                    {name || characterData.name}
-                  </div>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-4xl p-0 overflow-hidden bg-deep border-ink gap-0">
+        
+        <div className="flex flex-col md:flex-row h-full max-h-[85vh]">
+          <div className="md:w-2/5 lg:w-1/3 relative bg-muted-surface/30">
+            <div className="h-full min-h-[300px] relative">
+              {characterData.avatar_path ? (
+                <CharacterAvatarBackground avatarPath={characterData.avatar_path} />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-muted-surface">
+                  <UserRound className="h-32 w-32 text-ink" strokeWidth={1.5} />
                 </div>
-              </div>
-              
-              <div className="md:w-3/5 lg:w-2/3 bg-deep p-6">
-                <h2 className={`text-xl font-semibold text-cream-soft magical-text mb-6 ${serifFontClass}`}>
-                  {t("editCharacterModal.title")}
-                </h2>
-                
-                <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto pr-2 space-y-5">
-                  <div>
-                    <label
-                      htmlFor="character-name"
-                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
-                    >
-                      {t("editCharacterModal.name")}
-                    </label>
-                    <input
-                      type="text"
-                      id="character-name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="character-personality"
-                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
-                    >
-                      {t("editCharacterModal.personality")}
-                    </label>
-                    <textarea
-                      id="character-personality"
-                      value={personality}
-                      onChange={(e) => setPersonality(e.target.value)}
-                      rows={3}
-                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
-                    />
-                  </div>
-              
-                  <div>
-                    <label
-                      htmlFor="character-scenario"
-                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
-                    >
-                      {t("editCharacterModal.scenario")}
-                    </label>
-                    <textarea
-                      id="character-scenario"
-                      value={scenario}
-                      onChange={(e) => setScenario(e.target.value)}
-                      rows={3}
-                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
-                    />
-                  </div>
-              
-                  <div>
-                    <label
-                      htmlFor="character-first-message"
-                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
-                    >
-                      {t("editCharacterModal.firstMessage")}
-                    </label>
-                    <textarea
-                      id="character-first-message"
-                      value={firstMessage}
-                      onChange={(e) => setFirstMessage(e.target.value)}
-                      rows={3}
-                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
-                    />
-                  </div>
-              
-                  <div>
-                    <label
-                      htmlFor="character-creator-comment"
-                      className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
-                    >
-                      {t("editCharacterModal.creatorComment")}
-                    </label>
-                    <textarea
-                      id="character-creator-comment"
-                      value={creatorComment}
-                      onChange={(e) => setCreatorComment(e.target.value)}
-                      rows={3}
-                      className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass}`}
-                    />
-                  </div>
-
-                  <div className="flex justify-end space-x-4 pt-4">
-                    <button
-                      type="button"
-                      onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
-                      className={`text-text-muted hover:text-cream transition-colors duration-300 ${serifFontClass}`}
-                    >
-                      {t("editCharacterModal.cancel")}
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      onClick={(e) => {trackButtonClick("EditCharacterModal", "保存编辑角色");onClose();}}
-                      className={`text-amber-400 hover:text-amber-300 transition-colors duration-300 ${serifFontClass}`}
-                    >
-                      {isLoading ? (
-                        <div className="h-5 w-5 border-2 border-deep border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        t("editCharacterModal.save")
-                      )}
-                    </button>
-                  </div>
-                </form>
+              )}
+              <div className={`absolute bottom-4 w-full text-center text-cream-soft ${serifFontClass} text-xl magical-text z-10`}>
+                {name || characterData.name}
               </div>
             </div>
-          </motion.div>
+          </div>
+          
+          <div className="md:w-3/5 lg:w-2/3 bg-deep p-6 flex flex-col h-full overflow-hidden">
+            <DialogHeader className="mb-6 flex-shrink-0">
+              <DialogTitle className={`text-xl font-semibold text-cream-soft magical-text ${serifFontClass}`}>
+                {t("editCharacterModal.title")}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pr-2 space-y-5 fantasy-scrollbar">
+              <div>
+                <label
+                  htmlFor="character-name"
+                  className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
+                >
+                  {t("editCharacterModal.name")}
+                </label>
+                <input
+                  type="text"
+                  id="character-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass} fantasy-input`}
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="character-personality"
+                  className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
+                >
+                  {t("editCharacterModal.personality")}
+                </label>
+                <textarea
+                  id="character-personality"
+                  value={personality}
+                  onChange={(e) => setPersonality(e.target.value)}
+                  rows={3}
+                  className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass} fantasy-input`}
+                />
+              </div>
+          
+              <div>
+                <label
+                  htmlFor="character-scenario"
+                  className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
+                >
+                  {t("editCharacterModal.scenario")}
+                </label>
+                <textarea
+                  id="character-scenario"
+                  value={scenario}
+                  onChange={(e) => setScenario(e.target.value)}
+                  rows={3}
+                  className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass} fantasy-input`}
+                />
+              </div>
+          
+              <div>
+                <label
+                  htmlFor="character-first-message"
+                  className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
+                >
+                  {t("editCharacterModal.firstMessage")}
+                </label>
+                <textarea
+                  id="character-first-message"
+                  value={firstMessage}
+                  onChange={(e) => setFirstMessage(e.target.value)}
+                  rows={3}
+                  className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass} fantasy-input`}
+                />
+              </div>
+          
+              <div>
+                <label
+                  htmlFor="character-creator-comment"
+                  className={`block text-sm font-medium text-amber-soft mb-2 ${fontClass}`}
+                >
+                  {t("editCharacterModal.creatorComment")}
+                </label>
+                <textarea
+                  id="character-creator-comment"
+                  value={creatorComment}
+                  onChange={(e) => setCreatorComment(e.target.value)}
+                  rows={3}
+                  className={`w-full bg-muted-surface border border-ink rounded p-3 text-cream-soft focus:outline-none focus:ring-1 focus:ring-amber-soft ${fontClass} fantasy-input`}
+                />
+              </div>
+
+              <div className="flex justify-end space-x-4 pt-4 pb-2 mt-auto">
+                <button
+                  type="button"
+                  onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
+                  className={`text-text-muted hover:text-cream transition-colors duration-300 ${serifFontClass}`}
+                >
+                  {t("editCharacterModal.cancel")}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  onClick={(e) => {trackButtonClick("EditCharacterModal", "保存编辑角色");}}
+                  className={`text-amber-400 hover:text-amber-300 transition-colors duration-300 ${serifFontClass}`}
+                >
+                  {isLoading ? (
+                    <div className="h-5 w-5 border-2 border-deep border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    t("editCharacterModal.save")
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      )}
-      
-      <Toast
-        isVisible={errorToast.isVisible}
-        message={errorToast.message}
-        onClose={hideErrorToast}
-        type="error"
-      />
-    </AnimatePresence>
+      </DialogContent>
+    </Dialog>
   );
 };
 

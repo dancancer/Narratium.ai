@@ -1,14 +1,26 @@
-import { readData, writeData, PRESET_FILE } from "@/lib/data/local-storage";
+import { 
+  PRESET_FILE, 
+  clearStore, 
+  getAllEntries, 
+  getRecordByKey, 
+  putRecord, 
+} from "@/lib/data/local-storage";
 import { Preset, PresetPrompt } from "@/lib/models/preset-model";
 
 export class PresetOperations {
   static async getPresets(): Promise<Record<string, any>> {
-    const presetsArray = await readData(PRESET_FILE);
-    return presetsArray[0] || {};
+    const entries = await getAllEntries<any>(PRESET_FILE);
+    return entries.reduce<Record<string, any>>((acc, { key, value }) => {
+      if (key) acc[String(key)] = value;
+      return acc;
+    }, {});
   }
 
   private static async savePresets(presets: Record<string, any>): Promise<void> {
-    await writeData(PRESET_FILE, [presets]);
+    await clearStore(PRESET_FILE);
+    for (const [key, value] of Object.entries(presets)) {
+      await putRecord(PRESET_FILE, key, value);
+    }
   }
 
   static async getAllPresets(): Promise<Preset[]> {

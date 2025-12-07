@@ -8,13 +8,14 @@
  */
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import DialogueTreeModal from "@/components/DialogueTreeModal";
 import AdvancedSettingsEditor from "@/components/AdvancedSettingsEditor";
 import PresetInfoModal from "@/components/PresetInfoModal";
+import { useUIStore } from "@/lib/store/ui-store";
+import { Loader2, ArrowLeft, Activity, Edit, Github, Settings, X, ChevronDown, User } from "lucide-react";
 
 /* ─── 子组件 & Hooks ─── */
 import {
@@ -43,61 +44,6 @@ interface CharacterSidebarProps {
   onDialogueEdit?: () => void;
   onViewSwitch?: () => void;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────────
- * SVG 图标组件 - 集中管理，避免内联重复
- * ───────────────────────────────────────────────────────────────────────────── */
-
-const Icons = {
-  Spinner: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 50 50">
-      <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.2" />
-      <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray="1, 150">
-        <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  ),
-  ArrowLeft: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
-    </svg>
-  ),
-  Activity: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
-  ),
-  Edit: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-    </svg>
-  ),
-  Github: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-    </svg>
-  ),
-  Settings: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-    </svg>
-  ),
-  Close: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 6L6 18M6 6l12 12" />
-    </svg>
-  ),
-  ChevronDown: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  ),
-  User: () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="md:w-6 md:h-6">
-      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
-  ),
-};
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Section Header 组件 - 区块标题
@@ -134,13 +80,12 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
   /* ─── 提取的 Hooks ─── */
   const presetManager = usePresetManager({ language: language as "zh" | "en" });
   const responseLength = useResponseLength();
+  const switchToPresetView = useUIStore((state) => state.switchToPresetView);
 
   /* ─── 事件处理 ─── */
   const handleOpenPromptEditor = () => {
     trackButtonClick("CharacterSidebar", "切换到预设编辑器");
-    window.dispatchEvent(
-      new CustomEvent("switchToPresetView", { detail: { characterId: character.id } }),
-    );
+    switchToPresetView({ characterId: character.id });
   };
 
   const handleToggleSidebar = () => {
@@ -175,12 +120,10 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
 
       <div
         className={`${
-          isCollapsed
-            ? "w-0 p-0 opacity-0 breathing-bg"
-            : isMobile
-              ? "fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg"
-              : "w-[18rem] text-sm leading-normal breathing-bg"
-        } relative overflow-hidden border-r border-ink h-full flex flex-col magic-border transition-all duration-300 ease-in-out`}
+          isMobile
+            ? `fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg ${isCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`
+            : `w-[18rem] text-sm leading-normal breathing-bg ${isCollapsed ? "pointer-events-none -translate-x-full opacity-0" : "translate-x-0 opacity-100"}`
+        } relative overflow-hidden border-r border-ink h-full flex flex-col magic-border transition-[transform,opacity] duration-300 ease-out`}
       >
         {/* 移动端关闭按钮 */}
         {isMobile && !isCollapsed && (
@@ -189,7 +132,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               onClick={() => { trackButtonClick("CharacterSidebar", "移动端关闭侧边栏"); toggleSidebar(); }}
               className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
             >
-              <Icons.Close />
+              <X size={16} />
             </button>
           </div>
         )}
@@ -201,7 +144,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100 mt-4">
           <div className="space-y-1 my-2">
             <SidebarMenuItem
-              icon={<Icons.Spinner />}
+              icon={<User size={16} />}
               label={t("characterChat.backToCharacters")}
               href="/character-cards"
               isCollapsed={isCollapsed}
@@ -209,7 +152,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               fontClass={fontClass}
             />
             <SidebarMenuItem
-              icon={<Icons.ArrowLeft />}
+              icon={<ArrowLeft size={16} />}
               label={t("characterChat.collapseSidebar")}
               onClick={handleToggleSidebar}
               isCollapsed={isCollapsed}
@@ -233,7 +176,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                   {character.avatar_path ? (
                     <CharacterAvatarBackground avatarPath={character.avatar_path} />
                   ) : (
-                    <Icons.User />
+                    <User size={20} className="md:w-6 md:h-6" />
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
@@ -260,7 +203,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
         <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
           <div className="space-y-1 my-2">
             <SidebarMenuItem
-              icon={<Icons.Activity />}
+              icon={<Activity size={16} />}
               label={t("characterChat.Conversation")}
               onClick={() => setShowDialogueTreeModal(true)}
               isCollapsed={isCollapsed}
@@ -281,7 +224,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             <div className="space-y-1">
               <div className="mx-6">
                 <SidebarMenuItem
-                  icon={<Icons.Edit />}
+                  icon={<Edit size={16} />}
                   label={t("characterChat.presetEditor")}
                   onClick={handleOpenPromptEditor}
                   isMobile={isMobile}
@@ -290,7 +233,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
               </div>
               <div className="relative mx-6">
                 <SidebarMenuItem
-                  icon={<Icons.Github />}
+                  icon={<Github size={16} />}
                   label={t("characterChat.systemPresets")}
                   onClick={presetManager.toggleDropdown}
                   isMobile={isMobile}
@@ -300,7 +243,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
                   suffix={
                     <div className="flex items-center justify-center ml-2">
                       <div className={`transition-transform duration-300 ${presetManager.isDropdownOpen ? "rotate-180" : ""}`}>
-                        <Icons.ChevronDown />
+                        <ChevronDown size={12} />
                       </div>
                     </div>
                   }
@@ -330,7 +273,7 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
           <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
             <div className="space-y-1 my-2">
               <SidebarMenuItem
-                icon={<Icons.Settings />}
+                icon={<Settings size={16} />}
                 label={t("characterChat.advancedSettings")}
                 onClick={() => { trackButtonClick("CharacterSidebar", "打开高级设置"); setIsAdvancedSettingsOpen(true); }}
                 isMobile={isMobile}

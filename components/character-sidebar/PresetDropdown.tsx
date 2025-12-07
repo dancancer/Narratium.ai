@@ -7,6 +7,7 @@
  */
 
 import React from "react";
+import { Check, Info } from "lucide-react";
 import { getPresetDisplayName, getPresetDescription } from "@/function/preset/download";
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -48,38 +49,11 @@ interface PresetDropdownProps {
  * ───────────────────────────────────────────────────────────────────────────── */
 
 const CheckIcon: React.FC = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="var(--color-info)"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M20 6L9 17l-5-5" />
-  </svg>
+  <Check size={14} color="var(--color-info)" strokeWidth={2} />
 );
 
 const InfoIcon: React.FC = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="12"
-    height="12"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="transition-transform duration-300 group-hover/info:scale-110"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 16v-4" />
-    <path d="M12 8h.01" />
-  </svg>
+  <Info size={12} className="transition-transform duration-300 group-hover/info:scale-110" />
 );
 
 /* ─────────────────────────────────────────────────────────────────────────────

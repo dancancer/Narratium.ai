@@ -3,7 +3,7 @@
  * ║                         useApiConfig Hook                                  ║
  * ║                                                                            ║
  * ║  管理 API 配置状态：加载、切换、模型获取                                    ║
- * ║  单一职责：只处理 API 配置相关的状态和逻辑                                   ║
+ * ║  【重构】使用 Zustand Store 替代 localStorage + window 事件                ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -11,23 +11,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { trackButtonClick } from "@/utils/google-analytics";
-import { getJSON, setJSON, getString, setString } from "@/lib/storage/client-storage";
+import { setString } from "@/lib/storage/client-storage";
+import { useModelStore, type APIConfig } from "@/lib/store/model-store";
 
 // ============================================================================
 //                              类型定义
 // ============================================================================
 
-export type LLMType = "openai" | "ollama" | "gemini";
-
-export interface APIConfig {
-  id: string;
-  name: string;
-  type: LLMType;
-  baseUrl: string;
-  model: string;
-  apiKey?: string;
-  availableModels?: string[];
-}
+export type { APIConfig } from "@/lib/store/model-store";
+export type { LLMType } from "@/lib/store/model-store";
 
 interface UseApiConfigReturn {
   configs: APIConfig[];
@@ -45,20 +37,8 @@ interface UseApiConfigReturn {
 }
 
 // ============================================================================
-//                              存储操作
+//                              工具函数
 // ============================================================================
-
-function readConfigsFromStorage(): APIConfig[] {
-  return getJSON<APIConfig[]>("apiConfigs", []);
-}
-
-function mergeConfigsWithStorage(incoming: APIConfig[]): APIConfig[] {
-  const latest = readConfigsFromStorage();
-  const merged = new Map<string, APIConfig>();
-  latest.forEach((config) => merged.set(config.id, config));
-  incoming.forEach((config) => merged.set(config.id, config));
-  return Array.from(merged.values());
-}
 
 async function fetchAvailableModels(config: APIConfig): Promise<string[]> {
   // Ollama 直接返回配置的模型
@@ -87,18 +67,17 @@ async function fetchAvailableModels(config: APIConfig): Promise<string[]> {
 // ============================================================================
 
 export function useApiConfig(): UseApiConfigReturn {
-  const [configs, setConfigs] = useState<APIConfig[]>([]);
-  const [activeConfigId, setActiveConfigId] = useState("");
+  // ========== Zustand Store ==========
+  const configs = useModelStore((state) => state.configs);
+  const activeConfigId = useModelStore((state) => state.activeConfigId);
+  const updateConfig = useModelStore((state) => state.updateConfig);
+  const setActiveConfig = useModelStore((state) => state.setActiveConfig);
+  
+  // ========== 本地 UI 状态 ==========
   const [currentModel, setCurrentModel] = useState("");
   const [showApiDropdown, setShowApiDropdown] = useState(false);
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [selectedConfigId, setSelectedConfigId] = useState("");
-
-  // 获取最新配置（合并内存与 localStorage）
-  const getWorkingConfigs = useCallback(
-    () => mergeConfigsWithStorage(configs),
-    [configs]
-  );
 
   const getCurrentConfig = useCallback(
     () => configs.find((c) => c.id === activeConfigId),
@@ -107,23 +86,16 @@ export function useApiConfig(): UseApiConfigReturn {
 
   // 选择配置（第一层下拉）
   const handleConfigSelect = useCallback(async (configId: string) => {
-    const mergedConfigs = getWorkingConfigs();
-    setConfigs(mergedConfigs);
-
-    const selectedConfig = mergedConfigs.find((c) => c.id === configId);
+    const selectedConfig = configs.find((c) => c.id === configId);
     if (!selectedConfig) return;
 
     // 懒加载可用模型
-    let configsWithModels = mergedConfigs;
     if (!selectedConfig.availableModels) {
       const models = await fetchAvailableModels(selectedConfig);
-      configsWithModels = mergedConfigs.map((c) =>
-        c.id === configId ? { ...c, availableModels: models } : c
-      );
-      setConfigs(configsWithModels);
+      updateConfig(configId, { availableModels: models });
     }
 
-    const configForUse = configsWithModels.find((c) => c.id === configId) || selectedConfig;
+    const configForUse = configs.find((c) => c.id === configId) || selectedConfig;
 
     // 单模型直接切换，多模型显示第二层下拉
     if (configForUse.availableModels?.length === 1) {
@@ -135,90 +107,45 @@ export function useApiConfig(): UseApiConfigReturn {
       setShowModelDropdown(true);
       setShowApiDropdown(false);
     }
-  }, [getWorkingConfigs]);
+  }, [configs, updateConfig]);
 
   // 切换模型
   const handleModelSwitch = useCallback((configId: string, modelName?: string) => {
-    const mergedConfigs = getWorkingConfigs();
-    const selectedConfig = mergedConfigs.find((c) => c.id === configId);
+    const selectedConfig = configs.find((c) => c.id === configId);
     if (!selectedConfig) return;
 
     // 更新模型配置
-    let updatedConfigs = mergedConfigs;
     if (modelName && modelName !== selectedConfig.model) {
       const actualModelName = modelName === "default" ? (selectedConfig.model || "default") : modelName;
-      updatedConfigs = mergedConfigs.map((c) =>
-        c.id === configId ? { ...c, model: actualModelName } : c
-      );
-      setConfigs(updatedConfigs);
-      setJSON("apiConfigs", updatedConfigs);
-    } else {
-      setConfigs(updatedConfigs);
+      updateConfig(configId, { model: actualModelName });
     }
 
-    setActiveConfigId(configId);
-    const configAfterUpdate = updatedConfigs.find((c) => c.id === configId) || selectedConfig;
+    setActiveConfig(configId);
+    const configAfterUpdate = configs.find((c) => c.id === configId) || selectedConfig;
     setCurrentModel(configAfterUpdate.model);
-    setString("activeConfigId", configId);
 
     // 同步到各存储键
     syncConfigToStorage(configAfterUpdate);
 
-    // 广播变更事件
-    window.dispatchEvent(
-      new CustomEvent("modelChanged", {
-        detail: {
-          configId,
-          config: configAfterUpdate,
-          modelName: configAfterUpdate.model,
-          configName: configAfterUpdate.name,
-        },
-      })
-    );
-
     setShowApiDropdown(false);
     setShowModelDropdown(false);
     trackButtonClick("CharacterChat", "切换模型");
-  }, [getWorkingConfigs]);
+  }, [configs, updateConfig, setActiveConfig]);
 
-  // 初始化加载配置
+  // ═══════════════════════════════════════════════════════════════
+  // 初始化：从 Store 同步当前模型
+  // 
+  // 【优化】只依赖 activeConfigId，避免 configs 数组变化时不必要的触发
+  // - 使用 getCurrentConfig() 获取最新配置，而不是依赖 configs
+  // - 只在 activeConfigId 变化时同步模型
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const loadConfigs = () => {
-      const loadedConfigs = readConfigsFromStorage();
-      const storedActiveId = getString("activeConfigId");
-      const activeIdCandidate = storedActiveId && loadedConfigs.some((c) => c.id === storedActiveId)
-        ? storedActiveId
-        : loadedConfigs[0]?.id || "";
-
-      setConfigs(loadedConfigs);
-      setActiveConfigId(activeIdCandidate);
-
-      const activeConfig = loadedConfigs.find((c) => c.id === activeIdCandidate);
-      if (activeConfig) {
-        setCurrentModel(activeConfig.model);
-      }
-    };
-
-    loadConfigs();
-
-    // 监听外部变更
-    const handleModelChanged = () => loadConfigs();
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "apiConfigs" || event.key === "activeConfigId") {
-        loadConfigs();
-      }
-    };
-
-    window.addEventListener("modelChanged", handleModelChanged);
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("modelChanged", handleModelChanged);
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    const activeConfig = getCurrentConfig();
+    if (activeConfig) {
+      setCurrentModel(activeConfig.model);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeConfigId]);
 
   // 点击外部关闭下拉
   useEffect(() => {

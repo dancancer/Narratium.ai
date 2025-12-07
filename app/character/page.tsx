@@ -3,7 +3,8 @@
  * ║                         Character Page Component                           ║
  * ║                                                                            ║
  * ║  角色交互页面：聊天、世界书、正则脚本、预设管理                               ║
- * ║  使用 Hooks：useCharacterDialogue, useCharacterLoader, useActiveView 等    ║
+ * ║  状态管理：Zustand Store 统一管理视图切换（单一数据源）                      ║
+ * ║  使用 Hooks：useCharacterDialogue, useCharacterLoader                      ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -20,7 +21,7 @@ import PresetEditor from "@/components/PresetEditor";
 import CharacterChatHeader from "@/components/CharacterChatHeader";
 import UserTour from "@/components/UserTour";
 import { useTour } from "@/hooks/useTour";
-import { Toast } from "@/components/Toast";
+import { toast } from "@/lib/store/toast-store";
 import LoginModal from "@/components/LoginModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
@@ -31,9 +32,9 @@ import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
 
 import { useCharacterDialogue } from "@/hooks/useCharacterDialogue";
 import { useCharacterLoader } from "@/hooks/useCharacterLoader";
-import { useActiveView } from "@/hooks/useActiveView";
 import { useMobileDetection } from "@/hooks/useMobileDetection";
-import { useErrorToast } from "@/hooks/useErrorToast";
+import { useUIStore } from "@/lib/store/ui-store";
+import { useUserStore } from "@/lib/store/user-store";
 
 // ============================================================================
 //                              主组件
@@ -58,13 +59,21 @@ export default function CharacterPage() {
 
   // ========== 自定义 Hooks ==========
   const { isMobile } = useMobileDetection();
-  const { activeView, switchToView, toggleWorldBook, toggleRegexEditor, backToChat } = useActiveView();
-  const { toast: errorToast, showToast: showErrorToast, hideToast: hideErrorToast } = useErrorToast();
+  
+  // ========== Zustand Store - 单一数据源 ==========
+  const characterView = useUIStore((state) => state.characterView);
+  const setCharacterView = useUIStore((state) => state.setCharacterView);
+  const presetViewPayload = useUIStore((state) => state.presetViewPayload);
+  const resetPresetViewPayload = useUIStore((state) => state.resetPresetViewPayload);
+  const characterSidebarOpen = useUIStore((state) => state.characterSidebarOpen);
+  const setCharacterSidebarOpen = useUIStore((state) => state.setCharacterSidebarOpen);
+  const setModelSidebarOpen = useUIStore((state) => state.setModelSidebarOpen);
+  const displayUsername = useUserStore((state) => state.displayUsername);
 
   // ========== 对话 Hook ==========
   const dialogue = useCharacterDialogue({
     characterId,
-    onError: showErrorToast,
+    onError: toast.error,
     t,
   });
 
@@ -77,7 +86,6 @@ export default function CharacterPage() {
 
   // ========== 业务状态 ==========
   const [userInput, setUserInput] = useState("");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [activeModes, setActiveModes] = useState<Record<string, any>>({
     "story-progress": false,
@@ -85,7 +93,20 @@ export default function CharacterPage() {
     "scene-setting": false,
   });
 
-  // ========== 同步加载数据到对话状态 ==========
+  // 派生状态：直接从 Store 计算，消除冗余
+  const sidebarCollapsed = !characterSidebarOpen;
+
+  // ═══════════════════════════════════════════════════════════════
+  // 同步加载数据到对话状态
+  // 
+  // 【设计说明】为什么不依赖 setMessages 和 setSuggestedInputs？
+  // 1. React 保证 setState 函数引用永久稳定（不会重建）
+  // 2. 我们的意图是"当 dialogueData 变化时同步"，而不是"当 setter 变化时"
+  // 3. 这是 React 官方推荐的"派生状态同步"模式
+  // 4. 添加 setter 到依赖数组不会改变行为，只会增加噪音
+  // 
+  // 参考：https://react.dev/reference/react/useState#setstate-caveats
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
     if (loader.dialogueData) {
       dialogue.setMessages(loader.dialogueData.messages);
@@ -110,41 +131,36 @@ export default function CharacterPage() {
     startCharacterTour,
   ]);
 
-  // ========== 事件监听 ==========
+  // ========== 监听 Store 变化 ==========
+
+  // 处理预设视图的 payload
   useEffect(() => {
-    const handleSwitchToPresetView = (event: any) => {
-      switchToView("preset");
-      const detail = event.detail;
-      if (detail) {
-        if (detail.presetId) {
-          sessionStorage.setItem("activate_preset_id", detail.presetId);
-        } else if (detail.presetName) {
-          sessionStorage.setItem("activate_preset_name", detail.presetName);
-        }
+    if (presetViewPayload && characterView === "preset") {
+      if (presetViewPayload.presetId) {
+        sessionStorage.setItem("activate_preset_id", presetViewPayload.presetId);
+      } else if (presetViewPayload.presetName) {
+        sessionStorage.setItem("activate_preset_name", presetViewPayload.presetName);
       }
-    };
+      resetPresetViewPayload();
+    }
+  }, [presetViewPayload, characterView, resetPresetViewPayload]);
 
-    const handleCloseCharacterSidebar = () => {
-      setSidebarCollapsed(true);
-    };
 
-    const handleDisplayUsernameChanged = () => {
-      if (characterId) {
-        dialogue.fetchLatestDialogue();
-      }
-    };
 
-    window.addEventListener("switchToPresetView", handleSwitchToPresetView);
-    window.addEventListener("closeCharacterSidebar", handleCloseCharacterSidebar);
-    window.addEventListener("displayUsernameChanged", handleDisplayUsernameChanged);
-
-    return () => {
-      window.removeEventListener("switchToPresetView", handleSwitchToPresetView);
-      window.removeEventListener("closeCharacterSidebar", handleCloseCharacterSidebar);
-      window.removeEventListener("displayUsernameChanged", handleDisplayUsernameChanged);
-    };
+  // ═══════════════════════════════════════════════════════════════
+  // 响应用户名变化，重新加载对话
+  // 
+  // 【修复】只依赖 displayUsername 和 characterId
+  // - dialogue.fetchLatestDialogue 是稳定的函数引用（useCallback）
+  // - 不应该依赖整个 dialogue 对象，会导致无限循环
+  // - 只在用户名或角色 ID 变化时重新加载
+  // ═══════════════════════════════════════════════════════════════
+  useEffect(() => {
+    if (characterId) {
+      dialogue.fetchLatestDialogue();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [characterId, switchToView]);
+  }, [displayUsername, characterId]);
 
   // ========== 提交消息 ==========
   const handleSubmit = useCallback(
@@ -195,13 +211,14 @@ export default function CharacterPage() {
 
   // ========== 侧边栏切换 ==========
   const toggleSidebar = useCallback(() => {
-    const newState = !sidebarCollapsed;
-    setSidebarCollapsed(newState);
+    const willBeOpen = !characterSidebarOpen;
+    setCharacterSidebarOpen(willBeOpen);
 
-    if (isMobile && !newState) {
-      window.dispatchEvent(new CustomEvent("closeModelSidebar"));
+    // 移动端：打开角色侧边栏时关闭模型侧边栏
+    if (isMobile && willBeOpen) {
+      setModelSidebarOpen(false);
     }
-  }, [sidebarCollapsed, isMobile]);
+  }, [characterSidebarOpen, isMobile, setCharacterSidebarOpen, setModelSidebarOpen]);
 
   // ========== 渲染：加载状态 ==========
   if (loader.isLoading || loader.isInitializing) {
@@ -244,32 +261,31 @@ export default function CharacterPage() {
   // ========== 渲染：主界面 ==========
   return (
     <div className="flex h-full relative fantasy-bg overflow-hidden [left:var(--app-sidebar-width,0)]">
-      <CharacterSidebar
-        character={loader.character}
-        isCollapsed={sidebarCollapsed}
-        toggleSidebar={toggleSidebar}
-        onDialogueEdit={() => dialogue.fetchLatestDialogue()}
-        onViewSwitch={() => {
-          switchToView("worldbook");
-          setTimeout(() => switchToView("chat"), 1000);
-        }}
-      />
+      {/* 侧边栏容器：固定宽度，内部元素通过 transform 滑动 */}
+      <div className={`${isMobile ? "" : sidebarCollapsed ? "w-0" : "w-[18rem]"} flex-shrink-0 transition-[width] duration-300 ease-out`}>
+        <CharacterSidebar
+          character={loader.character}
+          isCollapsed={sidebarCollapsed}
+          toggleSidebar={toggleSidebar}
+          onDialogueEdit={() => dialogue.fetchLatestDialogue()}
+          onViewSwitch={() => {
+            setCharacterView("worldbook");
+            setTimeout(() => setCharacterView("chat"), 1000);
+          }}
+        />
+      </div>
 
-      <div
-        className={`${sidebarCollapsed ? "w-full" : "hidden md:block md:w-3/4"} fantasy-bg h-full transition-all duration-300 ease-in-out flex flex-col`}
-      >
+      {/* 主内容区：flex-1 自动填充剩余空间 */}
+      <div className="flex-1 fantasy-bg h-full flex flex-col min-w-0">
         <CharacterChatHeader
           character={loader.character}
           serifFontClass={serifFontClass}
           sidebarCollapsed={sidebarCollapsed}
-          activeView={activeView}
+          activeView={characterView}
           toggleSidebar={toggleSidebar}
-          onSwitchToView={switchToView}
-          onToggleView={toggleWorldBook}
-          onToggleRegexEditor={toggleRegexEditor}
         />
 
-        {activeView === "chat" ? (
+        {characterView === "chat" ? (
           <CharacterChatPanel
             character={loader.character}
             messages={dialogue.messages}
@@ -291,21 +307,21 @@ export default function CharacterPage() {
             activeModes={activeModes}
             setActiveModes={setActiveModes}
           />
-        ) : activeView === "worldbook" ? (
+        ) : characterView === "worldbook" ? (
           <WorldBookEditor
-            onClose={backToChat}
+            onClose={() => setCharacterView("chat")}
             characterName={loader.character?.name || ""}
             characterId={characterId || ""}
           />
-        ) : activeView === "preset" ? (
+        ) : characterView === "preset" ? (
           <PresetEditor
-            onClose={backToChat}
+            onClose={() => setCharacterView("chat")}
             characterName={loader.character?.name || ""}
             characterId={characterId || ""}
           />
         ) : (
           <RegexScriptEditor
-            onClose={backToChat}
+            onClose={() => setCharacterView("chat")}
             characterName={loader.character?.name || ""}
             characterId={characterId || ""}
           />
@@ -323,13 +339,6 @@ export default function CharacterPage() {
           skipTour();
           setHasSeenCharacterTour(true);
         }}
-      />
-
-      <Toast
-        type="error"
-        message={errorToast.message}
-        isVisible={errorToast.isVisible}
-        onClose={hideErrorToast}
       />
 
       <LoginModal

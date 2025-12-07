@@ -8,6 +8,7 @@
 "use client";
 
 import { RefObject } from "react";
+import { X, MessageSquare } from "lucide-react";
 import { DialogueNode } from "@/hooks/useDialogueTreeData";
 
 interface DialogueEditModalProps {
@@ -41,10 +42,7 @@ export function DialogueEditModal({
         <div className="flex justify-between items-center mb-4">
           <h4 className={`text-cream text-lg ${serifFontClass}`}>{t("dialogue.editNode")}</h4>
           <button onClick={onClose} className="text-text-muted hover:text-amber-400 transition-colors duration-300" aria-label={t("common.close")}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -65,9 +63,7 @@ export function DialogueEditModal({
           <div>
             <label className={`block text-amber text-sm mb-2 ${serifFontClass}`}>
               <span className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
+                <MessageSquare className="w-3.5 h-3.5 mr-1" />
                 {t("dialogue.response")}
               </span>
             </label>

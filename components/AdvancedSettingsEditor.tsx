@@ -1,91 +1,54 @@
 /**
- * Advanced Settings Editor Component
- * 
- * This component provides an advanced settings interface that includes:
- * - Tag color editing capabilities
- * - Modal-based settings management
- * - Tabbed interface for different setting categories
- * - Responsive design with backdrop blur effects
- * - Smooth animations and transitions
- * 
- * The component handles:
- * - Modal display and positioning
- * - Tab navigation between different settings
- * - Click outside to close functionality
- * - Animation states and transitions
- * 
- * Dependencies:
- * - useLanguage: For internationalization
- * - TagColorEditor: For tag color management
- * - fantasy-ui.css: For styling
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                   Advanced Settings Editor Component                       ║
+ * ║                                                                            ║
+ * ║  高级设置编辑器 - 已迁移至 Radix UI Dialog                                    ║
+ * ║  标签颜色编辑 + 选项卡导航                                                    ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Layers, Palette, X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { TagColorEditor } from "@/components/TagColorEditor";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import "@/app/styles/fantasy-ui.css";
 
-/**
- * Interface definitions for the component's props
- */
+// ============================================================================
+//                              类型定义
+// ============================================================================
+
 interface AdvancedSettingsEditorProps {
   isOpen: boolean;
   onClose: () => void;
   onViewSwitch?: () => void;
 }
 
-/**
- * Advanced settings editor modal component
- * 
- * Provides a comprehensive settings interface with:
- * - Modal overlay with backdrop blur
- * - Tabbed navigation for different setting categories
- * - Smooth animations and transitions
- * - Responsive design adaptation
- * 
- * @param {AdvancedSettingsEditorProps} props - Component props
- * @returns {JSX.Element | null} The advanced settings modal or null if closed
- */
+// ============================================================================
+//                              主组件
+// ============================================================================
+
 const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen, onClose, onViewSwitch }) => {
   const { t, fontClass, serifFontClass } = useLanguage();
   const [activeTab, setActiveTab] = useState<string>("tagColors");
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [animationComplete, setAnimationComplete] = useState(false);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      const timer = setTimeout(() => setAnimationComplete(true), 100);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        clearTimeout(timer);
-      };
-    }
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  // ========== 渲染 ==========
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-2 sm:p-4">
-      <div className="absolute inset-0 backdrop-blur-md"></div>
-      <div 
-        ref={modalRef} 
-        className="relative bg-gradient-to-br from-layer to-canvas rounded-xl shadow-2xl w-full max-w-3xl h-[85vh] sm:h-[calc(100vh-4rem)] max-h-[500px] sm:max-h-[700px] flex flex-col overflow-hidden border border-neutral-700/50 transform transition-all duration-300 ease-in-out scale-95 opacity-0 animate-fadeInScaleUp"
-      >
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl p-0 overflow-hidden bg-deep border-ink gap-0 h-[85vh] sm:h-[calc(100vh-4rem)] max-h-[500px] sm:max-h-[700px]">
+        <DialogTitle className="sr-only">{t("characterChat.advancedSettings")}</DialogTitle>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full blur-3xl"></div>
           <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-amber-500/5 to-transparent rounded-full blur-3xl"></div>
         </div>
 
-        <div className="flex items-center justify-between p-2 sm:p-5 border-b border-neutral-700/50 relative">
+        <div className="flex items-center justify-between p-2 sm:p-5 border-b border-neutral-700/50 relative z-10">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <div className="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-600/30 flex items-center justify-center border border-amber-500/30 shadow-lg shadow-amber-500/10">
               <Layers className="h-3 w-3 sm:h-4 sm:w-4 text-amber-400" />
@@ -94,17 +57,9 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
               {t("characterChat.advancedSettings")}
             </h2>
           </div>
-          <button
-            onClick={onClose}
-            className="w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group relative"
-            aria-label={t("common.close")}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <X className="relative z-10 h-2.5 w-2.5 sm:h-3 sm:w-3 transition-transform duration-300 group-hover:scale-110" />
-          </button>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative z-10">
           <div className="w-24 sm:w-56 border-r border-neutral-700/50 p-2 sm:p-5 bg-neutral-800/20 relative">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-50"></div>
             <div className="relative z-10 space-y-1 sm:space-y-2">
@@ -137,24 +92,8 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
             </div>
           </div>
         </div>
-      </div>
-
-      <style jsx global>{`
-        @keyframes fadeInScaleUp {
-          0% {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-fadeInScaleUp {
-          animation: fadeInScaleUp 0.3s ease-out forwards;
-        }
-      `}</style>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

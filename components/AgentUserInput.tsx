@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Send, ArrowRight } from "lucide-react";
 
 interface AgentUserInputProps {
@@ -33,11 +32,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-4"
-    >
+    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-4 animate-in fade-in slide-in-from-bottom-5 duration-300">
       <div className="flex items-start space-x-3 mb-4">
         <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
           <ArrowRight className="w-4 h-4" />
@@ -77,17 +72,15 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
           {inputMode === "options" && (
             <div className="grid gap-2">
               {options.map((option, index) => (
-                <motion.button
+                <button
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
                   onClick={() => setSelectedOption(option)}
-                  className={`text-left p-3 rounded-lg border transition-all ${
+                  className={`text-left p-3 rounded-lg border transition-all animate-in fade-in slide-in-from-left-5 ${
                     selectedOption === option
                       ? "bg-amber-500/20 border-amber-500/40 text-amber-soft"
                       : "bg-black/20 border-amber-500/20 text-amber-soft/80 hover:bg-black/30 hover:border-amber-500/30"
                   }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm">{option}</span>
@@ -95,7 +88,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
                       <div className="w-2 h-2 bg-amber-400 rounded-full" />
                     )}
                   </div>
-                </motion.button>
+                </button>
               ))}
             </div>
           )}
@@ -142,6 +135,6 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
           )}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 } 

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import { Download, X, Monitor, Smartphone, Apple } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 
@@ -51,26 +50,14 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
   };
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           {/* Backdrop */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 backdrop-blur-sm"
-            onClick={onClose}
-          />
+          <div className="absolute inset-0 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose} />
           
           {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative z-10 w-full max-w-md mx-4 bg-gradient-to-br from-canvas via-surface to-canvas rounded-2xl shadow-2xl border border-muted-surface/50 overflow-hidden backdrop-filter backdrop-blur-sm"
-          >
+          <div className="relative z-10 w-full max-w-md mx-4 bg-gradient-to-br from-canvas via-surface to-canvas rounded-2xl shadow-2xl border border-muted-surface/50 overflow-hidden backdrop-filter backdrop-blur-sm animate-in fade-in zoom-in-95 slide-in-from-bottom-5 duration-300">
             {/* Animated background */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5 opacity-60" />
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f59e0b' fill-opacity='0.03'%3E%3Cpath d='M30 30l30-30v60L30 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
@@ -100,12 +87,10 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
             <div className="relative px-6 pb-4">
               <div className="space-y-3">
                 {downloadOptions.map((option) => (
-                  <motion.button
+                  <button
                     key={option.platform}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     onClick={() => handlePlatformDownload(option.url, option.platform)}
-                    className="w-full flex items-center p-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-gray-700/80 hover:to-gray-600/80 rounded-xl transition-all duration-200 border border-gray-600/50 hover:border-gray-500/70 backdrop-blur-sm group"
+                    className="w-full flex items-center p-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-gray-700/80 hover:to-gray-600/80 rounded-xl transition-all duration-200 border border-gray-600/50 hover:border-gray-500/70 backdrop-blur-sm group hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <div className={`${option.color} mr-4 group-hover:scale-110 transition-transform duration-200`}>
                       {option.icon}
@@ -121,7 +106,7 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
                     <div className="text-gray-500 group-hover:text-gray-300 transition-colors">
                       <Download size={16} />
                     </div>
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             </div>
@@ -134,9 +119,9 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>
+    </>
   );
 } 

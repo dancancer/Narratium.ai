@@ -1,4 +1,11 @@
-import { readData, writeData, MEMORY_ENTRIES_FILE, MEMORY_EMBEDDINGS_FILE } from "@/lib/data/local-storage";
+import { 
+  deleteRecord, 
+  getAllRecords, 
+  getRecordByKey, 
+  MEMORY_EMBEDDINGS_FILE, 
+  MEMORY_ENTRIES_FILE, 
+  putRecord, 
+} from "@/lib/data/local-storage";
 import { 
   MemoryEntry, 
   MemoryType, 
@@ -26,6 +33,45 @@ export interface EmbeddingRecord {
 }
 
 export class LocalMemoryOperations {
+  // ================================
+  // 内部工具
+  // ================================
+  private static async getMemoryRecord(characterId: string): Promise<MemoryRecord | null> {
+    return await getRecordByKey<MemoryRecord>(MEMORY_ENTRIES_FILE, characterId);
+  }
+
+  private static async saveMemoryRecord(record: MemoryRecord): Promise<void> {
+    await putRecord(MEMORY_ENTRIES_FILE, record.characterId, record);
+  }
+
+  private static async ensureMemoryRecord(characterId: string): Promise<MemoryRecord> {
+    const existing = await this.getMemoryRecord(characterId);
+    if (existing) return existing;
+
+    const now = new Date().toISOString();
+    const record: MemoryRecord = {
+      id: characterId,
+      characterId,
+      entries: [],
+      config: this.getDefaultRAGConfig(),
+      created_at: now,
+      updated_at: now,
+    };
+    await this.saveMemoryRecord(record);
+    return record;
+  }
+
+  private static async findRecordByEntry(entryId: string): Promise<{ record: MemoryRecord; index: number } | null> {
+    const allRecords = await getAllRecords<MemoryRecord>(MEMORY_ENTRIES_FILE);
+    for (const record of allRecords) {
+      const idx = record.entries.findIndex(entry => entry.id === entryId);
+      if (idx !== -1) {
+        return { record, index: idx };
+      }
+    }
+    return null;
+  }
+
   /**
    * Create a new memory entry for a character
    */
@@ -37,8 +83,9 @@ export class LocalMemoryOperations {
     tags: string[] = [],
     importance: number = 0.5,
   ): Promise<MemoryEntry> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    
+    const memoryRecord = await this.ensureMemoryRecord(characterId);
+    const now = new Date().toISOString();
+
     const memoryEntry: MemoryEntry = {
       id: uuidv4(),
       characterId,
@@ -53,31 +100,13 @@ export class LocalMemoryOperations {
       importance,
       accessCount: 0,
       lastAccessed: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     };
 
-    // Find existing character record or create new one
-    let characterRecord = memoryRecords.find(
-      (record: MemoryRecord) => record.characterId === characterId,
-    );
-
-    if (!characterRecord) {
-      characterRecord = {
-        id: uuidv4(),
-        characterId,
-        entries: [memoryEntry],
-        config: this.getDefaultRAGConfig(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      memoryRecords.push(characterRecord);
-    } else {
-      characterRecord.entries.push(memoryEntry);
-      characterRecord.updated_at = new Date().toISOString();
-    }
-
-    await writeData(MEMORY_ENTRIES_FILE, memoryRecords);
+    memoryRecord.entries.push(memoryEntry);
+    memoryRecord.updated_at = now;
+    await this.saveMemoryRecord(memoryRecord);
     return memoryEntry;
   }
 
@@ -85,28 +114,17 @@ export class LocalMemoryOperations {
    * Get all memory entries for a character
    */
   static async getMemoryEntriesByCharacter(characterId: string): Promise<MemoryEntry[]> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    const characterRecord = memoryRecords.find(
-      (record: MemoryRecord) => record.characterId === characterId,
-    );
-    
-    return characterRecord ? characterRecord.entries : [];
+    const record = await this.getMemoryRecord(characterId);
+    return record ? record.entries : [];
   }
 
   /**
    * Get a specific memory entry by ID
    */
   static async getMemoryEntryById(entryId: string): Promise<MemoryEntry | null> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    
-    for (const record of memoryRecords) {
-      const entry = record.entries.find((entry: MemoryEntry) => entry.id === entryId);
-      if (entry) {
-        return entry;
-      }
-    }
-    
-    return null;
+    const located = await this.findRecordByEntry(entryId);
+    if (!located) return null;
+    return located.record.entries[located.index] || null;
   }
 
   /**
@@ -116,48 +134,35 @@ export class LocalMemoryOperations {
     entryId: string, 
     updates: Partial<MemoryEntry>,
   ): Promise<MemoryEntry | null> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    
-    for (const record of memoryRecords) {
-      const entryIndex = record.entries.findIndex((entry: MemoryEntry) => entry.id === entryId);
-      if (entryIndex !== -1) {
-        record.entries[entryIndex] = {
-          ...record.entries[entryIndex],
-          ...updates,
-          updated_at: new Date().toISOString(),
-        };
-        record.updated_at = new Date().toISOString();
-        
-        await writeData(MEMORY_ENTRIES_FILE, memoryRecords);
-        return record.entries[entryIndex];
-      }
-    }
-    
-    return null;
+    const found = await this.findRecordByEntry(entryId);
+    if (!found) return null;
+
+    const { record, index } = found;
+    record.entries[index] = {
+      ...record.entries[index],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    record.updated_at = new Date().toISOString();
+
+    await this.saveMemoryRecord(record);
+    return record.entries[index];
   }
 
   /**
    * Delete a memory entry
    */
   static async deleteMemoryEntry(entryId: string): Promise<boolean> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    
-    for (const record of memoryRecords) {
-      const entryIndex = record.entries.findIndex((entry: MemoryEntry) => entry.id === entryId);
-      if (entryIndex !== -1) {
-        record.entries.splice(entryIndex, 1);
-        record.updated_at = new Date().toISOString();
-        
-        await writeData(MEMORY_ENTRIES_FILE, memoryRecords);
-        
-        // Also delete embedding if exists
-        await this.deleteEmbedding(entryId);
-        
-        return true;
-      }
-    }
-    
-    return false;
+    const found = await this.findRecordByEntry(entryId);
+    if (!found) return false;
+
+    const { record, index } = found;
+    record.entries.splice(index, 1);
+    record.updated_at = new Date().toISOString();
+
+    await this.saveMemoryRecord(record);
+    await this.deleteEmbedding(entryId);
+    return true;
   }
 
   /**
@@ -219,8 +224,6 @@ export class LocalMemoryOperations {
     embedding: number[], 
     model: string,
   ): Promise<void> {
-    const embeddingRecords = await readData(MEMORY_EMBEDDINGS_FILE);
-    
     const embeddingRecord: EmbeddingRecord = {
       id: entryId,
       characterId,
@@ -228,59 +231,33 @@ export class LocalMemoryOperations {
       model,
       created_at: new Date().toISOString(),
     };
-    
-    // Remove existing embedding if exists
-    const existingIndex = embeddingRecords.findIndex(
-      (record: EmbeddingRecord) => record.id === entryId,
-    );
-    
-    if (existingIndex !== -1) {
-      embeddingRecords[existingIndex] = embeddingRecord;
-    } else {
-      embeddingRecords.push(embeddingRecord);
-    }
-    
-    await writeData(MEMORY_EMBEDDINGS_FILE, embeddingRecords);
+
+    await putRecord(MEMORY_EMBEDDINGS_FILE, entryId, embeddingRecord);
   }
 
   /**
    * Get embedding for a memory entry
    */
   static async getEmbedding(entryId: string): Promise<EmbeddingRecord | null> {
-    const embeddingRecords = await readData(MEMORY_EMBEDDINGS_FILE);
-    const embedding = embeddingRecords.find(
-      (record: EmbeddingRecord) => record.id === entryId,
-    );
-    
-    return embedding || null;
+    return await getRecordByKey<EmbeddingRecord>(MEMORY_EMBEDDINGS_FILE, entryId);
   }
 
   /**
    * Get all embeddings for a character
    */
   static async getEmbeddingsByCharacter(characterId: string): Promise<EmbeddingRecord[]> {
-    const embeddingRecords = await readData(MEMORY_EMBEDDINGS_FILE);
-    return embeddingRecords.filter(
-      (record: EmbeddingRecord) => record.characterId === characterId,
-    );
+    const embeddings = await getAllRecords<EmbeddingRecord>(MEMORY_EMBEDDINGS_FILE);
+    return embeddings.filter(record => record.characterId === characterId);
   }
 
   /**
    * Delete embedding
    */
   static async deleteEmbedding(entryId: string): Promise<boolean> {
-    const embeddingRecords = await readData(MEMORY_EMBEDDINGS_FILE);
-    const index = embeddingRecords.findIndex(
-      (record: EmbeddingRecord) => record.id === entryId,
-    );
-    
-    if (index !== -1) {
-      embeddingRecords.splice(index, 1);
-      await writeData(MEMORY_EMBEDDINGS_FILE, embeddingRecords);
-      return true;
-    }
-    
-    return false;
+    const existing = await getRecordByKey<EmbeddingRecord>(MEMORY_EMBEDDINGS_FILE, entryId);
+    if (!existing) return false;
+    await deleteRecord(MEMORY_EMBEDDINGS_FILE, entryId);
+    return true;
   }
 
   /**
@@ -335,12 +312,8 @@ export class LocalMemoryOperations {
    * Get RAG configuration for a character
    */
   static async getRAGConfig(characterId: string): Promise<MemoryRAGConfig> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    const characterRecord = memoryRecords.find(
-      (record: MemoryRecord) => record.characterId === characterId,
-    );
-    
-    return characterRecord?.config || this.getDefaultRAGConfig();
+    const record = await this.getMemoryRecord(characterId);
+    return record?.config || this.getDefaultRAGConfig();
   }
 
   /**
@@ -350,50 +323,26 @@ export class LocalMemoryOperations {
     characterId: string, 
     config: Partial<MemoryRAGConfig>,
   ): Promise<MemoryRAGConfig> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    let characterRecord = memoryRecords.find(
-      (record: MemoryRecord) => record.characterId === characterId,
-    );
-
-    if (!characterRecord) {
-      characterRecord = {
-        id: uuidv4(),
-        characterId,
-        entries: [],
-        config: { ...this.getDefaultRAGConfig(), ...config },
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      memoryRecords.push(characterRecord);
-    } else {
-      characterRecord.config = { ...characterRecord.config, ...config };
-      characterRecord.updated_at = new Date().toISOString();
-    }
-
-    await writeData(MEMORY_ENTRIES_FILE, memoryRecords);
-    return characterRecord.config;
+    const record = await this.ensureMemoryRecord(characterId);
+    record.config = { ...record.config, ...config };
+    record.updated_at = new Date().toISOString();
+    await this.saveMemoryRecord(record);
+    return record.config;
   }
 
   /**
    * Clear all memories for a character
    */
   static async clearCharacterMemories(characterId: string): Promise<void> {
-    const memoryRecords = await readData(MEMORY_ENTRIES_FILE);
-    const characterRecordIndex = memoryRecords.findIndex(
-      (record: MemoryRecord) => record.characterId === characterId,
-    );
-
-    if (characterRecordIndex !== -1) {
-      memoryRecords.splice(characterRecordIndex, 1);
-      await writeData(MEMORY_ENTRIES_FILE, memoryRecords);
+    const record = await this.getMemoryRecord(characterId);
+    if (record) {
+      await deleteRecord(MEMORY_ENTRIES_FILE, characterId);
     }
 
-    // Also clear embeddings
-    const embeddingRecords = await readData(MEMORY_EMBEDDINGS_FILE);
-    const filteredEmbeddings = embeddingRecords.filter(
-      (record: EmbeddingRecord) => record.characterId !== characterId,
+    const embeddings = await this.getEmbeddingsByCharacter(characterId);
+    await Promise.all(
+      embeddings.map(embedding => deleteRecord(MEMORY_EMBEDDINGS_FILE, embedding.id)),
     );
-    await writeData(MEMORY_EMBEDDINGS_FILE, filteredEmbeddings);
   }
 
   /**

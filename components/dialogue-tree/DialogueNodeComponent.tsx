@@ -11,6 +11,7 @@
 
 import { useState, useCallback } from "react";
 import { Handle, Position, NodeProps } from "reactflow";
+import { CornerDownRight, ChevronDown, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 
@@ -145,10 +146,7 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
           {isJumping ? (
             <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-amber-400 animate-spin"></div>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 10 20 15 15 20"></polyline>
-              <path d="M4 4v7a4 4 0 0 0 4 4h12"></path>
-            </svg>
+            <CornerDownRight className="w-3.5 h-3.5" />
           )}
         </button>
       </div>
@@ -163,13 +161,9 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
       >
         <div className={`w-5 h-5 mr-2 flex-shrink-0 ${colors.expandIcon} bg-surface rounded-full border ${colors.border} flex items-center justify-center`}>
           {isExpanded ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 9l-7 7-7-7" />
-            </svg>
+            <ChevronDown className="w-3 h-3" />
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <ChevronRight className="w-3 h-3" />
           )}
         </div>
         {steps.length > 0 ? (

@@ -2,7 +2,7 @@
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║                   Import Regex Script Modal                               ║
  * ║                                                                          ║
- * ║  正则脚本导入弹窗 - 重构后的简洁版本                                          ║
+ * ║  正则脚本导入弹窗 - 已迁移至 Radix UI Dialog                                 ║
  * ║  使用 import-modal 共享组件，支持批量导入                                    ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
@@ -10,10 +10,15 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 import { useLanguage } from "@/app/i18n";
 import { importRegexScriptFromJson } from "@/function/regex/import";
 import { listGlobalRegexScripts, importFromGlobalRegexScript, GlobalRegexScript, deleteGlobalRegexScript } from "@/function/regex/global";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DragDropZone,
   ImportModalHeader,
@@ -226,12 +231,14 @@ export default function ImportRegexScriptModal({ isOpen, characterId, onClose, o
      关闭弹窗
      ───────────────────────────────────────────────────────────────────────── */
 
-  const handleClose = useCallback(() => {
-    setImportResult(null);
-    setSaveAsGlobal(false);
-    setActiveTab("file");
-    setSelectedGlobalId("");
-    onClose();
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) {
+      setImportResult(null);
+      setSaveAsGlobal(false);
+      setActiveTab("file");
+      setSelectedGlobalId("");
+      onClose();
+    }
   }, [onClose]);
 
   /* ─────────────────────────────────────────────────────────────────────────
@@ -247,12 +254,15 @@ export default function ImportRegexScriptModal({ isOpen, characterId, onClose, o
     if (files.length > 0) handleFilesSelect(files);
   }, [handleFilesSelect]);
 
-  if (!isOpen) return null;
+  /* ─────────────────────────────────────────────────────────────────────────
+     渲染
+     ───────────────────────────────────────────────────────────────────────── */
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-      <div className="relative bg-gradient-to-br from-deep/95 via-muted-surface/95 to-deep/95 backdrop-blur-xl border border-ink/60 rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse" />
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-ink gap-0">
+        <DialogTitle className="sr-only">{t("regexScriptEditor.importRegexScript")}</DialogTitle>
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse pointer-events-none" />
 
         <ImportModalHeader
           title={t("regexScriptEditor.importRegexScript")}
@@ -263,10 +273,10 @@ export default function ImportRegexScriptModal({ isOpen, characterId, onClose, o
           ]}
           serifFontClass={serifFontClass}
           onTabChange={setActiveTab}
-          onClose={handleClose}
+          onClose={() => handleOpenChange(false)}
         />
 
-        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink">
+        <div className="relative p-3 max-h-[55vh] overflow-y-auto scrollbar-thin scrollbar-track-deep scrollbar-thumb-ink z-10">
           {activeTab === "file" ? (
             <div className="space-y-3">
               <DragDropZone
@@ -322,10 +332,10 @@ export default function ImportRegexScriptModal({ isOpen, characterId, onClose, o
           importingLabel={t("regexScriptEditor.importing")}
           importLabel={t("regexScriptEditor.importFromGlobal")}
           serifFontClass={serifFontClass}
-          onClose={handleClose}
+          onClose={() => handleOpenChange(false)}
           onImport={handleImportFromGlobal}
         />
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

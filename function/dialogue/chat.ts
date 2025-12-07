@@ -30,6 +30,7 @@ export async function handleCharacterChatRequest(payload: {
       number = 200,
       nodeId,
       fastModel = false,
+      streaming = false,
     } = payload;
 
     if (!characterId || !message) {
@@ -37,6 +38,11 @@ export async function handleCharacterChatRequest(payload: {
     }
 
     try {
+      const existingTree = await LocalCharacterDialogueOperations.getDialogueTreeById(characterId);
+      if (!existingTree) {
+        await LocalCharacterDialogueOperations.createDialogueTree(characterId);
+      }
+
       const workflow = new DialogueWorkflow();
       const workflowParams: DialogueWorkflowParams = {
         characterId,
@@ -48,7 +54,7 @@ export async function handleCharacterChatRequest(payload: {
         baseUrl,
         llmType: llmType as "openai" | "ollama" | "gemini",
         temperature: 0.7,
-        streaming: false,
+        streaming,
         streamUsage: true, // 确保token usage追踪
         number,
         fastModel,  

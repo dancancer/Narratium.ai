@@ -7,7 +7,14 @@ import {
   GenerationOutput,
   TaskEntry,
 } from "../../models/agent-model";
-import { readData, writeData, AGENT_CONVERSATIONS_FILE } from "../local-storage";
+import { 
+  AGENT_CONVERSATIONS_FILE, 
+  clearStore, 
+  deleteRecord, 
+  getAllRecords, 
+  getRecordByKey, 
+  putRecord, 
+} from "../local-storage";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -70,8 +77,7 @@ export class ResearchSessionOperations {
    * Get conversation by ID
    */
   static async getSessionById(sessionId: string): Promise<ResearchSession | null> {
-    const sessions = await this.getAllSessions();
-    return sessions.find(s => s.id === sessionId) || null;
+    return await getRecordByKey<ResearchSession>(AGENT_CONVERSATIONS_FILE, sessionId);
   }
 
   /**
@@ -79,8 +85,8 @@ export class ResearchSessionOperations {
    */
   static async getAllSessions(): Promise<ResearchSession[]> {
     try {
-      const data = await readData(AGENT_CONVERSATIONS_FILE);
-      return Array.isArray(data) ? data : [];
+      const data = await getAllRecords<ResearchSession>(AGENT_CONVERSATIONS_FILE);
+      return Array.isArray(data) ? data.filter(Boolean) : [];
     } catch (error) {
       console.error("Failed to load sessions:", error);
       return [];
@@ -91,16 +97,7 @@ export class ResearchSessionOperations {
    * Save conversation to storage
    */
   static async saveSession(session: ResearchSession): Promise<void> {
-    const sessions = await this.getAllSessions();
-    const existingIndex = sessions.findIndex(s => s.id === session.id);
-    
-    if (existingIndex >= 0) {
-      sessions[existingIndex] = session;
-    } else {
-      sessions.push(session);
-    }
-
-    await writeData(AGENT_CONVERSATIONS_FILE, sessions);
+    await putRecord(AGENT_CONVERSATIONS_FILE, session.id, session);
   }
 
   /**
@@ -243,7 +240,12 @@ export class ResearchSessionOperations {
   /**
    * Record error
    */
+  // Legacy name kept for backward compatibility
   static async recinsert_orderror(sessionId: string, error: string): Promise<void> {
+    return this.recordError(sessionId, error);
+  }
+
+  static async recordError(sessionId: string, error: string): Promise<void> {
     const session = await this.getSessionById(sessionId);
     if (!session) {
       throw new Error(`Session not found: ${sessionId}`);
@@ -258,16 +260,14 @@ export class ResearchSessionOperations {
    * Delete conversation
    */
   static async deleteSession(sessionId: string): Promise<void> {
-    const sessions = await this.getAllSessions();
-    const updatedSessions = sessions.filter(s => s.id !== sessionId);
-    await writeData(AGENT_CONVERSATIONS_FILE, updatedSessions);
+    await deleteRecord(AGENT_CONVERSATIONS_FILE, sessionId);
   }
 
   /**
    * Clear all sessions from the data file
    */
   static async clearAll(): Promise<void> {
-    await writeData(AGENT_CONVERSATIONS_FILE, []);
+    await clearStore(AGENT_CONVERSATIONS_FILE);
   }
 
   /**
@@ -401,21 +401,14 @@ export class ResearchSessionOperations {
     sessionId: string,
     newTasks: TaskEntry[],
   ): Promise<void> {
-    const sessions = await this.getAllSessions();
-    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-    
-    if (sessionIndex === -1) {
+    const session = await this.getSessionById(sessionId);
+    if (!session) {
       throw new Error(`Session not found: ${sessionId}`);
     }
 
-    const session = sessions[sessionIndex];
     const currentQueue = session.research_state.task_queue || [];
-    
-    // Add new tasks to the end of current queue
     session.research_state.task_queue = [...currentQueue, ...newTasks];
-    
-    // Save only the updated session
-    await writeData(AGENT_CONVERSATIONS_FILE, sessions);
+    await this.saveSession(session);
   }
   
   /**

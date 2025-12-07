@@ -7,6 +7,7 @@
 
 "use client";
 
+import { X } from "lucide-react";
 import { WorldBookEntryData } from "./index";
 
 interface WorldBookHeaderProps {
@@ -81,21 +82,7 @@ export function WorldBookHeader({
           onClick={onClose}
           className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group flex-shrink-0 ml-2"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="transition-transform duration-300 group-hover:scale-110"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+          <X className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:scale-110" />
         </button>
       </div>
     </div>

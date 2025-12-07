@@ -7,6 +7,8 @@
 
 "use client";
 
+import { Plus, FileText, ChevronDown } from "lucide-react";
+
 interface WorldBookControlsProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
@@ -48,21 +50,7 @@ export function WorldBookControls({
               className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-amber-soft hover:text-amber-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-amber-bright/20 group flex-shrink-0 border border-ink"
             >
               <span className={`flex items-center ${serifFontClass}`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+                <Plus className="w-2.5 h-2.5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
                 {t("worldBook.addEntry")}
               </span>
             </button>
@@ -72,24 +60,7 @@ export function WorldBookControls({
               className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success rounded-md transition-all duration-300 text-xs sm:text-sm font-medium shadow-lg hover:shadow-success/20 group flex-shrink-0 border border-ink"
             >
               <span className={`flex items-center ${serifFontClass}`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110"
-                >
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="16" y1="13" x2="8" y2="13"></line>
-                  <line x1="16" y1="17" x2="8" y2="17"></line>
-                  <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
+                <FileText className="w-2.5 h-2.5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
                 {t("worldBook.import")}
               </span>
             </button>
@@ -199,9 +170,7 @@ function Selector({
           ))}
         </select>
         <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft">
-            <path d="M6 9l6 6 6-6"></path>
-          </svg>
+          <ChevronDown className="w-2 h-2 text-ink-soft" />
         </div>
       </div>
     </div>

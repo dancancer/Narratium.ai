@@ -8,21 +8,19 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 import "@/app/styles/fantasy-ui.css";
 import ImportPresetModal from "@/components/ImportPresetModal";
 import CreatePresetModal from "@/components/CreatePresetModal";
 import EditPresetNameModal from "@/components/EditPresetNameModal";
 import CopyPresetModal from "@/components/CopyPresetModal";
 import EditPromptModal from "@/components/EditPromptModal";
-import { Toast } from "@/components/Toast";
 import { useLanguage } from "@/app/i18n";
 import { getAllPresets, getPreset, deletePreset, togglePresetEnabled, getPromptsForDisplay } from "@/function/preset/global";
 import { deletePromptFromPreset, togglePromptEnabled } from "@/function/preset/edit";
 import { useTableSort, sortItems } from "@/hooks/useTableSort";
 import { useTableFilter, filterItems } from "@/hooks/useTableFilter";
 import { useRowExpansion } from "@/hooks/useRowExpansion";
-import { useErrorToast } from "@/hooks/useErrorToast";
 import { PresetControls, PresetHeader, PresetTable, PresetData, PresetPromptData } from "@/components/preset-editor";
 
 interface PresetEditorProps {
@@ -58,7 +56,6 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
     defaultFilter: "all",
   });
   const { expandedRows, toggleRow, setExpandedRows } = useRowExpansion();
-  const { toast: errorToast, showToast: showErrorToast, hideToast } = useErrorToast();
 
   const sortComparators = useMemo(
     () => ({
@@ -98,15 +95,15 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
       if (result.success && result.data) {
         setPresets(result.data.map(formatPreset));
       } else {
-        showErrorToast(t("preset.loadFailed") || "Failed to load presets");
+        toast.error(t("preset.loadFailed") || "Failed to load presets");
       }
     } catch (error) {
       console.error("Error loading presets:", error);
-      showErrorToast(t("preset.loadFailed") || "Failed to load presets");
+      toast.error(t("preset.loadFailed") || "Failed to load presets");
     } finally {
       setIsLoading(false);
     }
-  }, [formatPreset, showErrorToast, t]);
+  }, [formatPreset, t]);
 
   const selectPreset = useCallback(
     async (presetId: string) => {
@@ -118,14 +115,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           setSelectedPreset(formatted);
           setExpandedRows((prev) => new Set(prev).add(presetId));
         } else {
-          showErrorToast(t("preset.loadDetailsFailed") || "Failed to load preset details");
+          toast.error(t("preset.loadDetailsFailed") || "Failed to load preset details");
         }
       } catch (error) {
         console.error("Load preset failed:", error);
-        showErrorToast(t("preset.loadDetailsFailed") || "Failed to load preset details");
+        toast.error(t("preset.loadDetailsFailed") || "Failed to load preset details");
       }
     },
-    [formatPreset, setExpandedRows, showErrorToast, t],
+    [formatPreset, setExpandedRows, t],
   );
 
   const handleTogglePreset = useCallback(
@@ -139,14 +136,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           }
           toast.success(enableState ? t("preset.presetEnabledSuccess") : t("preset.presetDisabledSuccess"));
         } else {
-          showErrorToast(t("preset.togglePresetFailed") || "Failed to toggle preset");
+          toast.error(t("preset.togglePresetFailed") || "Failed to toggle preset");
         }
       } catch (error) {
         console.error("Toggle preset failed:", error);
-        showErrorToast(t("preset.togglePresetFailed") || "Failed to toggle preset");
+        toast.error(t("preset.togglePresetFailed") || "Failed to toggle preset");
       }
     },
-    [loadPresets, selectPreset, selectedPreset?.id, showErrorToast, t],
+    [loadPresets, selectPreset, selectedPreset?.id, t],
   );
 
   const handleDeletePreset = useCallback(
@@ -158,14 +155,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           await loadPresets();
           toast.success(t("preset.deleteSuccess"));
         } else {
-          showErrorToast(t("preset.deleteFailed") || "Failed to delete preset");
+          toast.error(t("preset.deleteFailed") || "Failed to delete preset");
         }
       } catch (error) {
         console.error("Delete preset failed:", error);
-        showErrorToast(t("preset.deleteFailed") || "Failed to delete preset");
+        toast.error(t("preset.deleteFailed") || "Failed to delete preset");
       }
     },
-    [loadPresets, showErrorToast, t],
+    [loadPresets, t],
   );
 
   const handleDeletePrompt = useCallback(
@@ -177,14 +174,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           await loadPresets();
           toast.success(t("preset.deletePromptSuccess"));
         } else {
-          showErrorToast(t("preset.deletePromptFailed") || "Failed to delete prompt");
+          toast.error(t("preset.deletePromptFailed") || "Failed to delete prompt");
         }
       } catch (error) {
         console.error("Delete prompt failed:", error);
-        showErrorToast(t("preset.deletePromptFailed") || "Failed to delete prompt");
+        toast.error(t("preset.deletePromptFailed") || "Failed to delete prompt");
       }
     },
-    [loadPresets, selectPreset, showErrorToast, t],
+    [loadPresets, selectPreset, t],
   );
 
   const handleTogglePrompt = useCallback(
@@ -196,14 +193,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           await loadPresets();
           toast.success(enableState ? t("preset.promptEnabledSuccess") : t("preset.promptDisabledSuccess"));
         } else {
-          showErrorToast(t("preset.togglePromptFailed") || "Failed to toggle prompt");
+          toast.error(t("preset.togglePromptFailed") || "Failed to toggle prompt");
         }
       } catch (error) {
         console.error("Toggle prompt failed:", error);
-        showErrorToast(t("preset.togglePromptFailed") || "Failed to toggle prompt");
+        toast.error(t("preset.togglePromptFailed") || "Failed to toggle prompt");
       }
     },
-    [loadPresets, selectPreset, showErrorToast, t],
+    [loadPresets, selectPreset, t],
   );
 
   useEffect(() => {
@@ -221,13 +218,13 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           if (match?.id) {
             await handleTogglePreset(match.id, true);
           } else {
-            showErrorToast(`No preset found matching "${activatePresetName}"`);
+            toast.error(`No preset found matching "${activatePresetName}"`);
           }
         }
         sessionStorage.removeItem("activate_preset_name");
       }
     });
-  }, [handleTogglePreset, loadPresets, showErrorToast]);
+  }, [handleTogglePreset, loadPresets]);
 
   const filteredPresets = filterItems(presets, filterBy, filterMap);
   const sortedPresets = sortItems(filteredPresets, sortBy, sortOrder, sortComparators);
@@ -299,15 +296,6 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         onTogglePrompt={handleTogglePrompt}
         onDeletePrompt={handleDeletePrompt}
       />
-
-      {errorToast.isVisible && (
-        <Toast
-          message={errorToast.message}
-          isVisible={errorToast.isVisible}
-          onClose={hideToast}
-          type="error"
-        />
-      )}
 
       {isImportModalOpen && (
         <ImportPresetModal

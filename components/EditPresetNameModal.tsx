@@ -1,10 +1,28 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                   Edit Preset Name Modal Component                         ║
+ * ║                                                                            ║
+ * ║  编辑预设名称模态框 - 已迁移至 Radix UI Dialog                                ║
+ * ║  统一的 Modal 实现，消除重复代码                                             ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { PresetOperations } from "@/lib/data/roleplay/preset-operation";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+// ============================================================================
+//                              类型定义
+// ============================================================================
 
 interface EditPresetNameModalProps {
   isOpen: boolean;
@@ -13,6 +31,10 @@ interface EditPresetNameModalProps {
   presetId: string;
   currentName: string;
 }
+
+// ============================================================================
+//                              主组件
+// ============================================================================
 
 export default function EditPresetNameModal({ 
   isOpen, 
@@ -25,11 +47,15 @@ export default function EditPresetNameModal({
   const [presetName, setPresetName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // ========== 初始化 ==========
+
   useEffect(() => {
     if (isOpen) {
       setPresetName(currentName);
     }
   }, [isOpen, currentName]);
+
+  // ========== 提交处理 ==========
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +67,7 @@ export default function EditPresetNameModal({
 
     if (presetName.trim() === currentName) {
       toast.success(t("preset.nameNotChanged"));
-      handleClose();
+      handleOpenChange(false);
       return;
     }
 
@@ -55,7 +81,7 @@ export default function EditPresetNameModal({
       if (success) {
         toast.success(t("preset.nameUpdateSuccess"));
         onSuccess();
-        handleClose();
+        handleOpenChange(false);
       } else {
         toast.error(t("preset.nameUpdateFailed"));
       }
@@ -67,43 +93,31 @@ export default function EditPresetNameModal({
     }
   };
 
-  const handleClose = () => {
-    setPresetName("");
-    setIsUpdating(false);
-    onClose();
+  // ========== 表单重置 ==========
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setPresetName("");
+      setIsUpdating(false);
+      onClose();
+    }
   };
 
-  if (!isOpen) return null;
+  // ========== 渲染 ==========
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 bg-gradient-to-br from-deep via-muted-surface to-deep rounded-lg border border-ink shadow-2xl">
-        {/* Header */}
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
         <div className="p-4 border-b border-ink bg-gradient-to-r from-amber-500/5 to-transparent">
-          <div className="flex items-center justify-between">
-            <h3 className={`text-lg font-medium text-cream-soft ${serifFontClass}`}>
+          <DialogHeader>
+            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text ${serifFontClass}`}>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300">
                 {t("preset.editPresetName")}
               </span>
-            </h3>
-            <button
-              onClick={handleClose}
-              className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group"
-              disabled={isUpdating}
-            >
-              <X className="h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110" />
-            </button>
-          </div>
+            </DialogTitle>
+          </DialogHeader>
         </div>
 
-        {/* Content */}
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className={`block text-sm font-medium text-ink-soft mb-2 ${fontClass}`}>
@@ -128,11 +142,10 @@ export default function EditPresetNameModal({
             </p>
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end space-x-3 pt-2">
             <button
               type="button"
-              onClick={handleClose}
+              onClick={() => handleOpenChange(false)}
               disabled={isUpdating}
               className={`px-4 py-2 text-sm font-medium text-ink-soft hover:text-cream-soft 
                 bg-gradient-to-br from-deep via-muted-surface to-deep 
@@ -162,7 +175,7 @@ export default function EditPresetNameModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

@@ -10,6 +10,7 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import MessageItem, { type Message } from "./MessageItem";
 import type { TavernHelperScript } from "@/lib/models/character-model";
 
@@ -173,16 +174,8 @@ interface EmptyStateProps {
 function EmptyState({ serifFontClass, t }: EmptyStateProps) {
   return (
     <div className="text-center py-12">
-      <div className="w-16 h-16 mx-auto mb-4 opacity-60">
-        <svg className="w-full h-full" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-            stroke="var(--color-amber-bright)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      <div className="w-16 h-16 mx-auto mb-4 opacity-60 text-amber-bright">
+        <MessageCircle size={64} strokeWidth={1.5} />
       </div>
       <p className={`text-amber-soft ${serifFontClass}`}>
         {t("characterChat.startConversation")}
@@ -227,6 +220,7 @@ interface NavButtonProps {
 
 function NavButton({ direction, onClick, disabled }: NavButtonProps) {
   const isPrev = direction === "prev";
+  const Icon = isPrev ? ChevronLeft : ChevronRight;
 
   return (
     <button
@@ -235,13 +229,7 @@ function NavButton({ direction, onClick, disabled }: NavButtonProps) {
       className="w-8 h-8 flex items-center justify-center rounded-md border border-ink bg-surface hover:border-ink-soft hover:text-amber-bright disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
       aria-label={isPrev ? "切换上一条开场" : "切换下一条开场"}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-        {isPrev ? (
-          <path fillRule="evenodd" d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-        ) : (
-          <path fillRule="evenodd" d="M7.293 4.293a1 1 0 011.414 0L14 9.586a1 1 0 010 1.414l-5.293 5.293a1 1 0 01-1.414-1.414L11.586 10 7.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-        )}
-      </svg>
+      <Icon className="h-4 w-4" />
     </button>
   );
 }

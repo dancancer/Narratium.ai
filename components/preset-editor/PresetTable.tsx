@@ -9,6 +9,7 @@
 
 import React from "react";
 import { PresetData, PresetPromptData } from "./index";
+import { ChevronRight, FileText, Edit, Copy, Trash2 } from "lucide-react";
 
 interface PresetTableProps {
   presets: PresetData[];
@@ -131,20 +132,7 @@ export function PresetTable({
                         className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke ml-1 sm:ml-2"
                         title={isExpanded ? t("preset.collapseDetails") : t("preset.expandDetails")}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="10"
-                          height="10"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className={`transition-transform duration-300 ${isExpanded ? "rotate-90" : ""}`}
-                        >
-                          <path d="M9 18l6-6-6-6"></path>
-                        </svg>
+                        <ChevronRight size={10} className={`transition-transform duration-300 ${isExpanded ? "rotate-90" : ""}`} />
                       </button>
                     </div>
                   </td>
@@ -168,24 +156,19 @@ export function PresetTable({
                       <ActionButton
                         title={t("preset.editPresetName")}
                         onClick={() => onEditPresetName(preset)}
-                        icon={
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        }
-                        icon2={<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>}
+                        iconType="edit"
                       />
                       <ActionButton
                         title={t("preset.copyPreset")}
                         onClick={() => onCopyPreset(preset)}
                         className="text-sky hover:text-sky/80"
-                        icon={<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>}
-                        icon2={<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>}
+                        iconType="copy"
                       />
                       <ActionButton
                         title={t("preset.deletePreset")}
                         onClick={() => onDeletePreset(preset.id)}
                         className="text-red-400 hover:text-red-300"
-                        icon={<polyline points="3 6 5 6 21 6"></polyline>}
-                        icon2={<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>}
+                        iconType="delete"
                       />
                     </div>
                   </td>
@@ -197,24 +180,7 @@ export function PresetTable({
                       <div className="space-y-2 sm:space-y-3">
                         <div className="flex justify-between items-center">
                           <h4 className="text-xs sm:text-sm font-medium text-ink-soft flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="mr-1.5 sm:mr-2"
-                            >
-                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                              <polyline points="14 2 14 8 20 8"></polyline>
-                              <line x1="16" y1="13" x2="8" y2="13"></line>
-                              <line x1="16" y1="17" x2="8" y2="17"></line>
-                              <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
+                            <FileText size={12} className="mr-1.5 sm:mr-2" />
                             {t("preset.promptsTitle")} ({selectedPreset.prompts.length})
                             {selectedPreset.enabled === false && (
                               <span className="ml-1 sm:ml-2 inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-2xs sm:text-xs font-medium bg-red-900/40 text-red-200/90 border border-red-600/30">
@@ -262,36 +228,22 @@ function ActionButton({
   title,
   onClick,
   className,
-  icon,
-  icon2,
+  iconType,
 }: {
   title: string;
   onClick: () => void;
   className?: string;
-  icon: React.ReactNode;
-  icon2?: React.ReactNode;
+  iconType: "edit" | "copy" | "delete";
 }) {
+  const IconComponent = iconType === "edit" ? Edit : iconType === "copy" ? Copy : Trash2;
+  
   return (
     <button
       onClick={onClick}
       className={`w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke group ${className ?? ""}`}
       title={title}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="10"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="transition-transform duration-300 group-hover:scale-110"
-      >
-        {icon}
-        {icon2}
-      </svg>
+      <IconComponent size={10} className="transition-transform duration-300 group-hover:scale-110" />
     </button>
   );
 }
@@ -357,15 +309,13 @@ function PromptCard({
           <ActionButton
             title={t("preset.editPrompt")}
             onClick={() => onEdit(prompt)}
-            icon={<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>}
-            icon2={<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>}
+            iconType="edit"
           />
           <ActionButton
             title={t("preset.deletePrompt")}
             onClick={() => onDelete(presetId, prompt.identifier)}
             className="text-red-400 hover:text-red-300"
-            icon={<polyline points="3 6 5 6 21 6"></polyline>}
-            icon2={<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>}
+            iconType="delete"
           />
         </div>
       </div>

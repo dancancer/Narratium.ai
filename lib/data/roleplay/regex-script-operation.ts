@@ -1,4 +1,10 @@
-import { readData, writeData, REGEX_SCRIPTS_FILE } from "@/lib/data/local-storage";
+import { 
+  REGEX_SCRIPTS_FILE, 
+  clearStore, 
+  getAllEntries, 
+  getRecordByKey, 
+  putRecord, 
+} from "@/lib/data/local-storage";
 import { RegexScript } from "@/lib/models/regex-script-model";
 
 export interface RegexScriptSettings {
@@ -17,8 +23,11 @@ const DEFAULT_SETTINGS: RegexScriptSettings = {
 export class RegexScriptOperations {
   private static async getRegexScriptStore(): Promise<Record<string, any>> {
     try {
-      const scriptsArray = await readData(REGEX_SCRIPTS_FILE);
-      return scriptsArray[0] || {};
+      const entries = await getAllEntries<any>(REGEX_SCRIPTS_FILE);
+      return entries.reduce<Record<string, any>>((acc, { key, value }) => {
+        if (key) acc[String(key)] = value;
+        return acc;
+      }, {});
     } catch (error) {
       console.error("Error reading regex scripts:", error);
       return {};
@@ -27,7 +36,10 @@ export class RegexScriptOperations {
 
   private static async saveRegexScriptStore(store: Record<string, any>): Promise<boolean> {
     try {
-      await writeData(REGEX_SCRIPTS_FILE, [store]);
+      await clearStore(REGEX_SCRIPTS_FILE);
+      for (const [key, value] of Object.entries(store)) {
+        await putRecord(REGEX_SCRIPTS_FILE, key, value);
+      }
       return true;
     } catch (error) {
       console.error("Error saving regex scripts:", error);
@@ -37,8 +49,8 @@ export class RegexScriptOperations {
 
   static async getRegexScripts(ownerId: string): Promise<Record<string, RegexScript> | null> {
     try {
-      const store = await this.getRegexScriptStore();
-      return store[ownerId] as Record<string, RegexScript> || null;
+      const scripts = await getRecordByKey<Record<string, RegexScript>>(REGEX_SCRIPTS_FILE, ownerId);
+      return scripts || null;
     } catch (error) {
       console.error("Error getting regex scripts:", error);
       return null;
@@ -92,9 +104,13 @@ export class RegexScriptOperations {
   }
 
   private static async updateOwnerScripts(ownerId: string, scripts: Record<string, RegexScript>): Promise<boolean> {
-    const store = await this.getRegexScriptStore();
-    store[ownerId] = scripts;
-    return this.saveRegexScriptStore(store);
+    try {
+      await putRecord(REGEX_SCRIPTS_FILE, ownerId, scripts);
+      return true;
+    } catch (error) {
+      console.error("Error updating regex scripts:", error);
+      return false;
+    }
   }
 
   static async updateRegexScripts(
@@ -142,8 +158,7 @@ export class RegexScriptOperations {
   }
 
   static async getRegexScriptSettings(ownerId: string): Promise<RegexScriptSettings> {
-    const store = await this.getRegexScriptStore();
-    const settings = store[`${ownerId}_settings`] as RegexScriptSettings;
+    const settings = await getRecordByKey<RegexScriptSettings>(REGEX_SCRIPTS_FILE, `${ownerId}_settings`);
     
     if (!settings) {
       return { ...DEFAULT_SETTINGS };
@@ -159,12 +174,10 @@ export class RegexScriptOperations {
     ownerId: string,
     updates: Partial<RegexScriptSettings>,
   ): Promise<RegexScriptSettings> {
-    const store = await this.getRegexScriptStore();
     const currentSettings = await this.getRegexScriptSettings(ownerId);
     const newSettings = { ...currentSettings, ...updates };
     
-    store[`${ownerId}_settings`] = newSettings;
-    await this.saveRegexScriptStore(store);
+    await putRecord(REGEX_SCRIPTS_FILE, `${ownerId}_settings`, newSettings);
     
     return newSettings;
   }

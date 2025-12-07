@@ -60,6 +60,7 @@ export interface PluginManifest {
   keywords?: string[];
   license?: string;
   enabled?: boolean;
+  integrity?: string; // Optional SHA-256 integrity value (e.g., sha256-<base64|hex>)
 }
 
 /**

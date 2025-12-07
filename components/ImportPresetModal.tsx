@@ -1,58 +1,40 @@
 /**
- * Import Preset Modal Component
- * 
- * This component provides a preset import interface with the following features:
- * - Single file import from JSON files with drag-and-drop support
- * - Custom preset naming and preview functionality
- * - Import result tracking and validation
- * - File validation and error handling
- * - Import guidelines and user instructions
- * - Modal-based import workflow
- * 
- * The component handles:
- * - File upload and drag-and-drop interactions
- * - JSON parsing and validation
- * - Custom preset naming with preview
- * - Import result display and error reporting
- * - Modal state management and animations
- * - User guidance and import guidelines
- * 
- * Dependencies:
- * - useLanguage: For internationalization
- * - importPresetFromJson: For preset import functionality
- * - react-hot-toast: For notifications
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                    Import Preset Modal Component                           ║
+ * ║                                                                            ║
+ * ║  预设导入模态框 - 已迁移至 Radix UI Dialog                                   ║
+ * ║  支持文件拖拽、自定义命名、导入预览                                           ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
 
 import React, { useState, useRef } from "react";
 import { Check, FileText, X } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 import { useLanguage } from "@/app/i18n";
 import { importPresetFromJson } from "@/function/preset/import";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-/**
- * Interface definitions for the component's props
- */
+// ============================================================================
+//                              类型定义
+// ============================================================================
+
 interface ImportPresetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onImport: () => void;
 }
 
-/**
- * Import preset modal component
- * 
- * Provides a preset import interface with:
- * - File-based import with drag-and-drop support
- * - Custom preset naming and preview
- * - Import result tracking and validation
- * - User guidance and import guidelines
- * - Modal-based workflow management
- * 
- * @param {ImportPresetModalProps} props - Component props
- * @returns {JSX.Element | null} The import preset modal or null if closed
- */
+// ============================================================================
+//                              主组件
+// ============================================================================
+
 export default function ImportPresetModal({
   isOpen,
   onClose,
@@ -66,6 +48,8 @@ export default function ImportPresetModal({
   const [fileName, setFileName] = useState("");
   const [jsonData, setJsonData] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // ========== 文件处理 ==========
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.includes("json")) {
@@ -81,13 +65,9 @@ export default function ImportPresetModal({
       const parsedData = JSON.parse(text);
       setJsonData(parsedData);
       
-      // 从文件名提取默认名称（不含扩展名）
       const defaultName = file.name.replace(/\.json$/, "");
       setFileName(defaultName);
       setCustomName(defaultName);
-      
-      // 不立即导入，显示预览和自定义表单
-    
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       toast.error(`${t("importPreset.failedToImport")}: ${errorMessage}`);
@@ -99,6 +79,8 @@ export default function ImportPresetModal({
       setIsImporting(false);
     }
   };
+
+  // ========== 拖拽处理 ==========
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -127,12 +109,13 @@ export default function ImportPresetModal({
     }
   };
 
+  // ========== 导入处理 ==========
+
   const handleImport = async () => {
     if (!jsonData) return;
     
     setIsImporting(true);
     try {
-      // 使用用户自定义的名称进行导入
       const result = await importPresetFromJson(JSON.stringify(jsonData), customName.trim() || fileName);
       setImportResult(result);
 
@@ -154,41 +137,33 @@ export default function ImportPresetModal({
     }
   };
 
-  const handleClose = () => {
-    setImportResult(null);
-    setIsDragging(false);
-    setJsonData(null);
-    setCustomName("");
-    setFileName("");
-    onClose();
+  // ========== 表单重置 ==========
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setImportResult(null);
+      setIsDragging(false);
+      setJsonData(null);
+      setCustomName("");
+      setFileName("");
+      onClose();
+    }
   };
 
-  if (!isOpen) return null;
+  // ========== 渲染 ==========
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-      <div className="relative bg-gradient-to-br from-deep/95 via-muted-surface/95 to-deep/95 backdrop-blur-xl border border-ink/60 rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] overflow-hidden">
-        {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse"></div>
-        
-        {/* Header */}
-        <div className="relative p-3 border-b border-ink/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
-          <div className="flex justify-between items-center">
-            <h2 className={`text-base font-semibold text-cream-soft ${serifFontClass} bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent`}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-ink gap-0">
+        <div className="p-3 border-b border-ink/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
+          <DialogHeader>
+            <DialogTitle className={`text-base font-semibold text-cream-soft magical-text ${serifFontClass} bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent`}>
               {t("importPreset.title")}
-            </h2>
-            <button
-              onClick={handleClose}
-              className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-lg hover:bg-stroke/50 group"
-            >
-              <X className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
-            </button>
-          </div>
+            </DialogTitle>
+          </DialogHeader>
         </div>
         
-        {/* Content */}
-        <div className="relative p-4 max-h-[70vh] overflow-y-auto fantasy-scrollbar">
-          {/* File Upload Area */}
+        <div className="p-4 max-h-[70vh] overflow-y-auto fantasy-scrollbar">
           <div className="space-y-4">
             <div
               onDragOver={handleDragOver}
@@ -239,7 +214,6 @@ export default function ImportPresetModal({
               </div>
             </div>
             
-            {/* Preview and Naming Form */}
             {jsonData && !importResult && (
               <div className="p-4 bg-muted-surface/50 backdrop-blur-sm border border-ink/40 rounded-lg animate-fadeIn">
                 <h4 className={`text-sm font-medium text-cream-soft mb-3 ${serifFontClass}`}>{t("importPreset.customizePreset")}</h4>
@@ -262,7 +236,7 @@ export default function ImportPresetModal({
                   
                   <div className="flex justify-end space-x-2 pt-2">
                     <button
-                      onClick={handleClose}
+                      onClick={() => handleOpenChange(false)}
                       className="px-3 py-1.5 bg-muted-surface/80 hover:bg-muted-surface border border-ink/60 text-ink-soft hover:text-cream-soft rounded-lg transition-all duration-300"
                     >
                       {t("importPreset.cancel")}
@@ -279,7 +253,6 @@ export default function ImportPresetModal({
               </div>
             )}
             
-            {/* Import Result */}
             {importResult && (
               <div className={`p-4 rounded-lg border ${
                 importResult.success
@@ -306,7 +279,6 @@ export default function ImportPresetModal({
               </div>
             )}
             
-            {/* Import Guidelines */}
             <div className="bg-muted-surface/40 backdrop-blur-sm border border-ink/30 rounded-lg p-4">
               <h4 className={`text-sm font-medium text-cream-soft mb-2 ${serifFontClass}`}>{t("importPreset.guidelines")}</h4>
               <ul className={`text-xs text-ink-soft space-y-1 ${fontClass}`}>
@@ -319,18 +291,17 @@ export default function ImportPresetModal({
           </div>
         </div>
         
-        {/* Footer */}
-        <div className="relative p-3 border-t border-ink/40 bg-gradient-to-r from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm">
+        <div className="p-3 border-t border-ink/40 bg-gradient-to-r from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm">
           <div className="flex justify-end space-x-2">
             <button
-              onClick={handleClose}
+              onClick={() => handleOpenChange(false)}
               className="px-3 py-1.5 text-sm font-medium text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke/50"
             >
               {t("importPreset.cancel")}
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

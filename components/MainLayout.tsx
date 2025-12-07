@@ -1,23 +1,10 @@
 /**
- * Main layout component for the Narratium application
- * 
- * This component provides the core layout structure including:
- * - Responsive sidebar navigation
- * - Model settings sidebar
- * - Login modal integration
- * - Settings dropdown
- * - Mobile responsiveness handling
- * - Mobile bottom navigation
- * 
- * The layout uses a fantasy-themed UI with dynamic sidebar states
- * and responsive design considerations.
- * 
- * Dependencies:
- * - Sidebar: Main navigation component
- * - ModelSidebar: Model settings panel
- * - SettingsDropdown: Global settings menu
- * - LoginModal: Authentication modal
- * - MobileBottomNav: Mobile bottom navigation
+ * ╔══════════════════════════════════════════════════════════════════════════╗
+ * ║                         Main Layout Component                            ║
+ * ║                                                                          ║
+ * ║  应用主布局：侧边栏、模态框、响应式处理                                      ║
+ * ║  【重构】使用 Zustand Store 管理全局 UI 状态                               ║
+ * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
@@ -33,6 +20,7 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 import { PluginRegistry } from "@/lib/plugins/plugin-registry";
 import { PluginDiscovery } from "@/lib/plugins/plugin-discovery";
 import { ToolRegistry } from "@/lib/tools/tool-registry";
+import { useUIStore } from "@/lib/store/ui-store";
 import "@/app/styles/fantasy-ui.css";
 
 /**
@@ -43,8 +31,12 @@ import "@/app/styles/fantasy-ui.css";
  * @returns {JSX.Element} The complete layout structure with sidebars and content area
  */
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  // ========== Zustand Store ==========
+  const modelSidebarOpen = useUIStore((state) => state.modelSidebarOpen);
+  const setModelSidebarOpen = useUIStore((state) => state.setModelSidebarOpen);
+  
+  // ========== 本地状态 ==========
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [modelSidebarOpen, setModelSidebarOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
@@ -59,22 +51,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     };
 
     checkIfMobile();
-    
     window.addEventListener("resize", checkIfMobile);
-    
-    // Handle closing model sidebar when character sidebar opens on mobile
-    const handleCloseModelSidebar = () => {
-      setModelSidebarOpen(false);
-    };
-
-    window.addEventListener("closeModelSidebar", handleCloseModelSidebar);
-    
-    // Handle opening login modal from other components
-    const handleShowLoginModal = () => {
-      setIsLoginModalOpen(true);
-    };
-
-    window.addEventListener("showLoginModal", handleShowLoginModal);
     
     // Initialize enhanced plugin system
     const initializePlugins = async () => {
@@ -100,8 +77,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     
     return () => {
       window.removeEventListener("resize", checkIfMobile);
-      window.removeEventListener("closeModelSidebar", handleCloseModelSidebar);
-      window.removeEventListener("showLoginModal", handleShowLoginModal);
     };
   }, []);
 
@@ -110,15 +85,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   };
 
   const toggleModelSidebar = () => {
-    const newModelSidebarState = !modelSidebarOpen;
-    setModelSidebarOpen(newModelSidebarState);
-    
-    // On mobile, when opening ModelSidebar, close CharacterSidebar to prevent conflicts
-    if (isMobile && newModelSidebarState) {
-      // Dispatch custom event to notify character page to close its sidebar
-      const closeCharacterSidebarEvent = new CustomEvent("closeCharacterSidebar");
-      window.dispatchEvent(closeCharacterSidebarEvent);
-    }
+    setModelSidebarOpen(!modelSidebarOpen);
   };
 
   if (!mounted) {

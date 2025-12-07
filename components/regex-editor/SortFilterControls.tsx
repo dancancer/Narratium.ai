@@ -8,6 +8,7 @@
 
 "use client";
 
+import { AlignJustify, Filter, ChevronDown } from "lucide-react";
 import { SortField, SortOrder, FilterType } from "@/hooks/useRegexScripts";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -36,9 +37,7 @@ export function SortFilterControls({ sortBy, sortOrder, filterBy, serifFontClass
         {/* 排序字段 */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400/80">
-              <path d="M3 6h18M7 12h10m-7 6h4" />
-            </svg>
+            <AlignJustify size={10} className="text-amber-400/80" />
             <label className={`text-2xs sm:text-xs text-ink-soft font-medium ${serifFontClass}`}>{t("regexScriptEditor.sortBy")}</label>
           </div>
           <div className="relative">
@@ -51,7 +50,7 @@ export function SortFilterControls({ sortBy, sortOrder, filterBy, serifFontClass
               <option value="name" className="bg-deep text-cream-soft">{t("regexScriptEditor.name")}</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft"><path d="M6 9l6 6 6-6" /></svg>
+              <ChevronDown size={8} className="text-ink-soft" />
             </div>
           </div>
         </div>
@@ -74,9 +73,7 @@ export function SortFilterControls({ sortBy, sortOrder, filterBy, serifFontClass
         {/* 筛选 */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400/80">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
+            <Filter size={10} className="text-blue-400/80" />
             <label className={`text-2xs sm:text-xs text-ink-soft font-medium ${serifFontClass}`}>{t("regexScriptEditor.filterBy")}</label>
           </div>
           <div className="relative">
@@ -91,7 +88,7 @@ export function SortFilterControls({ sortBy, sortOrder, filterBy, serifFontClass
               <option value="imported" className="bg-deep text-cream-soft">{t("regexScriptEditor.filterImported")}</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-soft"><path d="M6 9l6 6 6-6" /></svg>
+              <ChevronDown size={8} className="text-ink-soft" />
             </div>
           </div>
         </div>

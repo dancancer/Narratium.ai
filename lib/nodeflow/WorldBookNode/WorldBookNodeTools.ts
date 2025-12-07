@@ -44,6 +44,9 @@ export class WorldBookNodeTools extends NodeTool {
   ): Promise<{ systemMessage: string; userMessage: string }> {
     try {
       const characterRecord = await LocalCharacterRecordOperations.getCharacterById(characterId);
+      if (!characterRecord) {
+        throw new Error(`Character not found: ${characterId}`);
+      }
       const character = new Character(characterRecord);
 
       const chatHistory = await this.getChatHistory(characterId, contextWindow);

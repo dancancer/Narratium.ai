@@ -10,6 +10,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { ArrowUp, RefreshCw, User } from "lucide-react";
 import ChatHtmlBubble from "@/components/ChatHtmlBubble";
 import ThinkBubble from "@/components/ThinkBubble";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
@@ -291,9 +292,7 @@ function MessageHeader({
 function DefaultAvatar() {
   return (
     <div className="w-full h-full flex items-center justify-center bg-deep">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-      </svg>
+      <User className="h-4 w-4 text-ink" />
     </div>
   );
 }
@@ -329,17 +328,9 @@ function ActionButton({ onClick, tooltip, icon, hoverColor }: ActionButtonProps)
 }
 
 function TruncateIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 19V5" /><polyline points="5 12 12 5 19 12" />
-    </svg>
-  );
+  return <ArrowUp className="w-3 h-3" />;
 }
 
 function RegenerateIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" /><polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
-    </svg>
-  );
+  return <RefreshCw className="w-3 h-3" />;
 }

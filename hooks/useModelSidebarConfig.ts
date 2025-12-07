@@ -3,7 +3,7 @@
  * ║                     useModelSidebarConfig Hook                           ║
  * ║                                                                          ║
  * ║  ModelSidebar 配置管理核心逻辑                                             ║
- * ║  从 ModelSidebar.tsx 提取，遵循 Linus 哲学：简洁、直接、无冗余              ║
+ * ║  【重构】使用 Zustand Store 替代 localStorage + window 事件                ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -13,8 +13,8 @@ import { useCallback, useEffect, useState } from "react";
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatOllama } from "@langchain/ollama";
 import { callGeminiOnce } from "@/lib/core/gemini-client";
-import type { APIConfig, LLMType, SidebarState, SidebarActions } from "@/components/model-sidebar/types";
-import useLocalStorage, { useLocalStorageString } from "@/hooks/useLocalStorage";
+import type { SidebarState, SidebarActions } from "@/components/model-sidebar/types";
+import { useModelStore, type APIConfig, type LLMType } from "@/lib/store/model-store";
 import { setString } from "@/lib/storage/client-storage";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -91,21 +91,21 @@ export function useModelSidebarConfig() {
   const [testModelSuccess, setTestModelSuccess] = useState(false);
   const [testModelError, setTestModelError] = useState(false);
 
-  // 持久化存储
-  const { value: storedConfigs, setValue: setStoredConfigs } = useLocalStorage<APIConfig[]>("apiConfigs", []);
-  const { value: storedActiveConfigId, setValue: setStoredActiveConfigId } = useLocalStorageString("activeConfigId", "");
-  const { setValue: setStoredLlmType } = useLocalStorageString("llmType", "openai");
-  const { setValue: setStoredModelName } = useLocalStorageString("modelName", "");
-  const { setValue: setStoredModelBaseUrl } = useLocalStorageString("modelBaseUrl", "");
-  const { setValue: setStoredApiKey } = useLocalStorageString("apiKey", "");
+  // ========== Zustand Store ==========
+  const storeConfigs = useModelStore((state) => state.configs);
+  const storeActiveConfigId = useModelStore((state) => state.activeConfigId);
+  const setStoreConfigs = useModelStore((state) => state.setConfigs);
+  const updateStoreConfig = useModelStore((state) => state.updateConfig);
+  const deleteStoreConfig = useModelStore((state) => state.deleteConfig);
+  const setStoreActiveConfig = useModelStore((state) => state.setActiveConfig);
 
-  // 持久化
+  // 持久化（同步到 Store）
   const persistConfigs = useCallback((next: APIConfig[]) => {
     const normalized = Array.isArray(next) ? next : [];
     setConfigs(normalized);
-    setStoredConfigs(normalized);
+    setStoreConfigs(normalized);
     return normalized;
-  }, [setStoredConfigs]);
+  }, [setStoreConfigs]);
 
   // 获取模型列表
   const handleGetModelList = useCallback(async (type: LLMType, targetUrl: string, targetKey: string) => {
@@ -147,7 +147,8 @@ export function useModelSidebarConfig() {
   }, []);
 
   // 加载配置到表单
-  const loadConfigToForm = useCallback((config: APIConfig) => {
+  // 【优化】分离数据加载和 API 调用，避免每次加载都触发网络请求
+  const loadConfigToForm = useCallback((config: APIConfig, skipApiCall = false) => {
     handleLlmTypeChange(config.type);
     const url = config.type === "gemini" ? "" : config.baseUrl;
     setBaseUrl(url);
@@ -156,8 +157,11 @@ export function useModelSidebarConfig() {
     setAvailableModels(config.availableModels || []);
     setModelListEmpty(false);
 
-    if (config.type === "openai" && url && config.apiKey) handleGetModelList("openai", url, config.apiKey);
-    else if (config.type === "gemini" && config.apiKey) handleGetModelList("gemini", "", config.apiKey);
+    // 只在明确需要时才调用 API（如用户主动切换配置）
+    if (!skipApiCall) {
+      if (config.type === "openai" && url && config.apiKey) handleGetModelList("openai", url, config.apiKey);
+      else if (config.type === "gemini" && config.apiKey) handleGetModelList("gemini", "", config.apiKey);
+    }
   }, [handleGetModelList, handleLlmTypeChange]);
 
   // 生成配置名称
@@ -173,12 +177,7 @@ export function useModelSidebarConfig() {
     return `【${max + 1}】${name}`;
   }, [configs]);
 
-  // 派发变更事件
-  const dispatchChange = useCallback((config: APIConfig) => {
-    window.dispatchEvent(new CustomEvent("modelChanged", {
-      detail: { configId: config.id, config, modelName: config.model, configName: config.name },
-    }));
-  }, []);
+  // 【移除】不再需要派发 window 事件，Store 自动通知订阅者
 
   // CRUD 操作
   const handleCreateConfig = useCallback(() => {
@@ -210,11 +209,10 @@ export function useModelSidebarConfig() {
         apiKey: llmType === "ollama" ? undefined : apiKey,
       };
       persistConfigs([...configs, newConfig]);
-      setStoredActiveConfigId(newConfig.id);
+      setStoreActiveConfig(newConfig.id);
       setActiveConfigId(newConfig.id);
       setShowNewConfigForm(false);
       setNewConfigName("");
-      dispatchChange(newConfig);
     } else {
       const updated = configs.map(c => c.id === activeConfigId ? {
         ...c, type: llmType, baseUrl: url, model,
@@ -222,26 +220,24 @@ export function useModelSidebarConfig() {
         apiKey: llmType === "ollama" ? undefined : apiKey,
       } : c);
       persistConfigs(updated);
-      const cfg = updated.find(c => c.id === activeConfigId);
-      if (cfg) dispatchChange(cfg);
     }
 
     const keys = getStorageKeys(llmType);
-    setStoredLlmType(llmType);
-    setStoredModelName(model);
+    setString("llmType", llmType);
+    setString("modelName", model);
     setString(keys.model, model);
     if (llmType !== "gemini") {
       setString(keys.baseUrl, url);
-      setStoredModelBaseUrl(url);
+      setString("modelBaseUrl", url);
     }
     if (llmType !== "ollama" && keys.apiKey) {
       setString(keys.apiKey, apiKey);
-      setStoredApiKey(apiKey);
+      setString("apiKey", apiKey);
     }
 
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2000);
-  }, [activeConfigId, apiKey, availableModels, baseUrl, configs, dispatchChange, generateConfigName, llmType, model, newConfigName, persistConfigs, setStoredActiveConfigId, setStoredApiKey, setStoredLlmType, setStoredModelBaseUrl, setStoredModelName, showNewConfigForm]);
+  }, [activeConfigId, apiKey, availableModels, baseUrl, configs, generateConfigName, llmType, model, newConfigName, persistConfigs, setStoreActiveConfig, showNewConfigForm]);
 
   const handleDeleteConfig = useCallback((id: string) => {
     const merged = Array.from(new Map(configs.map(c => [c.id, c])).values());
@@ -250,9 +246,9 @@ export function useModelSidebarConfig() {
     if (id === activeConfigId) {
       if (updated.length > 0) { setActiveConfigId(updated[0].id); loadConfigToForm(updated[0]); }
       else { setActiveConfigId(""); setLlmTypeState("openai"); setBaseUrl(""); setModel(""); setApiKey(""); setAvailableModels([]); }
-      setStoredActiveConfigId(updated[0]?.id || "");
+      setStoreActiveConfig(updated[0]?.id || "");
     }
-  }, [activeConfigId, configs, loadConfigToForm, persistConfigs, setStoredActiveConfigId]);
+  }, [activeConfigId, configs, loadConfigToForm, persistConfigs, setStoreActiveConfig]);
 
   const handleSwitchConfig = useCallback((id: string) => {
     if (id === activeConfigId) return;
@@ -260,11 +256,10 @@ export function useModelSidebarConfig() {
     const config = configs.find(c => c.id === id);
     if (config) {
       loadConfigToForm(config);
-      setStoredActiveConfigId(id);
+      setStoreActiveConfig(id);
       setShowNewConfigForm(false);
-      dispatchChange(config);
     }
-  }, [activeConfigId, configs, dispatchChange, loadConfigToForm, setStoredActiveConfigId]);
+  }, [activeConfigId, configs, loadConfigToForm, setStoreActiveConfig]);
 
   // 名称编辑
   const handleStartEditName = useCallback((config: APIConfig, e: React.MouseEvent) => {
@@ -294,10 +289,10 @@ export function useModelSidebarConfig() {
     persistConfigs(updated);
     const keys = getStorageKeys(llmType);
     setString(keys.model, newModel);
-    setStoredModelName(newModel);
+    setString("modelName", newModel);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2000);
-  }, [activeConfigId, configs, llmType, persistConfigs, setStoredModelName]);
+  }, [activeConfigId, configs, llmType, persistConfigs]);
 
   // 模型测试
   const handleTestModel = useCallback(async () => {
@@ -332,37 +327,40 @@ export function useModelSidebarConfig() {
     } finally { setIsTesting(false); }
   }, [apiKey, baseUrl, llmType, model]);
 
-  // 初始化
+  // 初始化（从 Store 加载）
   useEffect(() => {
     if (typeof window === "undefined") return;
-    let merged = storedConfigs;
+    
+    let merged = storeConfigs;
     if (merged.length === 0 && (DEFAULT_API_URL || DEFAULT_API_KEY)) {
-      const def: APIConfig = { id: generateId(), name: `【1】${DEFAULT_API_URL ? "API" : "OpenAI"}`, type: "openai", baseUrl: DEFAULT_API_URL, model: "", apiKey: DEFAULT_API_KEY };
+      const def: APIConfig = { 
+        id: generateId(), 
+        name: `【1】${DEFAULT_API_URL ? "API" : "OpenAI"}`, 
+        type: "openai", 
+        baseUrl: DEFAULT_API_URL, 
+        model: "", 
+        apiKey: DEFAULT_API_KEY 
+      };
       merged = [def];
       persistConfigs(merged);
-      setStoredActiveConfigId(def.id);
+      setStoreActiveConfig(def.id);
     }
-    const activeId = storedActiveConfigId && merged.some(c => c.id === storedActiveConfigId) ? storedActiveConfigId : (merged[0]?.id || "");
+    
+    const activeId = storeActiveConfigId && merged.some(c => c.id === storeActiveConfigId) 
+      ? storeActiveConfigId 
+      : (merged[0]?.id || "");
+    
     setConfigs(merged);
     setActiveConfigId(activeId);
-    if (merged.length > 0) loadConfigToForm(merged.find(c => c.id === activeId)!);
-  }, [loadConfigToForm, persistConfigs, setStoredActiveConfigId, storedActiveConfigId, storedConfigs]);
+    
+    // 初始化时跳过 API 调用（skipApiCall = true）
+    if (merged.length > 0) {
+      const config = merged.find(c => c.id === activeId);
+      if (config) loadConfigToForm(config, true);
+    }
+  }, [loadConfigToForm, persistConfigs, setStoreActiveConfig, storeActiveConfigId, storeConfigs]);
 
-  // 监听外部变更
-  useEffect(() => {
-    const handler = (event: CustomEvent) => {
-      const { configId, config, modelName } = event.detail;
-      if (configId && configId !== activeConfigId && config) { setActiveConfigId(configId); loadConfigToForm(config); }
-      else if (configId === activeConfigId && modelName && modelName !== model) {
-        setModel(modelName);
-        const keys = getStorageKeys(llmType);
-        setString(keys.model, modelName);
-        setStoredModelName(modelName);
-      }
-    };
-    window.addEventListener("modelChanged", handler as EventListener);
-    return () => window.removeEventListener("modelChanged", handler as EventListener);
-  }, [activeConfigId, loadConfigToForm, model, llmType]);
+  // 【移除】不再需要监听 window 事件，Store 变化会自动触发重渲染
 
   // 返回状态和操作
   const state: SidebarState = {

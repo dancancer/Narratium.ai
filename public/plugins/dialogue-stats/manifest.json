@@ -11,6 +11,7 @@
     "modify_ui",
     "local_storage"
   ],
+  "integrity": "sha256-XpcC9zbi0aqfr0lWjoDW0iSimU/Wl5ReElAKQMjW/28=",
   "dependencies": [],
   "minVersion": "1.0.0",
   "keywords": ["statistics", "analytics", "dialogue", "token", "character", "response"],

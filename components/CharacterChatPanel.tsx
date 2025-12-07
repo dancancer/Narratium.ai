@@ -104,17 +104,36 @@ export default function CharacterChatPanel({
     characterName: character.name,
   });
 
-  // ========== 初始化 ==========
+  // ═══════════════════════════════════════════════════════════════
+  // 初始化流式传输状态
+  // ───────────────────────────────────────────────────────────────
+  // 【优化】拆分职责：流式传输、快速模型、用户名各自独立管理
+  // ═══════════════════════════════════════════════════════════════
+  
+  // 同步流式传输状态
   useEffect(() => {
     setActiveModes((prev) => (prev.streaming === streamingEnabled ? prev : { ...prev, streaming: streamingEnabled }));
     setStreamingTarget(streamingEnabled && messages.length > 0 ? messages.length : -1);
-    setCurrentDisplayName(getDisplayUsername());
-  }, [messages.length, setActiveModes, streamingEnabled]);
+  }, [messages.length, streamingEnabled, setActiveModes]);
 
+  // 同步快速模型状态
   useEffect(() => {
     setActiveModes((prev) => (prev.fastModel === fastModelEnabled ? prev : { ...prev, fastModel: fastModelEnabled }));
   }, [fastModelEnabled, setActiveModes]);
 
+  // 初始化用户名（仅首次）
+  useEffect(() => {
+    setCurrentDisplayName(getDisplayUsername());
+  }, []);
+
+  // ═══════════════════════════════════════════════════════════════
+  // 广播最新消息到脚本系统
+  // 
+  // 为什么不依赖 broadcastMessage？
+  // - broadcastMessage 使用 useCallback([])，引用完全稳定
+  // - 我们只想在 messages 变化时广播，而不是函数引用变化时
+  // - 这是标准的事件发射模式，函数引用不应触发副作用
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
     if (messages.length > 0) {
       scriptBridge.broadcastMessage(messages[messages.length - 1]);

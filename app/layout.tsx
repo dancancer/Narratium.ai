@@ -6,6 +6,7 @@ import MainLayout from "@/components/MainLayout";
 import { LanguageProvider } from "@/app/i18n/LanguageProvider";
 import { SoundProvider } from "@/contexts/SoundContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ToastProvider } from "@/components/ToastProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -96,6 +97,7 @@ export default function RootLayout({
           <SoundProvider>
             <LanguageProvider>
               <MainLayout>{children}</MainLayout>
+              <ToastProvider />
             </LanguageProvider>
           </SoundProvider>
           <Analytics />

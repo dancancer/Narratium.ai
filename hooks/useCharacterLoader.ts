@@ -13,7 +13,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { getCharacterDialogue } from "@/function/dialogue/info";
 import { getDisplayUsername } from "@/utils/username-helper";
 import { useDialoguePreferences } from "@/hooks/character-dialogue/useDialoguePreferences";
-import type { Character, DialogueMessage, OpeningMessage } from "./useCharacterDialogue";
+import type { Character, DialogueMessage, OpeningMessage } from "@/types/character-dialogue";
 
 // ============================================================================
 //                              类型定义

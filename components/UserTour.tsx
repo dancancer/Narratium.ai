@@ -24,11 +24,17 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const { t, serifFontClass, setLanguage, language } = useLanguage();
 
+  // ═══════════════════════════════════════════════════════════════
+  // 语言选择后自动跳过逻辑
+  // ───────────────────────────────────────────────────────────────
+  // 仅在初始化时检查：如果用户已选择语言且当前在第 0 步，跳到第 1 步
+  // 避免在后续步骤中反复触发，导致无法前进
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
-    if (currentStep > 0 && steps[0]?.isLanguageSelection) {
+    if (currentStep === 0 && steps[0]?.isLanguageSelection && language) {
       setCurrentStep(1);
     }
-  }, [currentStep, language, steps]);
+  }, [language, steps]);
   const overlayRef = useRef<HTMLDivElement>(null);
   const originalScrollPos = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {

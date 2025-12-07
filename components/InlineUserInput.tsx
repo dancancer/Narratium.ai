@@ -20,7 +20,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 import { PenSquare, Send, Plus } from "lucide-react";
 
 interface InlineUserInputProps {
@@ -67,12 +66,7 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="relative"
-    >
+    <div className="relative animate-in fade-in slide-in-from-bottom-4 duration-300">
       {/* Redesigned Question Header */}
       <div className="mb-5">
         <div className="flex items-center gap-2 mb-3 text-amber-400 font-medium text-sm">
@@ -87,24 +81,17 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
       {/* Elegant Reference Options */}
       {options && options.length > 0 && (
         <div className="pl-6 mb-4">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-black/20 border border-amber-500/25 rounded-xl p-4 mb-3 backdrop-blur-sm"
-          >
+          <div className="bg-black/20 border border-amber-500/25 rounded-xl p-4 mb-3 backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1 h-4 bg-gradient-to-b from-amber-400 to-amber-600 rounded-full"></div>
               <span className="text-xs text-amber-400/90 font-medium tracking-wide">参考选项</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {options.map((option, index) => (
-                <motion.button
+                <button
                   key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05, duration: 0.25 }}
-                  className="inline-flex items-center px-3 py-1.5 text-xs text-amber-soft/80 bg-black/30 border border-amber-500/20 rounded-full hover:bg-black/40 hover:border-amber-400/40 hover:text-cream transition-all duration-200 cursor-pointer"
+                  className="inline-flex items-center px-3 py-1.5 text-xs text-amber-soft/80 bg-black/30 border border-amber-500/20 rounded-full hover:bg-black/40 hover:border-amber-400/40 hover:text-cream transition-all duration-200 cursor-pointer animate-in fade-in zoom-in-95"
+                  style={{ animationDelay: `${index * 50}ms` }}
                   onClick={() => {
                     setCustomInput(option);
                     if (inputRef.current) {
@@ -113,20 +100,15 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
                   }}
                 >
                   {option}
-                </motion.button>
+                </button>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
 
       {/* Elegant Compact Input */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="pl-6"
-      >
+      <div className="pl-6 animate-in fade-in slide-in-from-top-2 duration-300">
         <div className="relative inline-flex items-center min-w-[280px] max-w-lg">
           <input
             ref={inputRef}
@@ -151,8 +133,8 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
             )}
           </button>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

@@ -28,6 +28,7 @@ import { ArrowRight, Eye, FileText, Layers, UserRound } from "lucide-react";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { useLanguage } from "@/app/i18n";
+import { useUIStore } from "@/lib/store/ui-store";
 
 /**
  * Interface definitions for the component's props
@@ -41,9 +42,6 @@ interface Props {
   sidebarCollapsed: boolean;
   activeView: "chat" | "worldbook" | "regex" | "preset";
   toggleSidebar: () => void;
-  onSwitchToView: (view: "chat" | "worldbook" | "regex" | "preset") => void;
-  onToggleView: () => void;
-  onToggleRegexEditor: () => void;
 }
 
 /**
@@ -64,21 +62,9 @@ export default function CharacterChatHeader({
   sidebarCollapsed,
   activeView,
   toggleSidebar,
-  onSwitchToView,
 }: Props) {
   const { t, fontClass } = useLanguage();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const setCharacterView = useUIStore((state) => state.setCharacterView);
 
   return (
     <div className="bg-deep border-b border-ink p-4 flex items-center">
@@ -128,11 +114,7 @@ export default function CharacterChatHeader({
           <button
             onClick={() => {
               trackButtonClick("page", "切换世界书");
-              if (activeView === "worldbook") {
-                onSwitchToView("chat");
-              } else {
-                onSwitchToView("worldbook");
-              }
+              setCharacterView(activeView === "worldbook" ? "chat" : "worldbook");
             }}
             data-tour="worldbook-button"
             className={`group px-2 py-1.5 md:px-3 md:py-1 md:ml-2 flex items-center rounded-md border transition-all duration-300 shadow-md relative overflow-hidden portal-button ${
@@ -166,11 +148,7 @@ export default function CharacterChatHeader({
           <button
             onClick={() => {
               trackButtonClick("page", "切换正则编辑器");
-              if (activeView === "regex") {
-                onSwitchToView("chat");
-              } else {
-                onSwitchToView("regex");
-              }
+              setCharacterView(activeView === "regex" ? "chat" : "regex");
             }}
             data-tour="regex-button"
             className={`group px-2 py-1.5 md:px-3 md:py-1 md:ml-2 flex items-center rounded-md border transition-all duration-300 shadow-md relative overflow-hidden ${
@@ -204,11 +182,7 @@ export default function CharacterChatHeader({
           <button
             onClick={() => {
               trackButtonClick("page", "切换预设编辑器");
-              if (activeView === "preset") {
-                onSwitchToView("chat");
-              } else {
-                onSwitchToView("preset");
-              }
+              setCharacterView(activeView === "preset" ? "chat" : "preset");
             }}
             data-tour="preset-button"
             className={`group px-2 py-1.5 md:px-3 md:py-1 md:ml-2 flex items-center rounded-md border transition-all duration-300 shadow-md relative overflow-hidden ${

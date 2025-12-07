@@ -2,25 +2,27 @@
  * ╔══════════════════════════════════════════════════════════════════════════╗
  * ║                     DownloadCharacterModal                               ║
  * ║                                                                          ║
- * ║  角色下载弹窗 - GitHub 角色库浏览、筛选与导入                               ║
- * ║                                                                          ║
- * ║  重构后的简洁版本：                                                        ║
- * ║  - 核心逻辑提取到 useCharacterDownload hook                               ║
- * ║  - UI 组件拆分到 download-modal/ 目录                                     ║
- * ║  - 主文件只负责布局编排                                                    ║
+ * ║  角色下载弹窗 - 已迁移至 Radix UI Dialog                                    ║
+ * ║  GitHub 角色库浏览、筛选与导入                                              ║
+ * ║  核心逻辑在 useCharacterDownload hook                                      ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { useLanguage } from "@/app/i18n";
-import { Toast } from "@/components/Toast";
+import { toast } from "@/lib/store/toast-store";
 import { useMobileDetection } from "@/hooks/useMobileDetection";
 import { useCharacterDownload, TAGS, TagType } from "@/hooks/useCharacterDownload";
 import { CharacterCard, RegulatoryWarningModal, WARNING_STORAGE_KEY } from "@/components/download-modal";
 import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
+import { X, RefreshCw } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    类型定义
@@ -43,15 +45,6 @@ export default function DownloadCharacterModal({
 }: DownloadCharacterModalProps) {
   const { t, fontClass, serifFontClass } = useLanguage();
   const { isMobile } = useMobileDetection();
-
-  // 错误提示状态
-  const [errorToast, setErrorToast] = useState({ isVisible: false, message: "" });
-  const showError = useCallback((message: string) => {
-    setErrorToast({ isVisible: true, message });
-  }, []);
-  const hideError = useCallback(() => {
-    setErrorToast({ isVisible: false, message: "" });
-  }, []);
 
   // 合规警告状态
   const [showWarning, setShowWarning] = useState(false);
@@ -82,76 +75,61 @@ export default function DownloadCharacterModal({
     isOpen,
     onImport,
     onClose,
-    onError: showError,
+    onError: toast.error,
     t,
   });
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
-      {/* 背景遮罩 */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 backdrop-blur-sm bg-black/50"
-        onClick={onClose}
-      />
-
-      {/* 主弹窗 */}
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className={`bg-deep rounded-lg shadow-2xl w-full border border-ink relative z-10 ${
-          isMobile
-            ? "h-full max-h-[calc(100vh-12rem)] p-3 rounded-none pb-28"
-            : "p-6 max-w-6xl max-h-[90vh] rounded-lg"
-        }`}
-      >
-        {/* 头部 */}
-        <ModalHeader
-          isMobile={isMobile}
-          loading={loading}
-          serifFontClass={serifFontClass}
-          t={t}
-          onRefresh={refresh}
-          onClose={onClose}
-        />
-
-        {/* 标签筛选 */}
-        <TagFilter
-          isMobile={isMobile}
-          selectedTag={selectedTag}
-          tagCounts={tagCounts}
-          fontClass={fontClass}
-          serifFontClass={serifFontClass}
-          t={t}
-          onTagSelect={setSelectedTag}
-        />
-
-        {/* 内容区域 */}
-        <div className="flex-1 overflow-hidden">
-          <ContentArea
-            loading={loading}
-            loadingStage={loadingStage}
-            filteredCharacters={filteredCharacters}
-            selectedTag={selectedTag}
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className={`p-0 overflow-hidden bg-deep border-ink gap-0 ${
+        isMobile
+          ? "h-full max-h-[calc(100vh-12rem)] rounded-none pb-28 max-w-full"
+          : "max-w-6xl max-h-[90vh] rounded-lg"
+      }`}>
+        <DialogTitle className="sr-only">{t("downloadModal.title")}</DialogTitle>
+        <div className={isMobile ? "p-3" : "p-6"}>
+          {/* 头部 */}
+          <ModalHeader
             isMobile={isMobile}
-            importing={importing}
-            imageLoadingStates={imageLoadingStates}
-            rawBaseUrl={RAW_BASE_URL}
-            fontClass={fontClass}
+            loading={loading}
+            serifFontClass={serifFontClass}
             t={t}
-            onDownload={downloadAndImport}
-            onImageLoad={handleImageLoad}
-            onImageError={handleImageError}
+            onRefresh={refresh}
+            onClose={onClose}
           />
-        </div>
-      </motion.div>
 
-      {/* 合规警告弹窗 */}
-      <AnimatePresence>
+          {/* 标签筛选 */}
+          <TagFilter
+            isMobile={isMobile}
+            selectedTag={selectedTag}
+            tagCounts={tagCounts}
+            fontClass={fontClass}
+            serifFontClass={serifFontClass}
+            t={t}
+            onTagSelect={setSelectedTag}
+          />
+
+          {/* 内容区域 */}
+          <div className="flex-1 overflow-hidden">
+            <ContentArea
+              loading={loading}
+              loadingStage={loadingStage}
+              filteredCharacters={filteredCharacters}
+              selectedTag={selectedTag}
+              isMobile={isMobile}
+              importing={importing}
+              imageLoadingStates={imageLoadingStates}
+              rawBaseUrl={RAW_BASE_URL}
+              fontClass={fontClass}
+              t={t}
+              onDownload={downloadAndImport}
+              onImageLoad={handleImageLoad}
+              onImageError={handleImageError}
+            />
+          </div>
+        </div>
+
+        {/* 合规警告弹窗 */}
         {showWarning && (
           <RegulatoryWarningModal
             isOpen={showWarning}
@@ -161,16 +139,8 @@ export default function DownloadCharacterModal({
             t={t}
           />
         )}
-      </AnimatePresence>
-
-      {/* 错误提示 */}
-      <Toast
-        isVisible={errorToast.isVisible}
-        message={errorToast.message}
-        onClose={hideError}
-        type="error"
-      />
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -205,14 +175,10 @@ function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose 
           title={t("downloadModal.refresh")}
           type="button"
         >
-          <svg
-            className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} ${loading ? "animate-spin" : ""} transition-transform duration-300 group-hover:rotate-180`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 11A8.1 8.1 0 004.5 9M4 5v6h6M20 19v-6h-6" />
-          </svg>
+          <RefreshCw
+            size={isMobile ? 16 : 20}
+            className={`${loading ? "animate-spin" : ""} transition-transform duration-300 group-hover:rotate-180`}
+          />
         </button>
 
         {/* 关闭按钮 */}
@@ -222,9 +188,7 @@ function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose 
           title={t("common.close")}
           type="button"
         >
-          <svg className={isMobile ? "w-5 h-5" : "w-6 h-6"} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X size={isMobile ? 20 : 24} />
         </button>
       </div>
     </div>
@@ -353,26 +317,24 @@ function ContentArea({
           : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-h-[60vh] overflow-y-auto pr-2"
       }
     >
-      <AnimatePresence mode="wait">
-        {filteredCharacters.map((file, index) => (
-          <CharacterCard
-            key={`${selectedTag}-${file.name}`}
-            file={file}
-            index={index}
-            selectedTag={selectedTag}
-            isMobile={isMobile}
-            isImageLoaded={imageLoadingStates[file.name] ?? false}
-            isImporting={importing === file.name}
-            disabled={!!importing}
-            rawBaseUrl={rawBaseUrl}
-            fontClass={fontClass}
-            t={t}
-            onDownload={onDownload}
-            onImageLoad={onImageLoad}
-            onImageError={onImageError}
-          />
-        ))}
-      </AnimatePresence>
+      {filteredCharacters.map((file, index) => (
+        <CharacterCard
+          key={`${selectedTag}-${file.name}`}
+          file={file}
+          index={index}
+          selectedTag={selectedTag}
+          isMobile={isMobile}
+          isImageLoaded={imageLoadingStates[file.name] ?? false}
+          isImporting={importing === file.name}
+          disabled={!!importing}
+          rawBaseUrl={rawBaseUrl}
+          fontClass={fontClass}
+          t={t}
+          onDownload={onDownload}
+          onImageLoad={onImageLoad}
+          onImageError={onImageError}
+        />
+      ))}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { X, Plus, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import type { LLMType, SidebarViewProps } from "./types";
 
 // ╔════════════════════════════════════════╗
@@ -76,9 +77,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
             className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke shadow-inner transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-amber-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -94,9 +93,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
                   className="text-sm text-amber hover:text-cream transition-all duration-200 px-3 py-2 rounded border border-ink hover:border-amber hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-2"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
+                  <Plus className="w-3 h-3" />
                   {t("modelSettings.newConfig") || "New Config"}
                 </button>
               </div>
@@ -288,9 +285,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     {getModelListSuccess && (
                       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity">
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mr-2 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 animate-pulse" />
                           <span className={`text-white text-sm ${fontClass}`}>
                             {t("modelSettings.getModelListSuccess") || "Get Model List Success"}
                           </span>
@@ -301,9 +296,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     {getModelListError && (
                       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity">
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-2 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
+                          <XCircle className="h-5 w-5 text-red-500 mr-2 animate-pulse" />
                           <span className={`text-white text-sm ${fontClass}`}>
                             {t("modelSettings.getModelListError") || "Get Model List Error"}
                           </span>
@@ -383,9 +376,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   {saveSuccess && (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                       <div className="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
+                        <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
                         <span className={`text-white text-sm ${fontClass}`}>
                           {t("modelSettings.settingsSaved") || "Settings Saved"}
                         </span>
@@ -402,10 +393,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   >
                     {isTesting ? (
                       <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-cream" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin -ml-1 mr-3 h-4 w-4 text-cream" />
                         {t("modelSettings.testing") || "Testing..."}
                       </span>
                     ) : (
@@ -416,9 +404,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   {testModelSuccess && (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                       <div className="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
+                        <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
                         <span className={`text-white text-sm ${fontClass}`}>
                           {t("modelSettings.testSuccess") || "Model test successful"}
                         </span>
@@ -429,9 +415,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   {testModelError && (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
                       <div className="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
+                        <XCircle className="h-5 w-5 text-red-500 mr-2" />
                         <span className={`text-white text-sm ${fontClass}`}>
                           {t("modelSettings.testError") || "Model test failed"}
                         </span>
@@ -451,9 +435,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                   onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
                   className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded border border-amber transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-2`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
+                  <Plus className="w-3.5 h-3.5" />
                   {t("modelSettings.createFirstConfig") || "Create Your First Configuration"}
                 </button>
               </div>

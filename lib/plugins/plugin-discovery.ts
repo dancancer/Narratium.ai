@@ -42,6 +42,14 @@ export class PluginDiscovery {
       const pluginDirs = await this.getPluginDirectoriesFromRegistry();
       
       for (const dir of pluginDirs) {
+        if (!this.isValidPluginId(dir)) {
+          console.error(`❌ Invalid plugin id in registry: ${dir}`);
+          result.errors.push({
+            path: dir,
+            error: "Invalid plugin id format",
+          });
+          continue;
+        }
         try {
           const manifest = await this.loadManifest(dir);
           if (manifest) {
@@ -252,7 +260,7 @@ export class PluginDiscovery {
       const manifest: PluginManifest = await response.json();
       
       // Validate manifest
-      this.validateManifest(manifest);
+      this.validateManifest(manifest, pluginDir);
       
       return manifest;
     } catch (error) {
@@ -276,6 +284,14 @@ export class PluginDiscovery {
       }
       
       const pluginCode = await response.text();
+      
+      // Optional integrity check
+      if (manifest.integrity) {
+        const passed = await this.verifyIntegrity(pluginCode, manifest.integrity);
+        if (!passed) {
+          throw new Error("Plugin integrity check failed");
+        }
+      }
       
       // Create a module context for the plugin
       const moduleContext = {
@@ -351,7 +367,7 @@ export class PluginDiscovery {
   /**
    * Validate plugin manifest
    */
-  private validateManifest(manifest: PluginManifest): void {
+  private validateManifest(manifest: PluginManifest, pluginDir?: string): void {
     const required = ["id", "name", "version", "description", "author", "main"];
     
     for (const field of required) {
@@ -364,11 +380,62 @@ export class PluginDiscovery {
     if (!/^[a-z0-9-]+$/.test(manifest.id)) {
       throw new Error("Plugin ID must contain only lowercase letters, numbers, and hyphens");
     }
+
+    if (pluginDir && manifest.id !== pluginDir) {
+      throw new Error(`Plugin id mismatch: manifest=${manifest.id}, folder=${pluginDir}`);
+    }
     
     // Validate version format
     if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) {
       throw new Error("Plugin version must be in semantic versioning format (x.y.z)");
     }
+
+    // Require integrity to load
+    if (!manifest.integrity) {
+      throw new Error("Plugin manifest must provide integrity (sha256-...)");
+    }
+  }
+
+  /**
+   * Validate registry plugin id to avoid path traversal or protocol injection
+   */
+  private isValidPluginId(id: string): boolean {
+    return /^[a-zA-Z0-9-_]+$/.test(id || "");
+  }
+
+  /**
+   * Verify integrity if manifest provides sha256 value (base64 or hex, with optional sha256- prefix)
+   */
+  private async verifyIntegrity(content: string, integrity: string): Promise<boolean> {
+    try {
+      const normalized = integrity.replace(/^sha256-/, "").trim();
+      const digestBase64 = await this.computeSha256(content);
+      const digestHex = this.base64ToHex(digestBase64);
+      return normalized === digestBase64 || normalized === digestHex;
+    } catch (error) {
+      console.error("❌ Integrity verification failed:", error);
+      return false;
+    }
+  }
+
+  private async computeSha256(content: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(content);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // Base64 for compact storage
+    const binaryString = hashArray.map(b => String.fromCharCode(b)).join("");
+    return btoa(binaryString);
+  }
+
+  private base64ToHex(base64: string): string {
+    const binary = atob(base64);
+    const hexArray: string[] = [];
+    for (let i = 0; i < binary.length; i++) {
+      const hex = binary.charCodeAt(i).toString(16).padStart(2, "0");
+      hexArray.push(hex);
+    }
+    return hexArray.join("");
   }
 }
 

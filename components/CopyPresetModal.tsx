@@ -1,10 +1,28 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                      Copy Preset Modal Component                           ║
+ * ║                                                                            ║
+ * ║  复制预设模态框 - 已迁移至 Radix UI Dialog                                   ║
+ * ║  消除了重复的 backdrop 和 positioning 代码                                   ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { createPreset, getPreset } from "@/function/preset/global";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+// ============================================================================
+//                              类型定义
+// ============================================================================
 
 interface CopyPresetModalProps {
   isOpen: boolean;
@@ -13,6 +31,10 @@ interface CopyPresetModalProps {
   sourcePresetId: string;
   sourcePresetName: string;
 }
+
+// ============================================================================
+//                              主组件
+// ============================================================================
 
 export default function CopyPresetModal({ 
   isOpen, 
@@ -25,11 +47,15 @@ export default function CopyPresetModal({
   const [presetName, setPresetName] = useState("");
   const [isCopying, setIsCopying] = useState(false);
 
+  // ========== 初始化 ==========
+
   useEffect(() => {
     if (isOpen) {
       setPresetName(`${sourcePresetName} (Copy)`);
     }
   }, [isOpen, sourcePresetName]);
+
+  // ========== 提交处理 ==========
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +73,6 @@ export default function CopyPresetModal({
     setIsCopying(true);
     
     try {
-      // 获取源预设的完整数据
       const sourceResult = await getPreset(sourcePresetId);
       
       if (!sourceResult.success || !sourceResult.data) {
@@ -55,10 +80,9 @@ export default function CopyPresetModal({
         return;
       }
 
-      // 创建新预设，复制源预设的所有数据
       const newPreset = {
         name: presetName.trim(),
-        enabled: false, // 新复制的预设默认不启用
+        enabled: false,
         prompts: sourceResult.data.prompts || [],
       };
 
@@ -66,7 +90,7 @@ export default function CopyPresetModal({
       if (result.success) {
         toast.success(t("preset.copySuccess"));
         onSuccess();
-        handleClose();
+        handleOpenChange(false);
       } else {
         toast.error(t("preset.copyFailed"));
       }
@@ -78,43 +102,31 @@ export default function CopyPresetModal({
     }
   };
 
-  const handleClose = () => {
-    setPresetName("");
-    setIsCopying(false);
-    onClose();
+  // ========== 表单重置 ==========
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setPresetName("");
+      setIsCopying(false);
+      onClose();
+    }
   };
 
-  if (!isOpen) return null;
+  // ========== 渲染 ==========
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 bg-gradient-to-br from-deep via-muted-surface to-deep rounded-lg border border-ink shadow-2xl">
-        {/* Header */}
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-ink gap-0">
         <div className="p-4 border-b border-ink bg-gradient-to-r from-blue-500/5 to-transparent">
-          <div className="flex items-center justify-between">
-            <h3 className={`text-lg font-medium text-cream-soft ${serifFontClass}`}>
+          <DialogHeader>
+            <DialogTitle className={`text-lg font-medium text-cream-soft magical-text ${serifFontClass}`}>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-300">
                 {t("preset.copyPreset")}
               </span>
-            </h3>
-            <button
-              onClick={handleClose}
-              className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group"
-              disabled={isCopying}
-            >
-              <X className="h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110" />
-            </button>
-          </div>
+            </DialogTitle>
+          </DialogHeader>
         </div>
 
-        {/* Content */}
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className={`block text-sm font-medium text-ink-soft mb-2 ${fontClass}`}>
@@ -145,11 +157,10 @@ export default function CopyPresetModal({
             />
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end space-x-3 pt-2">
             <button
               type="button"
-              onClick={handleClose}
+              onClick={() => handleOpenChange(false)}
               disabled={isCopying}
               className={`px-4 py-2 text-sm font-medium text-ink-soft hover:text-cream-soft 
                 bg-gradient-to-br from-deep via-muted-surface to-deep 
@@ -179,7 +190,7 @@ export default function CopyPresetModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
-} 
+}

@@ -1,371 +1,211 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║                       useCharacterDialogue Hook                            ║
+ * ║                    useCharacterDialogue Hook                               ║
  * ║                                                                            ║
- * ║  角色对话核心状态管理：消息、开场白、发送、重生成、分支切换                    ║
- * ║  从 character/page.tsx 提取的核心业务逻辑                                    ║
+ * ║  基于 Zustand Store 的对话管理 - 消除不稳定依赖                              ║
+ * ║  设计原则：数据驱动、引用稳定、性能优化                                        ║
+ * ║  【重构】从 useState 迁移到 Zustand Store                                   ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
 
-import { useState, useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { initCharacterDialogue } from "@/function/dialogue/init";
-import { getCharacterDialogue } from "@/function/dialogue/info";
-import { handleCharacterChatRequest } from "@/function/dialogue/chat";
-import { switchDialogueBranch } from "@/function/dialogue/truncate";
-import { deleteDialogueNode } from "@/function/dialogue/delete";
-import { getDisplayUsername } from "@/utils/username-helper";
-import {
-  UseCharacterDialogueOptions,
-  UseCharacterDialogueReturn,
-  DialogueMessage,
-  OpeningMessage,
-} from "@/types/character-dialogue";
-import { extractOpeningMessages, formatMessages } from "@/hooks/character-dialogue/message-utils";
+import { useCallback, useMemo } from "react";
+import { useDialogueStore } from "@/lib/store/dialogue-store";
 import { useDialoguePreferences } from "@/hooks/character-dialogue/useDialoguePreferences";
 
-export type {
-  DialogueMessage,
-  OpeningMessage,
-  Character,
-  UseCharacterDialogueOptions,
-  UseCharacterDialogueReturn,
-} from "@/types/character-dialogue";
+/* ═══════════════════════════════════════════════════════════════════════════
+   类型定义
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-// ============================================================================
-//                              主 Hook
-// ============================================================================
+export interface UseCharacterDialogueOptions {
+  characterId: string | null;
+  onError?: (message: string) => void;
+  t: (key: string) => string;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   主 Hook
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 export function useCharacterDialogue({
   characterId,
   onError,
   t,
-}: UseCharacterDialogueOptions): UseCharacterDialogueReturn {
+}: UseCharacterDialogueOptions) {
   const { language, readLlmConfig, responseLength, fastModelEnabled } = useDialoguePreferences();
 
-  // ========== 对话状态 ==========
-  const [messages, setMessages] = useState<DialogueMessage[]>([]);
-  const [openingMessages, setOpeningMessages] = useState<OpeningMessage[]>([]);
-  const [openingIndex, setOpeningIndex] = useState(0);
-  const [openingLocked, setOpeningLocked] = useState(false);
-  const [suggestedInputs, setSuggestedInputs] = useState<string[]>([]);
-  const [isSending, setIsSending] = useState(false);
-
-  // ========== 获取最新对话 ==========
-  const fetchLatestDialogue = useCallback(async () => {
-    if (!characterId) return;
-
-    try {
-      const username = getDisplayUsername() || undefined;
-      const response = await getCharacterDialogue(characterId, language, username);
-
-      if (!response.success) {
-        throw new Error(`Failed to load dialogue: ${response}`);
-      }
-
-      const dialogue = response.dialogue;
-      if (dialogue && dialogue.messages) {
-        const formattedMessages = formatMessages(dialogue.messages);
-        setMessages(formattedMessages);
-
-        const lastMessage = dialogue.messages[dialogue.messages.length - 1];
-        setSuggestedInputs(lastMessage?.parsedContent?.nextPrompts || []);
-
-        const { openings, activeIndex, locked } = extractOpeningMessages(
-          dialogue,
-          formattedMessages
-        );
-        setOpeningMessages(openings);
-        setOpeningIndex(activeIndex);
-        setOpeningLocked(locked);
-      }
-    } catch (err) {
-      console.error("Error refreshing dialogue:", err);
-    }
-  }, [characterId, language]);
-
-  // ========== 初始化新对话 ==========
-  const initializeNewDialogue = useCallback(
-    async (charId: string) => {
-      try {
-        const username = getDisplayUsername();
-        const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
-
-        const initData = await initCharacterDialogue({
-          username,
-          characterId: charId,
-          modelName,
-          baseUrl,
-          apiKey,
-          llmType,
-          language,
-        });
-
-        if (!initData.success) {
-          throw new Error(`Failed to initialize dialogue: ${initData}`);
-        }
-
-        const openings = initData.openingMessages || [];
-        if (openings.length > 0) {
-          setOpeningMessages(openings);
-          setOpeningIndex(0);
-          setOpeningLocked(false);
-          setMessages([
-            {
-              id: openings[0].id,
-              role: "assistant",
-              content: openings[0].content,
-            },
-          ]);
-          setSuggestedInputs([]);
-        } else if (initData.firstMessage) {
-          setOpeningMessages([]);
-          setOpeningIndex(0);
-          setOpeningLocked(false);
-          setMessages([
-            {
-              id: initData.nodeId,
-              role: "assistant",
-              content: initData.firstMessage,
-            },
-          ]);
-        }
-      } catch (error) {
-        console.error("Error initializing dialogue:", error);
-        throw error;
-      }
-    },
-    [language, readLlmConfig]
+  // ═══════════════════════════════════════════════════════════════
+  // 从 Store 订阅状态
+  // 
+  // 【优化】使用选择器只订阅需要的状态，避免不必要的重渲染
+  // ═══════════════════════════════════════════════════════════════
+  const dialogue = useDialogueStore(
+    useCallback(
+      (state) => (characterId ? state.dialogues[characterId] : undefined),
+      [characterId]
+    )
   );
 
-  // ========== 发送消息 ==========
+  // ═══════════════════════════════════════════════════════════════
+  // Store 操作
+  // 
+  // 【优化】这些函数引用永久稳定，不会导致依赖问题
+  // ═══════════════════════════════════════════════════════════════
+  const fetchLatestDialogue = useDialogueStore((state) => state.fetchLatestDialogue);
+  const initializeNewDialogue = useDialogueStore((state) => state.initializeNewDialogue);
+  const sendMessage = useDialogueStore((state) => state.sendMessage);
+  const truncateMessagesAfter = useDialogueStore((state) => state.truncateMessagesAfter);
+  const regenerateMessage = useDialogueStore((state) => state.regenerateMessage);
+  const navigateOpening = useDialogueStore((state) => state.navigateOpening);
+  const setMessages = useDialogueStore((state) => state.setMessages);
+  const setSuggestedInputs = useDialogueStore((state) => state.setSuggestedInputs);
+
+  // ═══════════════════════════════════════════════════════════════
+  // 包装操作函数
+  // 
+  // 【优化】使用 useCallback 确保引用稳定
+  // 【优化】依赖数组只包含原始值，不包含函数
+  // ═══════════════════════════════════════════════════════════════
+
+  const handleFetchLatestDialogue = useCallback(async () => {
+    if (!characterId) return;
+    await fetchLatestDialogue(characterId, language);
+  }, [characterId, language, fetchLatestDialogue]);
+
+  const handleInitializeNewDialogue = useCallback(
+    async (charId: string) => {
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
+      await initializeNewDialogue({
+        characterId: charId,
+        language,
+        modelName,
+        baseUrl,
+        apiKey,
+        llmType,
+      });
+    },
+    [language, readLlmConfig, initializeNewDialogue]
+  );
+
   const handleSendMessage = useCallback(
     async (message: string) => {
-      if (!characterId || isSending) return;
-
-      try {
-        setIsSending(true);
-        setOpeningLocked(true);
-        setSuggestedInputs([]);
-
-        const userMessage: DialogueMessage = {
-          id: new Date().toISOString() + "-user",
-          role: "user",
-          thinkingContent: "",
-          content: message,
-        };
-        setMessages((prev) => [...prev, userMessage]);
-
-        const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
-        const username = getDisplayUsername();
-        const nodeId = uuidv4();
-
-        const response = await handleCharacterChatRequest({
-          username,
-          characterId,
-          message,
-          modelName,
-          baseUrl,
-          apiKey,
-          llmType,
-          language,
-          streaming: true,
-          number: responseLength,
-          nodeId,
-          fastModel: fastModelEnabled,
-        });
-
-        if (!response.ok) {
-          onError?.(t("characterChat.checkNetworkOrAPI"));
-          return;
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-          const assistantMessage: DialogueMessage = {
-            id: nodeId,
-            role: "assistant",
-            thinkingContent: result.thinkingContent ?? "",
-            content: result.content || "",
-          };
-          setMessages((prev) => [...prev, assistantMessage]);
-
-          if (result.parsedContent?.nextPrompts) {
-            setSuggestedInputs(result.parsedContent.nextPrompts);
-          }
-        } else {
-          onError?.(result.message || t("characterChat.checkNetworkOrAPI"));
-        }
-      } catch (err) {
-        console.error("Error sending message:", err);
-        onError?.(t("characterChat.checkNetworkOrAPI"));
-      } finally {
-        setIsSending(false);
-      }
-    },
-    [characterId, fastModelEnabled, isSending, language, onError, readLlmConfig, responseLength, t]
-  );
-
-  // ========== 截断消息（切换分支） ==========
-  const truncateMessagesAfter = useCallback(
-    async (nodeId: string) => {
       if (!characterId) return;
 
-      try {
-        const messageIndex = messages.findIndex((msg) => msg.id === nodeId);
-        if (messageIndex === -1) {
-          console.warn(`Dialogue branch not found: ${nodeId}`);
-          return;
-        }
-
-        const response = await switchDialogueBranch({ characterId, nodeId });
-        if (!response.success) {
-          console.error("Failed to truncate messages", response);
-          return;
-        }
-
-        const dialogue = response.dialogue;
-        if (dialogue) {
-          setTimeout(() => {
-            const formattedMessages = formatMessages(dialogue.messages);
-            setMessages(formattedMessages);
-
-            const lastMessage = dialogue.messages[dialogue.messages.length - 1];
-            setSuggestedInputs(lastMessage?.parsedContent?.nextPrompts || []);
-          }, 100);
-        }
-      } catch (error) {
-        console.error("Error truncating messages:", error);
-      }
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
+      await sendMessage({
+        characterId,
+        message,
+        language,
+        modelName,
+        baseUrl,
+        apiKey,
+        llmType,
+        responseLength,
+        fastModel: fastModelEnabled,
+        onError,
+      });
     },
-    [characterId, messages]
+    [
+      characterId,
+      language,
+      responseLength,
+      fastModelEnabled,
+      readLlmConfig,
+      sendMessage,
+      onError,
+    ]
   );
 
-  // ========== 重新生成消息 ==========
+  const handleTruncateMessagesAfter = useCallback(
+    async (nodeId: string) => {
+      if (!characterId) return;
+      await truncateMessagesAfter(characterId, nodeId);
+    },
+    [characterId, truncateMessagesAfter]
+  );
+
   const handleRegenerate = useCallback(
     async (nodeId: string) => {
       if (!characterId) return;
 
-      try {
-        const messageIndex = messages.findIndex(
-          (msg) => msg.id === nodeId && msg.role === "assistant"
-        );
-        if (messageIndex === -1) {
-          console.warn(`Message not found: ${nodeId}`);
-          return;
-        }
-
-        const messageToRegenerate = messages[messageIndex];
-        if (messageToRegenerate.role !== "assistant") {
-          console.warn("Can only regenerate assistant messages");
-          return;
-        }
-
-        // 找到前一条用户消息
-        let userMessage: DialogueMessage | null = null;
-        for (let i = messageIndex - 1; i >= 0; i--) {
-          if (messages[i].role === "user") {
-            userMessage = messages[i];
-            break;
-          }
-        }
-
-        if (!userMessage) {
-          console.warn("No previous user message found for regeneration");
-          return;
-        }
-
-        const response = await deleteDialogueNode({ characterId, nodeId });
-        if (!response.success) {
-          console.error("Failed to delete message", response);
-          return;
-        }
-
-        const dialogue = response.dialogue;
-        if (dialogue) {
-          setTimeout(() => {
-            const formattedMessages = formatMessages(dialogue.messages);
-            setMessages(formattedMessages);
-
-            const lastMessage = dialogue.messages[dialogue.messages.length - 1];
-            setSuggestedInputs(lastMessage?.parsedContent?.nextPrompts || []);
-          }, 100);
-        }
-
-        // 重新发送用户消息
-        setTimeout(async () => {
-          await handleSendMessage(userMessage!.content);
-        }, 300);
-      } catch (error) {
-        console.error("Error regenerating message:", error);
-      }
+      const { llmType, modelName, baseUrl, apiKey } = readLlmConfig();
+      await regenerateMessage(characterId, nodeId, {
+        language,
+        modelName,
+        baseUrl,
+        apiKey,
+        llmType,
+        responseLength,
+        fastModel: fastModelEnabled,
+        onError,
+      });
     },
-    [characterId, messages, handleSendMessage]
+    [
+      characterId,
+      language,
+      responseLength,
+      fastModelEnabled,
+      readLlmConfig,
+      regenerateMessage,
+      onError,
+    ]
   );
 
-  // ========== 开场白导航 ==========
   const handleOpeningNavigate = useCallback(
     async (direction: "prev" | "next") => {
       if (!characterId) return;
-      if (openingLocked || openingMessages.length <= 1) return;
-
-      const total = openingMessages.length;
-      const nextIndex =
-        direction === "prev"
-          ? (openingIndex - 1 + total) % total
-          : (openingIndex + 1) % total;
-      const target = openingMessages[nextIndex];
-
-      try {
-        const response = await switchDialogueBranch({
-          characterId,
-          nodeId: target.id,
-        });
-
-        if (response.success && response.dialogue) {
-          const formattedMessages = formatMessages(response.dialogue.messages);
-          setMessages(formattedMessages);
-          setSuggestedInputs([]);
-          setOpeningIndex(nextIndex);
-        } else {
-          setMessages([
-            {
-              id: target.id,
-              role: "assistant",
-              content: target.content,
-            },
-          ]);
-          setOpeningIndex(nextIndex);
-          setSuggestedInputs([]);
-        }
-      } catch (error) {
-        console.error("Error switching opening message:", error);
-      }
+      await navigateOpening(characterId, direction);
     },
-    [characterId, openingLocked, openingMessages, openingIndex]
+    [characterId, navigateOpening]
+  );
+
+  const handleSetMessages = useCallback(
+    (messages: any[]) => {
+      if (!characterId) return;
+      setMessages(characterId, messages);
+    },
+    [characterId, setMessages]
+  );
+
+  const handleSetSuggestedInputs = useCallback(
+    (inputs: string[]) => {
+      if (!characterId) return;
+      setSuggestedInputs(characterId, inputs);
+    },
+    [characterId, setSuggestedInputs]
+  );
+
+  // ═══════════════════════════════════════════════════════════════
+  // 派生状态
+  // 
+  // 【优化】使用 useMemo 避免不必要的计算
+  // ═══════════════════════════════════════════════════════════════
+  const state = useMemo(
+    () => ({
+      messages: dialogue?.messages || [],
+      openingMessages: dialogue?.openingMessages || [],
+      openingIndex: dialogue?.openingIndex || 0,
+      openingLocked: dialogue?.openingLocked || false,
+      suggestedInputs: dialogue?.suggestedInputs || [],
+      isSending: dialogue?.isSending || false,
+    }),
+    [dialogue]
   );
 
   return {
     // 状态
-    messages,
-    openingMessages,
-    openingIndex,
-    openingLocked,
-    suggestedInputs,
-    isSending,
+    ...state,
 
     // 操作
-    setMessages,
-    setSuggestedInputs,
-    fetchLatestDialogue,
-    initializeNewDialogue,
+    fetchLatestDialogue: handleFetchLatestDialogue,
+    initializeNewDialogue: handleInitializeNewDialogue,
     handleSendMessage,
-    truncateMessagesAfter,
+    truncateMessagesAfter: handleTruncateMessagesAfter,
     handleRegenerate,
     handleOpeningNavigate,
+    setMessages: handleSetMessages,
+    setSuggestedInputs: handleSetSuggestedInputs,
 
     // 工具
     readLlmConfig,

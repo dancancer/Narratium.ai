@@ -3,7 +3,7 @@ import { Loader2, Palette, Plus, Save } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { SketchPicker } from "react-color";
 import { useSymbolColorStore } from "@/contexts/SymbolColorStore";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/store/toast-store";
 
 interface SymbolColor {
   symbol: string;

@@ -244,7 +244,10 @@ export class MessageBridge {
     }
     
     try {
-      this.targetWindow.postMessage(message, "*");
+      const targetOrigin = this.allowedOrigins.includes("*")
+        ? "*"
+        : (this.allowedOrigins[0] || window.location.origin);
+      this.targetWindow.postMessage(message, targetOrigin);
     } catch (error) {
       console.error("[MessageBridge] Failed to send message:", error);
       throw error;

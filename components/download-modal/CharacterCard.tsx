@@ -9,7 +9,7 @@
 "use client";
 
 import NextImage from "next/image";
-import { motion } from "framer-motion";
+import { Download } from "lucide-react";
 import { GithubFile, extractCharacterInfo } from "@/hooks/useCharacterDownload";
 
 interface CharacterCardProps {
@@ -46,16 +46,11 @@ export function CharacterCard({
   const { displayName, tags } = extractCharacterInfo(file.name);
 
   return (
-    <motion.div
-      key={`${selectedTag}-${file.name}`}
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.15, delay: index * 0.02, ease: "easeOut" }}
-      className={`bg-muted-surface rounded-lg border border-ink hover:border-amber-soft transition-all duration-200 hover:shadow-lg ${
+    <div
+      className={`bg-muted-surface rounded-lg border border-ink hover:border-amber-soft transition-all duration-200 hover:shadow-lg animate-in fade-in zoom-in-95 ${
         isMobile ? "p-3 flex gap-3" : "p-4"
       }`}
+      style={{ animationDelay: `${index * 20}ms` }}
     >
       {/* 角色图片 */}
       <CharacterImage
@@ -89,7 +84,7 @@ export function CharacterCard({
           onClick={() => onDownload(file)}
         />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -269,16 +264,10 @@ function DownloadButton({
 
 function DownloadIcon({ isMobile }: { isMobile: boolean }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
+    <Download
       className={`opacity-80 group-hover:opacity-100 transition-opacity ${
         isMobile ? "h-3 w-3" : "h-4 w-4"
       }`}
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
-      <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
-    </svg>
+    />
   );
 }

@@ -10,6 +10,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { Zap, Waves } from "lucide-react";
 import { trackButtonClick } from "@/utils/google-analytics";
 
 // ============================================================================
@@ -109,30 +110,9 @@ function ToggleButton({ active, onClick, tooltip, activeColor, icon }: ToggleBut
 }
 
 function StreamIcon({ active }: { active: boolean }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path
-        d="M3 6h18M3 12h18M3 18h18"
-        stroke={active ? "var(--color-highlight)" : "currentColor"}
-        strokeLinecap="round"
-        strokeDasharray={active ? "4,2" : "none"}
-      >
-        {active && (
-          <animate attributeName="stroke-dashoffset" values="0;6" dur="1s" repeatCount="indefinite" />
-        )}
-      </path>
-    </svg>
-  );
+  return <Waves className={`w-3 h-3 ${active ? "text-amber-400" : ""}`} />;
 }
 
 function LightningIcon({ active }: { active: boolean }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="-scale-x-100">
-      <path
-        d="M7 2L17 14h-7v8l-8-12h7z"
-        fill={active ? "var(--color-sky-strong)" : "none"}
-        stroke={active ? "var(--color-sky-strong)" : "currentColor"}
-      />
-    </svg>
-  );
+  return <Zap className={`w-3 h-3 ${active ? "text-blue-500" : ""}`} />;
 }

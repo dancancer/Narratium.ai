@@ -21,6 +21,7 @@ import {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { switchDialogueBranch } from "@/function/dialogue/truncate";
@@ -139,6 +140,12 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     [setUserAdjustedPositions],
   );
 
+  // ═══════════════════════════════════════════════════════════════
+  // 节点布局计算与应用
+  // ───────────────────────────────────────────────────────────────
+  // 移除 setNodes/setEdges 依赖，它们的引用在 reactflow 中不稳定
+  // 使用 useCallback 确保函数引用稳定，避免触发上层 Effect
+  // ═══════════════════════════════════════════════════════════════
   const placeNodes = useCallback(
     async (incomingNodes: DialogueNode[], incomingEdges: Edge[], preferProgressive: boolean) => {
       if (incomingNodes.length === 0) {
@@ -156,7 +163,8 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       setNodes(layouted);
       setEdges(incomingEdges);
     },
-    [applyLayout, calculateProgressiveLayout, pruneUserPositions, setEdges, setNodes],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [applyLayout, calculateProgressiveLayout, pruneUserPositions],
   );
 
   const loadDialogue = useCallback(
@@ -253,6 +261,12 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     }
   }, [characterId, editContent, language, onDialogueEdit, readLlmConfig, selectedNode, setNodes]);
 
+  // ═══════════════════════════════════════════════════════════════
+  // 对话框打开时加载数据
+  // ───────────────────────────────────────────────────────────────
+  // 只依赖 isOpen 和 characterId，避免 setter 函数引起的循环
+  // loadDialogue 内部已经包含了所有必要的状态更新逻辑
+  // ═══════════════════════════════════════════════════════════════
   useEffect(() => {
     if (isOpen && characterId) {
       loadDialogue("full");
@@ -262,7 +276,8 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
       setEdges([]);
       nodesRef.current = [];
     }
-  }, [characterId, isOpen, loadDialogue, setDataLoaded, setEdges, setNodes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [characterId, isOpen]);
 
   if (!isOpen) return null;
 
@@ -282,10 +297,7 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
             }}
             className="text-text-muted hover:text-amber-400 transition-colors duration-300"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <X size={20} />
           </button>
         </div>
 

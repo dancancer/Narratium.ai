@@ -1,4 +1,10 @@
-import { readData, writeData, WORLD_BOOK_FILE } from "@/lib/data/local-storage";
+import { 
+  WORLD_BOOK_FILE, 
+  clearStore, 
+  getAllEntries, 
+  getRecordByKey, 
+  putRecord, 
+} from "@/lib/data/local-storage";
 import { WorldBookEntry } from "@/lib/models/world-book-model";
 
 export interface WorldBookSettings {
@@ -16,18 +22,26 @@ const DEFAULT_SETTINGS: WorldBookSettings = {
 
 export class WorldBookOperations {
   static async getWorldBooks(): Promise<Record<string, any>> {
-    const worldBooksArray = await readData(WORLD_BOOK_FILE);
-    return worldBooksArray[0] || {};
+    const entries = await getAllEntries<any>(WORLD_BOOK_FILE);
+    return entries.reduce<Record<string, any>>((acc, { key, value }) => {
+      if (key) {
+        acc[String(key)] = value;
+      }
+      return acc;
+    }, {});
   }
 
   private static async saveWorldBooks(worldBooks: Record<string, any>): Promise<void> {
-    await writeData(WORLD_BOOK_FILE, [worldBooks]);
+    await clearStore(WORLD_BOOK_FILE);
+    for (const [key, value] of Object.entries(worldBooks)) {
+      await putRecord(WORLD_BOOK_FILE, key, value);
+    }
   }
 
   static async getWorldBook(characterId: string): Promise<Record<string, WorldBookEntry> | null> {
     try {
-      const worldBooks = await this.getWorldBooks();
-      return worldBooks[characterId] as Record<string, WorldBookEntry> || null;
+      const worldBook = await getRecordByKey<Record<string, WorldBookEntry>>(WORLD_BOOK_FILE, characterId);
+      return worldBook || null;
     } catch (error) {
       console.error("Error getting world book:", error);
       return null;
@@ -112,8 +126,7 @@ export class WorldBookOperations {
   }
   
   static async getWorldBookSettings(characterId: string): Promise<WorldBookSettings> {
-    const worldBooks = await this.getWorldBooks();
-    const settings = worldBooks[`${characterId}_settings`] as unknown as WorldBookSettings;
+    const settings = await getRecordByKey<WorldBookSettings>(WORLD_BOOK_FILE, `${characterId}_settings`);
     
     if (!settings) {
       return { ...DEFAULT_SETTINGS };

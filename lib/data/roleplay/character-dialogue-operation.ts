@@ -1,14 +1,15 @@
-import { readData, writeData, CHARACTER_DIALOGUES_FILE } from "@/lib/data/local-storage";
+import { 
+  CHARACTER_DIALOGUES_FILE, 
+  deleteRecord, 
+  getRecordByKey, 
+  putRecord, 
+} from "@/lib/data/local-storage";
 import { DialogueNode, DialogueTree } from "@/lib/models/node-model";
 import { v4 as uuidv4 } from "uuid";
 import { ParsedResponse } from "@/lib/models/parsed-response";
 
 export class LocalCharacterDialogueOperations {
   static async createDialogueTree(characterId: string): Promise<DialogueTree> {
-    const dialogues = await readData(CHARACTER_DIALOGUES_FILE);
-    
-    const filteredDialogues = dialogues.filter((d: any) => d.character_id !== characterId);
-    
     const dialogueTree = new DialogueTree(
       characterId,
       characterId,
@@ -16,17 +17,14 @@ export class LocalCharacterDialogueOperations {
       "root",
     );
     
-    filteredDialogues.push(dialogueTree); 
-    await writeData(CHARACTER_DIALOGUES_FILE, filteredDialogues);
+    await putRecord(CHARACTER_DIALOGUES_FILE, dialogueTree.id, dialogueTree);
 
     await this.addNodeToDialogueTree(characterId, "", "", "", "", "", undefined, "root");
     return dialogueTree;
   }
   
   static async getDialogueTreeById(dialogueId: string): Promise<DialogueTree | null> {
-    const dialogues = await readData(CHARACTER_DIALOGUES_FILE);
-    const dialogue = dialogues.find((d: any) => d.id === dialogueId);
-    
+    const dialogue = await getRecordByKey<any>(CHARACTER_DIALOGUES_FILE, dialogueId);
     if (!dialogue) return null;
     
     return new DialogueTree(
@@ -55,9 +53,11 @@ export class LocalCharacterDialogueOperations {
     parsedContent?: ParsedResponse,
     nodeId?: string,
   ): Promise<string> {
-    const dialogues = await readData(CHARACTER_DIALOGUES_FILE);
-    const index = dialogues.findIndex((d: any) => d.id === dialogueId);
-    
+    const dialogueTree = await this.getDialogueTreeById(dialogueId);
+    if (!dialogueTree) {
+      throw new Error(`Dialogue not found: ${dialogueId}`);
+    }
+
     if (!nodeId) {
       nodeId = uuidv4();
     }
@@ -71,32 +71,21 @@ export class LocalCharacterDialogueOperations {
       thinkingContent,
       parsedContent,
     );
-    
-    if (!dialogues[index].nodes) {
-      dialogues[index].nodes = [];
+
+    if (!dialogueTree.nodes) {
+      dialogueTree.nodes = [];
     }
     
-    dialogues[index].nodes.push(newNode);
-    dialogues[index].current_nodeId = nodeId;
+    dialogueTree.nodes.push(newNode);
+    dialogueTree.current_nodeId = nodeId;
     
-    await writeData(CHARACTER_DIALOGUES_FILE, dialogues);
+    await this.updateDialogueTree(dialogueId, dialogueTree);
     
     return nodeId;
   }
 
   static async updateDialogueTree(dialogueId: string, updatedDialogue: DialogueTree): Promise<boolean> {
-    const dialogues = await readData(CHARACTER_DIALOGUES_FILE);
-    const index = dialogues.findIndex((d: any) => d.id === dialogueId);
-    
-    if (index === -1) {
-      return false;
-    }
-    
-    dialogues[index] = {
-      ...updatedDialogue,
-    };
-    
-    await writeData(CHARACTER_DIALOGUES_FILE, dialogues);
+    await putRecord(CHARACTER_DIALOGUES_FILE, dialogueId, updatedDialogue);
     return true;
   }
 
@@ -163,17 +152,12 @@ export class LocalCharacterDialogueOperations {
   }
 
   static async deleteDialogueTree(dialogueId: string): Promise<boolean> {
-    const dialogues = await readData(CHARACTER_DIALOGUES_FILE);
-    const initialLength = dialogues.length;
-    
-    const filteredDialogues = dialogues.filter((d: any) => d.id !== dialogueId);
-    
-    if (filteredDialogues.length === initialLength) {
+    const dialogue = await this.getDialogueTreeById(dialogueId);
+    if (!dialogue) {
       return false;
     }
-    
-    await writeData(CHARACTER_DIALOGUES_FILE, filteredDialogues);
-    
+
+    await deleteRecord(CHARACTER_DIALOGUES_FILE, dialogueId);
     return true;
   }
 

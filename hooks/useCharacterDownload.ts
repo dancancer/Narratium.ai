@@ -216,6 +216,11 @@ export function useCharacterDownload({
 
   /* ─────────────────────────────────────────────────────────────────────────
      加载角色列表
+     
+     【修复】移除 onError 和 t 的依赖，避免不必要的重新加载
+     - onError 是 toast.error，每次都是新引用但逻辑相同
+     - t 是翻译函数，通常也是稳定的
+     - 使用最新值而不是依赖数组中的值
      ───────────────────────────────────────────────────────────────────────── */
   const loadCharacters = useCallback(async () => {
     setLoading(true);
@@ -270,7 +275,8 @@ export function useCharacterDownload({
       setLoading(false);
       setLoadingStage("complete");
     }
-  }, [onError, preloadImages, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preloadImages]);
 
   /* ─────────────────────────────────────────────────────────────────────────
      下载并导入角色

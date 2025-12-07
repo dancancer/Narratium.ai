@@ -11,6 +11,7 @@
 
 import { useState, useCallback } from "react";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { ArrowRight, Globe, Grid, User, ChevronUp, Link2 } from "lucide-react";
 
 // ============================================================================
 //                              类型定义
@@ -34,58 +35,6 @@ interface ControlPanelProps {
   onOpenUserNameModal: () => void;
   onOpenScriptDebug: () => void;
   t: (key: string) => string;
-}
-
-// ============================================================================
-//                              图标组件
-// ============================================================================
-
-function ArrowIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-      <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
-    </svg>
-  );
-}
-
-function GlobeIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-      <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  );
-}
-
-function GridIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="3" x2="9" y2="21" /><line x1="15" y1="3" x2="15" y2="21" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ expanded }: { expanded: boolean }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-1 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}>
-      <path d="M18 15l-6-6-6 6" />
-    </svg>
-  );
-}
-
-function DebugIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-    </svg>
-  );
 }
 
 // ============================================================================
@@ -147,7 +96,7 @@ export default function ControlPanel({
             active={activeModes["story-progress"]}
             onClick={toggleStoryProgress}
             activeColor="amber"
-            icon={<ArrowIcon />}
+            icon={<ArrowRight size={12} className="mr-1" />}
             label={t("characterChat.storyProgress") || "剧情推进"}
           />
 
@@ -157,7 +106,7 @@ export default function ControlPanel({
             onClick={togglePerspective}
             activeColor={perspective.mode === "novel" ? "success" : "info"}
             inactiveColor="success"
-            icon={<GlobeIcon />}
+            icon={<Globe size={12} className="mr-1" />}
             label={getPerspectiveLabel(perspective, t)}
           />
 
@@ -166,7 +115,7 @@ export default function ControlPanel({
             active={activeModes["scene-setting"]}
             onClick={toggleSceneSetting}
             activeColor="info"
-            icon={<GridIcon />}
+            icon={<Grid size={12} className="mr-1" />}
             label={t("characterChat.sceneTransition")}
           />
 
@@ -176,7 +125,7 @@ export default function ControlPanel({
             onClick={handleUserNameClick}
             activeColor="amber"
             inactiveColor="amber-bright"
-            icon={<UserIcon />}
+            icon={<User size={12} className="mr-1" />}
             label={t("characterChat.userNameSetting")}
           />
         </div>
@@ -189,7 +138,7 @@ export default function ControlPanel({
         className={`px-1.5 sm:px-2 md:px-4 py-1.5 text-xs rounded-full border transition-all duration-300 ${isExpanded ? "bg-amber text-overlay border-amber shadow-[0_0_8px_rgba(209,163,92,0.5)]" : "bg-overlay text-amber border-ink hover:border-amber shadow-sm hover:shadow-md"}`}
       >
         <span className="flex items-center">
-          <ChevronIcon expanded={isExpanded} />
+          <ChevronUp size={12} className={`mr-1 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
           <span className="text-2xs sm:text-xs">{isExpanded ? "收起控制" : "展开控制"}</span>
         </span>
       </button>
@@ -201,7 +150,7 @@ export default function ControlPanel({
         className="ml-2 px-2 py-1.5 text-xs rounded-full border border-ink bg-overlay text-ink-soft hover:text-amber hover:border-amber transition-all"
         title="Script Debugger"
       >
-        <DebugIcon />
+        <Link2 size={12} />
       </button>
     </div>
   );
