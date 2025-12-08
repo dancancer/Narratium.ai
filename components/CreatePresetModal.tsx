@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -88,7 +89,7 @@ export default function CreatePresetModal({ isOpen, onClose, onSuccess }: Create
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-md p-0 overflow-hidden  border-border gap-0">
         <div className="p-4 border-b border-border bg-gradient-to-r from-primary-500/5 to-transparent">
           <DialogHeader>
             <DialogTitle className={"text-lg font-medium text-cream-soft magical-text "}>
@@ -121,35 +122,32 @@ export default function CreatePresetModal({ isOpen, onClose, onSuccess }: Create
           </div>
 
           <div className="flex justify-end space-x-3 pt-2">
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={() => handleOpenChange(false)}
               disabled={isCreating}
               className={`px-4 py-2 text-sm font-medium text-ink-soft hover:text-cream-soft 
                 bg-gradient-to-br from-deep via-muted-surface to-deep 
-                border border-border rounded-md 
-                hover:border-border transition-all duration-300 backdrop-blur-sm
-                disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}`}
+                border border-border hover:border-border backdrop-blur-sm ${fontClass}`}
             >
               {t("preset.cancel")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isCreating || !presetName.trim()}
               className={`px-4 py-2 text-sm font-medium 
                 bg-gradient-to-r from-ember to-coal 
                 hover:from-muted-surface hover:to-ember 
                 text-primary-soft hover:text-primary-soft 
-                rounded-md transition-all duration-300 
-                border border-border
-                disabled:opacity-50 disabled:cursor-not-allowed ${fontClass}
+                border border-border ${fontClass}
                 flex items-center`}
             >
               {isCreating && (
                 <div className="w-4 h-4 mr-2 border-2 border-primary-soft border-t-transparent rounded-full animate-spin"></div>
               )}
               {isCreating ? t("preset.creating") : t("preset.create")}
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>

@@ -13,18 +13,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from "@/app/i18n";
-import CharacterSidebar from "@/components/CharacterSidebar";
 import CharacterChatPanel from "@/components/CharacterChatPanel";
 import WorldBookEditor from "@/components/WorldBookEditor";
 import RegexScriptEditor from "@/components/RegexScriptEditor";
 import PresetEditor from "@/components/PresetEditor";
-import CharacterChatHeader from "@/components/CharacterChatHeader";
 import UserTour from "@/components/UserTour";
 import { useTour } from "@/hooks/useTour";
 import { toast } from "@/lib/store/toast-store";
 import LoginModal from "@/components/LoginModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
+import { useHeaderContent } from "@/contexts/header-content";
+import { ChatTopBarContent } from "@/components/chat/ChatTopBarContent";
 
 // ============================================================================
 //                              自定义 Hooks
@@ -32,9 +32,9 @@ import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
 
 import { useCharacterDialogue } from "@/hooks/useCharacterDialogue";
 import { useCharacterLoader } from "@/hooks/useCharacterLoader";
-import { useMobileDetection } from "@/hooks/useMobileDetection";
 import { useUIStore } from "@/lib/store/ui-store";
 import { useUserStore } from "@/lib/store/user-store";
+import DialogueTreeModal from "@/components/DialogueTreeModal";
 
 // ============================================================================
 //                              主组件
@@ -43,7 +43,7 @@ import { useUserStore } from "@/lib/store/user-store";
 export default function CharacterPage() {
   const searchParams = useSearchParams();
   const characterId = searchParams.get("id");
-  const { t, fontClass, serifFontClass } = useLanguage();
+  const { t, fontClass, serifFontClass, language } = useLanguage();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   // ========== Tour Hook ==========
@@ -58,16 +58,11 @@ export default function CharacterPage() {
     useLocalStorageBoolean("narratium_character_tour_completed", false);
 
   // ========== 自定义 Hooks ==========
-  const { isMobile } = useMobileDetection();
-  
   // ========== Zustand Store - 单一数据源 ==========
   const characterView = useUIStore((state) => state.characterView);
   const setCharacterView = useUIStore((state) => state.setCharacterView);
   const presetViewPayload = useUIStore((state) => state.presetViewPayload);
   const resetPresetViewPayload = useUIStore((state) => state.resetPresetViewPayload);
-  const characterSidebarOpen = useUIStore((state) => state.characterSidebarOpen);
-  const setCharacterSidebarOpen = useUIStore((state) => state.setCharacterSidebarOpen);
-  const setModelSidebarOpen = useUIStore((state) => state.setModelSidebarOpen);
   const displayUsername = useUserStore((state) => state.displayUsername);
 
   // ========== 对话 Hook ==========
@@ -92,9 +87,23 @@ export default function CharacterPage() {
     perspective: { active: false, mode: "novel" },
     "scene-setting": false,
   });
+  const [isBranchOpen, setIsBranchOpen] = useState(false);
+  const { setHeaderContent } = useHeaderContent();
 
-  // 派生状态：直接从 Store 计算，消除冗余
-  const sidebarCollapsed = !characterSidebarOpen;
+  useEffect(() => {
+    if (!loader.character) {
+      setHeaderContent(null);
+      return;
+    }
+    setHeaderContent(
+      <ChatTopBarContent
+        character={loader.character}
+        activeView={characterView}
+        onOpenBranches={() => setIsBranchOpen(true)}
+      />,
+    );
+    return () => setHeaderContent(null);
+  }, [loader.character, characterView, setHeaderContent]);
 
   // ═══════════════════════════════════════════════════════════════
   // 同步加载数据到对话状态
@@ -208,29 +217,13 @@ export default function CharacterPage() {
   );
 
   // ========== 侧边栏切换 ==========
-  const toggleSidebar = useCallback(() => {
-    const willBeOpen = !characterSidebarOpen;
-    setCharacterSidebarOpen(willBeOpen);
-
-    // 移动端：打开角色侧边栏时关闭模型侧边栏
-    if (isMobile && willBeOpen) {
-      setModelSidebarOpen(false);
-    }
-  }, [characterSidebarOpen, isMobile, setCharacterSidebarOpen, setModelSidebarOpen]);
-
   // ========== 渲染：加载状态 ==========
   if (loader.isLoading || loader.isInitializing) {
     return (
-      <div className="flex flex-col justify-center items-center h-full ">
-        <div className="relative w-12 h-12 flex items-center justify-center mb-4">
-          <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
-        </div>
-        <p className={"text-cream  text-center mb-2"}>
-          {loader.loadingPhase}
-        </p>
+      <div className="flex flex-col items-center justify-center h-full gap-2">
+        <p className="text-sm text-foreground">{loader.loadingPhase}</p>
         {loader.isInitializing && (
-          <p className={`text-ink-soft text-xs mt-4 max-w-xs text-center ${fontClass}`}>
+          <p className={`text-ink-soft text-xs max-w-xs text-center ${fontClass}`}>
             {t("characterChat.loadingTimeHint")}
           </p>
         )}
@@ -258,31 +251,8 @@ export default function CharacterPage() {
 
   // ========== 渲染：主界面 ==========
   return (
-    <div className="flex h-full relative  overflow-hidden [left:var(--app-sidebar-width,0)]">
-      {/* 侧边栏容器：固定宽度，内部元素通过 transform 滑动 */}
-      <div className={`${isMobile ? "" : sidebarCollapsed ? "w-0" : "w-[18rem]"} flex-shrink-0 transition-[width] duration-300 ease-out`}>
-        <CharacterSidebar
-          character={loader.character}
-          isCollapsed={sidebarCollapsed}
-          toggleSidebar={toggleSidebar}
-          onDialogueEdit={() => dialogue.fetchLatestDialogue()}
-          onViewSwitch={() => {
-            setCharacterView("worldbook");
-            setTimeout(() => setCharacterView("chat"), 1000);
-          }}
-        />
-      </div>
-
-      {/* 主内容区：flex-1 自动填充剩余空间 */}
-      <div className="flex-1  h-full flex flex-col min-w-0">
-        <CharacterChatHeader
-          character={loader.character}
-          serifFontClass={serifFontClass}
-          sidebarCollapsed={sidebarCollapsed}
-          activeView={characterView}
-          toggleSidebar={toggleSidebar}
-        />
-
+    <div className="flex h-full relative overflow-hidden">
+      <div className="flex-1 h-full flex flex-col min-w-0">
         {characterView === "chat" ? (
           <CharacterChatPanel
             character={loader.character}
@@ -304,6 +274,7 @@ export default function CharacterPage() {
             t={t}
             activeModes={activeModes}
             setActiveModes={setActiveModes}
+            language={language as "zh" | "en"}
           />
         ) : characterView === "worldbook" ? (
           <WorldBookEditor
@@ -342,6 +313,13 @@ export default function CharacterPage() {
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
+      />
+
+      <DialogueTreeModal
+        isOpen={isBranchOpen}
+        onClose={() => setIsBranchOpen(false)}
+        characterId={characterId || undefined}
+        onDialogueEdit={() => dialogue.fetchLatestDialogue()}
       />
     </div>
   );

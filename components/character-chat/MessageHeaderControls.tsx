@@ -12,6 +12,7 @@
 import { useCallback } from "react";
 import { Zap, Waves } from "lucide-react";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -96,16 +97,18 @@ function ToggleButton({ active, onClick, tooltip, activeColor, icon }: ToggleBut
   const style = active ? colorStyles[activeColor].active : colorStyles[activeColor].inactive;
 
   return (
-    <button
+    <Button
+      variant="outline"
+      size="icon"
       onClick={onClick}
-      className={`mx-1 w-6 h-6 flex items-center justify-center bg-surface rounded-md border  transition-all duration-300 group relative ${style}`}
+      className={`mx-1 h-6 w-6 bg-surface group relative ${style}`}
       data-tooltip={tooltip}
     >
       <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border">
         {tooltip}
       </div>
       {icon}
-    </button>
+    </Button>
   );
 }
 

@@ -10,6 +10,7 @@
 
 import React from "react";
 import { FileText, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    类型定义
@@ -121,10 +122,12 @@ function ItemCard({ item, isSelected, isDeleting, deleteTitle, serifFontClass, o
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onDelete}
             disabled={isDeleting}
-            className="w-6 h-6 flex items-center justify-center text-ink-soft/70 hover:text-red-400 transition-all duration-300 rounded-full hover:bg-red-500/10 group-hover:opacity-100 opacity-0"
+            className="w-6 h-6 text-ink-soft/70 hover:text-red-400 group-hover:opacity-100 opacity-0"
             title={deleteTitle}
           >
             {isDeleting ? (
@@ -132,7 +135,7 @@ function ItemCard({ item, isSelected, isDeleting, deleteTitle, serifFontClass, o
             ) : (
               <Trash2 className="h-3.5 w-3.5" />
             )}
-          </button>
+          </Button>
           <div className={`relative w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
             isSelected
               ? "border-blue-500 bg-gradient-to-br from-blue-500 to-blue-600  shadow-blue-500/30"

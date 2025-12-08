@@ -6,6 +6,7 @@ import { useLanguage } from "@/app/i18n";
 import { setDisplayUsername, resetDisplayUsername } from "@/utils/username-helper";
 import { getString } from "@/lib/storage/client-storage";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface UserNameSettingModalProps {
   isOpen: boolean;
@@ -71,12 +72,14 @@ export default function UserNameSettingModal({
         {/* ═══════════════════════════════════════════════════════════
             关闭按钮 - Close Button
             ═══════════════════════════════════════════════════════════ */}
-        <button 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute top-2 right-2 sm:top-4 sm:right-4 text-ink-soft hover:text-primary-bright transition-colors"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4"
         >
           <X className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
+        </Button>
         
         {/* ═══════════════════════════════════════════════════════════
             头部标题 - Header Title
@@ -142,43 +145,14 @@ export default function UserNameSettingModal({
 
           {/* 操作按钮 - Action Buttons */}
           <div className="flex gap-3 justify-center items-center">
-            {/* 重置按钮 - Reset Button */}
-            <button
-              type="button"
-              onClick={handleReset}
-              disabled={isLoading}
-              className={`group relative px-4 py-2 bg-transparent border border-border text-ink-soft rounded-full text-sm font-medium transition-all duration-300 hover:border-border hover:text-ink-soft disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden ${fontClass}`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-ink-soft/0 via-ink-soft/5 to-ink-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-600"></div>
-              <div className="relative z-10 flex items-center justify-center gap-2">
-                <RefreshCcw className="h-3 w-3" />
-                <span className="tracking-wide">{t("userNameSetting.reset")}</span>
-              </div>
-            </button>
-
-            {/* 保存按钮 - Save Button */}
-            <button
-              type="submit"
-              disabled={isLoading || !displayName.trim()}
-              className={"group relative px-6 py-2 bg-transparent border border-primary-soft text-primary-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-primary-bright hover:text-primary-bright hover: hover:shadow-primary-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden "}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-soft/0 via-primary-soft/10 to-primary-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-primary-bright/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative z-10 flex items-center justify-center gap-2">
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin w-3.5 h-3.5 border border-primary-soft border-t-transparent rounded-full"></div>
-                    <span className="tracking-wide">{t("userNameSetting.saving")}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="tracking-wide">{t("userNameSetting.save")}</span>
-                    <Check className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </>
-                )}
-              </div>
-              <div className="absolute inset-0 rounded-full border border-primary-bright/20 scale-105 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-            </button>
+            <Button variant="outline" type="button" onClick={handleReset} disabled={isLoading}>
+              <RefreshCcw className="h-3 w-3" />
+              {t("userNameSetting.reset")}
+            </Button>
+            <Button type="submit" disabled={isLoading || !displayName.trim()}>
+              {isLoading ? t("userNameSetting.saving") : t("userNameSetting.save")}
+              {!isLoading && <Check className="h-3.5 w-3.5" />}
+            </Button>
           </div>
 
           {/* 帮助文本 - Helper Text */}

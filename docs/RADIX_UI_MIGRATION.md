@@ -6,7 +6,7 @@
 
 1. **消除重复代码** - 所有 modal 都在重复实现 backdrop、positioning、animations
 2. **统一数据结构** - 使用 Radix UI 的统一 API，消除特殊情况
-3. **保持动画效果** - 利用 Radix + Framer Motion 的组合，保持现有的优雅动画
+3. **保持动画效果** - 利用 Radix + Tailwind 的动画工具类，保持现有的优雅动效
 4. **提升可维护性** - 遵循 Linus 的"好品味"原则，让代码更简洁优雅
 
 ## ✅ 已完成迁移
@@ -108,7 +108,7 @@ export default function YourModal({ isOpen, onClose }: YourModalProps) {
   
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-md p-0 overflow-hidden  border-border gap-0">
         <div className="p-4 border-b border-border">
           <DialogHeader>
             <DialogTitle className={`text-lg font-medium text-cream-soft magical-text `}>
@@ -128,40 +128,12 @@ export default function YourModal({ isOpen, onClose }: YourModalProps) {
 
 ### 迁移前后对比
 
-#### 迁移前（自定义实现）
-```typescript
-// ❌ 坏品味：重复的 backdrop、positioning、动画代码
-return (
-  <AnimatePresence>
-    {isOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 backdrop-blur-sm bg-opacity-50"
-          onClick={onClose}
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-deep border border-border rounded-md shadow-xl w-full max-w-md relative z-10"
-        >
-          {/* 内容 */}
-        </motion.div>
-      </div>
-    )}
-  </AnimatePresence>
-);
-```
-
 #### 迁移后（Radix UI）
 ```typescript
 // ✅ 好品味：统一的 API，无特殊情况
 return (
   <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-    <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+    <DialogContent className="max-w-md p-0 overflow-hidden  border-border gap-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* 内容 */}
     </DialogContent>
   </Dialog>
@@ -183,8 +155,8 @@ import {
 ### 2. 移除旧的依赖
 ```typescript
 // 移除
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react"; // 如果只用于关闭按钮
+// 任何自定义 backdrop/escape 监听的重复实现
+// 不再引入第三方动画库，使用 Tailwind animate-in/transition 类即可
 
 // 移除 useEffect 中的 click outside 和 escape 处理
 // Radix UI 已内置这些功能

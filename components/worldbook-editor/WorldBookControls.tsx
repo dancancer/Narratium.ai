@@ -1,13 +1,14 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                       WorldBookControls                                    ║
- * ║  控制区：新增/导入 + 排序/筛选 + 批量启用/禁用                              ║
+ * ║  顶部控制区：新增/导入/批量 + 排序/筛选（单栏合并，参考预设）                ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 "use client";
 
 import { Plus, FileText, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface WorldBookControlsProps {
   sortBy: string;
@@ -41,50 +42,40 @@ export function WorldBookControls({
   t,
 }: WorldBookControlsProps) {
   return (
-    <>
-      <div className="p-2 sm:p-3 border-b border-border bg-deep">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
-          <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
-            <button
-              onClick={onCreate}
-              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  group flex-shrink-0 border border-border"
-            >
-              <span className={"flex items-center "}>
-                <Plus className="w-2.5 h-2.5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
-                {t("worldBook.addEntry")}
-              </span>
-            </button>
+    <div className="sticky top-0 z-20  border-b border-border p-2 sm:p-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <Button variant="outline" size="sm" onClick={onCreate}>
+            <Plus className="w-3 h-3" />
+            {t("worldBook.addEntry")}
+          </Button>
 
-            <button
-              onClick={onImport}
-              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-overlay text-success hover:text-success rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  hover:shadow-success/20 group flex-shrink-0 border border-border"
-            >
-              <span className={"flex items-center "}>
-                <FileText className="w-2.5 h-2.5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
-                {t("worldBook.import")}
-              </span>
-            </button>
+          <Button variant="outline" size="sm" onClick={onImport}>
+            <FileText className="w-3 h-3" />
+            {t("worldBook.import")}
+          </Button>
 
-            <button
-              onClick={() => onBulkToggle(true)}
-              disabled={!canBulk}
-              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md border border-border text-cream-soft text-2xs sm:text-xs transition-colors ${!canBulk ? "opacity-50 cursor-not-allowed" : "hover:border-primary-400 hover:text-primary-300"}`}
-            >
-              {t("worldBook.enableAll")}
-            </button>
-            <button
-              onClick={() => onBulkToggle(false)}
-              disabled={!canBulk}
-              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md border border-border text-cream-soft text-2xs sm:text-xs transition-colors ${!canBulk ? "opacity-50 cursor-not-allowed" : "hover:border-primary-400 hover:text-primary-300"}`}
-            >
-              {t("worldBook.disableAll")}
-            </button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onBulkToggle(true)}
+            disabled={!canBulk}
+          >
+            {t("worldBook.enableAll")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onBulkToggle(false)}
+            disabled={!canBulk}
+          >
+            {t("worldBook.disableAll")}
+          </Button>
         </div>
-      </div>
 
-      <div className="sticky top-0 z-20 bg-deep border-b border-border/40 p-2 sm:p-3">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div className="hidden sm:block w-px h-6 bg-border/60" />
+
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Selector
             label={t("worldBook.sortBy")}
             value={sortBy}
@@ -102,20 +93,15 @@ export function WorldBookControls({
             serifFontClass={serifFontClass}
           />
 
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onSortOrderToggle}
-            className={"group relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-md bg-gradient-to-br from-deep via-muted-surface to-deep border border-border/60 hover:border-primary-500/40 text-cream-soft hover:text-primary-200 transition-all duration-300 backdrop-blur-sm hover: hover: focus:outline-none focus:ring-2 focus:ring-primary-500/20 "}
             title={sortOrder === "asc" ? t("worldBook.asc") : t("worldBook.desc")}
           >
-            <div
-              className={`flex items-center justify-center w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br ${
-                sortOrder === "asc" ? "from-primary-500/20 to-primary-600/30 text-primary-400" : "from-blue-500/20 to-blue-600/30 text-blue-400"
-              } transition-all duration-300 group-hover:scale-110`}
-            >
-              <span className="text-3xs sm:text-xs font-bold">{sortOrder === "asc" ? "↑" : "↓"}</span>
-            </div>
-            <span className="text-2xs sm:text-xs font-medium">{sortOrder === "asc" ? t("worldBook.asc") : t("worldBook.desc")}</span>
-          </button>
+            <span className="text-xs">{sortOrder === "asc" ? "↑" : "↓"}</span>
+            <span className="text-xs">{sortOrder === "asc" ? t("worldBook.asc") : t("worldBook.desc")}</span>
+          </Button>
 
           <Selector
             label={t("worldBook.filterBy")}
@@ -133,7 +119,7 @@ export function WorldBookControls({
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -164,7 +150,7 @@ function Selector({
           className={"appearance-none bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft px-2 sm:px-3 py-1 sm:py-1.5 pr-5 sm:pr-7 rounded-md border border-border/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-2xs sm:text-xs font-medium  hover: hover:shadow-primary-500/5"}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-deep text-cream-soft">
+            <option key={opt.value} value={opt.value} className=" text-cream-soft">
               {opt.label}
             </option>
           ))}

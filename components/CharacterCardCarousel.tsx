@@ -17,19 +17,18 @@
  * - Responsive design adaptation
  * 
  * Dependencies:
- * - framer-motion: For animations
  * - useLanguage: For internationalization
  * - CharacterAvatarBackground: For avatar display
  */
 
 import React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, MessageCircle, PencilLine, Trash2, UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 
 /**
  * Interface definitions for the component's data structures
@@ -127,13 +126,19 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
           }
           
           return (
-            <motion.div
+            <div
               key={character.id}
-              className={`absolute flex items-center justify-center max-w-[280px] max-h-[350px] w-[40vw] h-[50vw] left-[calc(50%-10vw)] top-[calc(50%-15vw)] rounded-[8px] ${boxShadowClass} ${opacityClass}`}
+              className={`absolute flex items-center justify-center max-w-[280px] max-h-[350px] w-[40vw] h-[50vw] left-[calc(50%-10vw)] top-[calc(50%-15vw)] rounded-[8px] ${opacityClass} ${
+                isCentered
+                  ? "shadow-[0_15px_35px_-18px_rgba(255,255,255,0.45)]"
+                  : "shadow-[0_12px_28px_-20px_rgba(0,0,0,0.55)]"
+              } transition-[transform,opacity,filter,box-shadow] duration-500 will-change-transform`}
               style={{
                 transform: `rotateY(${rotateY}deg) translateZ(${translateZDistance}vw) scale(${scale})`,
                 transformOrigin: "center center",
-                transition: isAnimating ? "all 0.8s cubic-bezier(0.77, 0, 0.175, 1)" : "opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease",
+                transition: isAnimating
+                  ? "transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease"
+                  : "opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease",
               }}
             >
               {/* Character card content */}
@@ -149,26 +154,30 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                   >
                     <MessageCircle className="h-3.5 w-3.5 text-primary-soft hover:text-highlight transition-colors" />
                   </Link>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {trackButtonClick("edit_character_btn", "编辑角色"); onEditClick(character, e);}}
-                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
+                    className="h-auto w-auto p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight"
                     title={t("characterCardsPage.edit")}
                     aria-label={t("characterCardsPage.edit")}
                   >
                     <PencilLine className="h-3.5 w-3.5" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {
                       trackButtonClick("delete_character_btn", "删除角色");
                       e.stopPropagation();
                       onDeleteClick(character.id);
                     }}
-                    className="p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
+                    className="h-auto w-auto p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight"
                     title={t("characterCardsPage.delete")}
                     aria-label={t("characterCardsPage.delete")}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  </Button>
                 </div>
                     
                 <Link
@@ -197,37 +206,41 @@ const CharacterCardCarousel: React.FC<CharacterCardCarouselProps> = ({
                     {/* Navigation controls for centered card */}
                     {isCentered && cardCount > 1 && (
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
-                        <button
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleRotateLeft();
                           }}
                           disabled={isAnimating}
-                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed "
+                          className="h-auto w-auto p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight backdrop-blur-sm border-muted-surface/50"
                           aria-label="向左旋转"
                         >
                           <ArrowLeft className="h-4 w-4" />
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleRotateRight();
                           }}
                           disabled={isAnimating}
-                          className="p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight transition-all duration-300 backdrop-blur-sm border border-muted-surface/50 disabled:opacity-50 disabled:cursor-not-allowed "
+                          className="h-auto w-auto p-2 bg-muted-surface/90 hover:bg-muted-surface/95 rounded-full text-primary-soft hover:text-highlight backdrop-blur-sm border-muted-surface/50"
                           aria-label="向右旋转"
                         >
                           <ArrowRight className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>

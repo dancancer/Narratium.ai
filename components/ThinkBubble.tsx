@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import { ChevronRight, Lightbulb } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   thinkingContent: string;
@@ -34,28 +35,22 @@ export default function ThinkBubble({
 
   return (
     <div className="mb-3">
-      <button
+      <Button
+        variant="outline"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 px-3 py-2 bg-overlay/70 hover:bg-muted-surface/80 border border-border/60 rounded-md transition-all duration-300 group"
+        className="flex items-center gap-2 px-3 py-2"
       >
-        <ChevronRight
-          className={`h-4 w-4 text-ink-soft group-hover:text-primary-soft transition-transform duration-300 ${
-            isExpanded ? "rotate-90" : ""
-          }`}
-        />
-        
-        <div className="flex items-center gap-2">
-          <Lightbulb className="h-4 w-4 text-ink-soft" strokeWidth={1.5} />
-          <span className={`text-sm text-ink-soft group-hover:text-primary-soft ${fontClass}`}>
-            {characterName} {t("characterChat.thinking") || "的思考"}
-            {!isExpanded && (
-              <span className="text-xs text-ink-soft ml-1">
-                ({thinkingContent.length} {t("characterChat.characters") || "字符"})
-              </span>
-            )}
-          </span>
-        </div>
-      </button>
+        <ChevronRight className={`h-4 w-4 ${isExpanded ? "rotate-90" : ""}`} />
+        <Lightbulb className="h-4 w-4" strokeWidth={1.5} />
+        <span className={`text-sm ${fontClass}`}>
+          {characterName} {t("characterChat.thinking") || "的思考"}
+          {!isExpanded && (
+            <span className="text-xs ml-1">
+              ({thinkingContent.length} {t("characterChat.characters") || "字符"})
+            </span>
+          )}
+        </span>
+      </Button>
 
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${

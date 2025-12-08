@@ -72,7 +72,7 @@ const DialogContent = React.forwardRef<
         "data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
         "duration-200",
         // 主题样式
-        "bg-deep border-border shadow-xl",
+        " border-border shadow-xl",
         className,
       )}
       {...props}
@@ -140,7 +140,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-muted-foreground text-ink-soft", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ));

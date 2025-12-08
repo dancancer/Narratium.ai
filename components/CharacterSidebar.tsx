@@ -11,11 +11,11 @@ import React, { useState } from "react";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
-import DialogueTreeModal from "@/components/DialogueTreeModal";
 import AdvancedSettingsEditor from "@/components/AdvancedSettingsEditor";
 import PresetInfoModal from "@/components/PresetInfoModal";
 import { useUIStore } from "@/lib/store/ui-store";
-import { Loader2, ArrowLeft, Activity, Edit, Github, Settings, X, ChevronDown, User } from "lucide-react";
+import { Loader2, ArrowLeft, Edit, Github, Settings, X, ChevronDown, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /* ─── 子组件 & Hooks ─── */
 import {
@@ -41,7 +41,6 @@ interface CharacterSidebarProps {
   };
   isCollapsed: boolean;
   toggleSidebar: () => void;
-  onDialogueEdit?: () => void;
   onViewSwitch?: () => void;
 }
 
@@ -65,14 +64,12 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
   character,
   isCollapsed,
   toggleSidebar,
-  onDialogueEdit,
   onViewSwitch,
 }) => {
   const { t, fontClass, serifFontClass, language } = useLanguage();
   const { isMobile } = useMobileDetection();
 
   /* ─── 模态框状态 ─── */
-  const [showDialogueTreeModal, setShowDialogueTreeModal] = useState(false);
   const [isAdvancedSettingsOpen, setIsAdvancedSettingsOpen] = useState(false);
   const [showPresetInfoModal, setShowPresetInfoModal] = useState(false);
   const [selectedPresetForInfo, setSelectedPresetForInfo] = useState("");
@@ -121,19 +118,21 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
       <div
         className={`${
           isMobile
-            ? `fixed inset-0 z-50 w-full text-xs leading-tight breathing-bg ${isCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`
-            : `w-[18rem] text-sm leading-normal breathing-bg ${isCollapsed ? "pointer-events-none -translate-x-full opacity-0" : "translate-x-0 opacity-100"}`
+            ? `fixed inset-0 z-50 w-full text-xs leading-tight  ${isCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`
+            : `w-[18rem] text-sm leading-normal  ${isCollapsed ? "pointer-events-none -translate-x-full opacity-0" : "translate-x-0 opacity-100"}`
         } relative overflow-hidden border-r border-border h-full flex flex-col magic-border transition-[transform,opacity] duration-300 ease-out`}
       >
         {/* 移动端关闭按钮 */}
         {isMobile && !isCollapsed && (
           <div className="absolute top-4 right-4 z-10">
-            <button
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => { trackButtonClick("CharacterSidebar", "移动端关闭侧边栏"); toggleSidebar(); }}
-              className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke  transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:border-accent  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="h-8 w-8 rounded-full text-cream bg-surface border-stroke hover:bg-accent hover:text-accent-foreground hover:border-accent"
             >
               <X size={16} />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -193,27 +192,6 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
             </div>
           </div>
         )}
-
-        <Divider />
-
-        {/* ═══════════════════════════════════════════════════════════════════════
-         * 操作区
-         * ═══════════════════════════════════════════════════════════════════════ */}
-        <SectionHeader label={t("characterChat.actions")} isCollapsed={isCollapsed} />
-        <div className="transition-all duration-300 ease-in-out px-6 max-h-[500px] opacity-100">
-          <div className="space-y-1 my-2">
-            <SidebarMenuItem
-              icon={<Activity size={16} />}
-              label={t("characterChat.Conversation")}
-              onClick={() => setShowDialogueTreeModal(true)}
-              isCollapsed={isCollapsed}
-              isMobile={isMobile}
-              fontClass={fontClass}
-            />
-          </div>
-        </div>
-
-        <Divider />
 
         {/* ═══════════════════════════════════════════════════════════════════════
          * 预设区
@@ -307,12 +285,6 @@ const CharacterSidebar: React.FC<CharacterSidebarProps> = ({
       {/* ═══════════════════════════════════════════════════════════════════════
        * 模态框
        * ═══════════════════════════════════════════════════════════════════════ */}
-      <DialogueTreeModal
-        isOpen={showDialogueTreeModal}
-        onClose={() => setShowDialogueTreeModal(false)}
-        characterId={character.id}
-        onDialogueEdit={onDialogueEdit}
-      />
       <AdvancedSettingsEditor
         isOpen={isAdvancedSettingsOpen}
         onClose={() => setIsAdvancedSettingsOpen(false)}

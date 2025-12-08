@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -120,7 +121,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0 ">
+      <DialogContent className="max-w-md p-0 overflow-hidden  border-border gap-0 ">
         <div className="p-4 sm:p-8">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-2xl sm:text-3xl font-bold text-primary-bright text-center magical-text font-cinzel">
@@ -139,32 +140,16 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </div>
 
             <div className="text-center mt-8">
-              <div className="flex items-center justify-center gap-3">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={"group relative px-6 py-2.5 bg-transparent border border-primary-soft text-primary-soft rounded-full text-sm font-medium transition-all duration-500 hover:border-primary-bright hover:text-primary-bright hover: hover:shadow-primary-soft/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden "}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-soft/0 via-primary-soft/10 to-primary-soft/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-primary-bright/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  <div className="relative z-10 flex items-center justify-center gap-2">
-                    {isLoading ? (
-                      <>
-                        <div className="animate-spin w-3.5 h-3.5 border border-primary-soft border-t-transparent rounded-full"></div>
-                        <span className="tracking-wide">{t("auth.entering")}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="tracking-wide">{t("auth.enterAsGuest")}</span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                      </>
-                    )}
-                  </div>
-                  
-                  <div className="absolute inset-0 rounded-full border border-primary-bright/20 scale-105 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                </button>
-              </div>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <span>{t("auth.entering")}</span>
+                ) : (
+                  <>
+                    <span>{t("auth.enterAsGuest")}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </Button>
             </div>
           </form>
         </div>

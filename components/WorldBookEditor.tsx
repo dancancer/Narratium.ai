@@ -297,7 +297,7 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center breathing-bg">
+      <div className="h-full flex items-center justify-center ">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
@@ -310,7 +310,7 @@ export default function WorldBookEditor({ onClose, characterName, characterId }:
   }
 
   return (
-    <div className="h-full flex flex-col breathing-bg text-cream-soft">
+    <div className="h-full flex flex-col  text-cream-soft">
       <WorldBookHeader
         characterName={characterName}
         entries={entries}

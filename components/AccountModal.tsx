@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/lib/store/toast-store";
 import { useLocalStorageString } from "@/hooks/useLocalStorage";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -90,12 +91,14 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             ═══════════════════════════════════════════════════════════ */}
         <div className="relative p-6 pb-4">
           {/* 关闭按钮 - Close Button */}
-          <button 
+          <Button 
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-text-muted hover:text-cream transition-colors duration-200 rounded-md hover:bg-white/5"
+            className="absolute top-4 right-4 w-8 h-8 text-text-muted hover:text-cream hover:bg-white/5"
           >
             <X className="h-3.5 w-3.5" />
-          </button>
+          </Button>
           
           <h2 className={"text-xl font-bold text-cream mb-2 "}>
             {t("account.title")}
@@ -145,22 +148,25 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                         className="flex-1 bg-input border border-muted-surface rounded-md px-3 py-2 text-cream text-sm focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20"
                         autoFocus
                       />
-                      <button
+                      <Button
+                        size="sm"
                         onClick={handleSaveUsername}
                         disabled={isLoading || !editedUsername.trim()}
-                        className="px-3 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs rounded-md transition-colors duration-200"
+                        className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs"
                       >
                         {isLoading ? "..." : "✓"}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => {
                           setIsEditing(false);
                           setEditedUsername(user.username);
                         }}
-                        className="px-3 py-2 bg-muted-surface hover:bg-stroke-strong text-text text-xs rounded-md transition-colors duration-200"
+                        className="px-3 py-2 bg-muted-surface hover:bg-stroke-strong text-text text-xs"
                       >
                         ✕
-                      </button>
+                      </Button>
                     </div>
                     
                     {/* 成功消息 - Success Message */}
@@ -176,12 +182,14 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                     <span className={`text-cream font-medium ${fontClass}`}>
                       {user.username}
                     </span>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setIsEditing(true)}
-                      className="opacity-0 group-hover:opacity-100 px-2 py-1 text-xs text-text-muted hover:text-primary-400 transition-all duration-200 rounded"
+                      className="opacity-0 group-hover:opacity-100 px-2 py-1 text-xs text-text-muted hover:text-primary-400"
                     >
                       {t("account.edit")}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -213,13 +221,15 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                   <span className={`text-text-muted text-sm font-mono ${fontClass}`}>
                     {user.id}
                   </span>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => navigator.clipboard.writeText(user.id)}
-                    className="p-1 text-text-muted hover:text-primary-400 transition-colors duration-200"
+                    className="p-1 h-6 w-6 text-text-muted hover:text-primary-400"
                     title={t("account.copyId")}
                   >
                     <Copy className="h-3 w-3" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -255,9 +265,10 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             操作按钮 - Actions
             ═══════════════════════════════════════════════════════════ */}
         <div className="p-6 pt-2">
-          <button
+          <Button
+            variant="destructive"
             onClick={handleLogout}
-            className="w-full group relative overflow-hidden bg-red-600/10 hover:bg-red-600/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 rounded-xl py-3 px-4 transition-all duration-300 font-medium"
+            className="w-full group relative overflow-hidden bg-red-600/10 hover:bg-red-600/20 border border-red-500/30 hover:border-red-500/50 text-red-400 hover:text-red-300 rounded-xl py-3 px-4"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-red-600/0 via-red-600/5 to-red-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             
@@ -265,7 +276,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
               <LogOut className="h-4 w-4" />
               <span className={`${fontClass}`}>{t("account.logout")}</span>
             </div>
-          </button>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

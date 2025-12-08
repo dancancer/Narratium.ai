@@ -76,4 +76,5 @@ export interface SidebarViewProps {
   state: SidebarState;
   actions: SidebarActions;
   helpers: SidebarHelpers;
+  variant?: "sidebar" | "panel";
 }

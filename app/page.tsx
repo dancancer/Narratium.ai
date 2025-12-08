@@ -8,7 +8,6 @@
  * - Responsive design with mobile support
  * 
  * Dependencies:
- * - framer-motion: For animations
  * - next/link: For client-side navigation
  * - Custom hooks: useLanguage, useTour
  */
@@ -26,16 +25,7 @@ import HomeContent from "@/components/HomeContent";
  * @returns {JSX.Element} The loading screen component
  */
 function HomeLoading() {
-  return (
-    <div className="flex flex-col items-center justify-center h-full bg-background relative">
-      <div className="relative z-20 flex justify-center items-center h-screen">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin [animation-duration:1.6s]"></div>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }
 
 /**

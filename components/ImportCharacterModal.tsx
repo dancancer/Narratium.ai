@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -194,7 +195,7 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-md p-0 overflow-hidden  border-border gap-0">
         <div className="p-6">
           <DialogHeader className="mb-4">
             <DialogTitle className={"text-xl text-cream-soft magical-text "}>
@@ -266,32 +267,22 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
           )}
           
           <div className="flex justify-end space-x-3">
-            <button
-              onClick={() => handleOpenChange(false)}
-              className={`px-4 py-2 text-primary-soft hover:text-highlight transition-colors ${fontClass}`}
-            >
-              {t("common.cancel")}  
-            </button>
-            
-            <button
-              onClick={(e) => {trackButtonClick("ImportCharacterModal", "导入角色");handleUpload();}}
+            <Button variant="ghost" onClick={() => handleOpenChange(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={() => {trackButtonClick("ImportCharacterModal", "导入角色");handleUpload();}}
               disabled={selectedFiles.length === 0 || isUploading}
-              className={`px-4 py-2 bg-muted-surface hover:bg-muted-surface border border-border rounded-md text-primary-bright transition-colors ${fontClass} ${(selectedFiles.length === 0 || isUploading) ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {isUploading ? (
-                <div className="flex items-center">
-                  <div className="w-4 h-4 mr-2 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
-                  {selectedFiles.length > 1 
-                    ? `${t("importCharacterModal.uploading")} (${selectedFiles.length} files)`
-                    : t("importCharacterModal.uploading")
-                  }
-                </div>
-              ) : (
-                selectedFiles.length > 1 
-                  ? `${t("importCharacterModal.import")} (${selectedFiles.length})`
-                  : t("importCharacterModal.import")
-              )}
-            </button>
+              {isUploading
+                ? (selectedFiles.length > 1 
+                    ? `${t("importCharacterModal.uploading")} (${selectedFiles.length})`
+                    : t("importCharacterModal.uploading"))
+                : (selectedFiles.length > 1 
+                    ? `${t("importCharacterModal.import")} (${selectedFiles.length})`
+                    : t("importCharacterModal.import"))
+              }
+            </Button>
           </div>
         </div>
       </DialogContent>

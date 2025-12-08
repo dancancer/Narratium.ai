@@ -21,7 +21,6 @@
  * - useLanguage: For internationalization
  * - updateCharacter: For character update functionality
  * - trackButtonClick: For analytics tracking
- * - framer-motion: For animations
  * - CharacterAvatarBackground: For avatar display
  */
 
@@ -38,6 +37,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 /**
  * Interface definitions for the component's props
@@ -130,7 +130,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-4xl p-0 overflow-hidden  border-border gap-0">
         
         <div className="flex flex-col md:flex-row h-full max-h-[85vh]">
           <div className="md:w-2/5 lg:w-1/3 relative bg-muted-surface/30">
@@ -148,7 +148,7 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
             </div>
           </div>
           
-          <div className="md:w-3/5 lg:w-2/3 bg-deep p-6 flex flex-col h-full overflow-hidden">
+          <div className="md:w-3/5 lg:w-2/3  p-6 flex flex-col h-full overflow-hidden">
             <DialogHeader className="mb-6 flex-shrink-0">
               <DialogTitle className={"text-xl font-semibold text-cream-soft magical-text "}>
                 {t("editCharacterModal.title")}
@@ -238,25 +238,27 @@ const EditCharacterModal: React.FC<EditCharacterModalProps> = ({
               </div>
 
               <div className="flex justify-end space-x-4 pt-4 pb-2 mt-auto">
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   onClick={(e) => {trackButtonClick("EditCharacterModal", "关闭编辑角色");onClose();}}
-                  className={"text-text-muted hover:text-cream transition-colors duration-300 "}
+                  className="text-text-muted hover:text-cream"
                 >
                   {t("editCharacterModal.cancel")}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  variant="ghost"
                   disabled={isLoading}
                   onClick={(e) => {trackButtonClick("EditCharacterModal", "保存编辑角色");}}
-                  className={"text-primary-400 hover:text-primary-300 transition-colors duration-300 "}
+                  className="text-primary-400 hover:text-primary-300"
                 >
                   {isLoading ? (
                     <div className="h-5 w-5 border-2 border-deep border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     t("editCharacterModal.save")
                   )}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

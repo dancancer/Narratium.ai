@@ -12,6 +12,7 @@
 import { useState, useCallback } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { trackButtonClick, trackFormSubmit } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -63,7 +64,7 @@ export default function ChatInput({
   const showSuggestions = suggestedInputs.length > 0 && !isSending;
 
   return (
-    <div className="sticky bottom-0 border-t border-border pt-6 pb-6 px-5 z-5 mt-4 ">
+    <div className="sticky bottom-0 border-t border-border py-6 px-5 z-5 mt-4 ">
       {/* 建议输入区域 */}
       {showSuggestions && (
         <SuggestionsArea
@@ -118,26 +119,30 @@ function SuggestionsArea({ suggestions, collapsed, onToggle, onSelect, isSending
   return (
     <div className="relative max-w-4xl mx-auto">
       {/* 折叠按钮 */}
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onToggle}
-        className="absolute -top-10 right-0 bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream p-1.5 rounded-md border border-border hover:border-border transition-all duration-300  hover:shadow z-10"
+        className="absolute -top-10 right-0 bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream p-1.5 h-auto w-auto border border-border hover:border-border hover:shadow z-10"
         aria-label={collapsed ? "展开建议" : "收起建议"}
       >
         <CollapseIcon collapsed={collapsed} />
-      </button>
+      </Button>
 
       {/* 建议列表 */}
       <div className={`transition-all duration-300 ease-in-out overflow-hidden ${collapsed ? "max-h-0 opacity-0 mb-0" : "max-h-40 opacity-100 mb-6"}`}>
         <div className="flex flex-wrap gap-2.5">
           {suggestions.map((input, index) => (
-            <button
+            <Button
               key={index}
+              variant="outline"
+              size="sm"
               onClick={() => onSelect(input)}
               disabled={isSending}
-              className={`bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-1.5 px-4 rounded-md text-xs border border-border hover:border-border transition-all duration-300  hover:shadow menu-item ${isSending ? "opacity-50 cursor-not-allowed" : ""} ${fontClass}`}
+              className={`bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-1.5 px-4 h-auto text-xs border border-border hover:border-border hover:shadow menu-item ${fontClass}`}
             >
               {input}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -147,9 +152,9 @@ function SuggestionsArea({ suggestions, collapsed, onToggle, onSelect, isSending
 
 function CollapseIcon({ collapsed }: { collapsed: boolean }) {
   return collapsed ? (
-    <ChevronDown className="h-4 w-4" />
-  ) : (
     <ChevronUp className="h-4 w-4" />
+  ) : (
+    <ChevronDown className="h-4 w-4" />
   );
 }
 
@@ -190,13 +195,14 @@ function SubmitButton({ isSending, disabled, label }: SubmitButtonProps) {
   }
 
   return (
-    <button
+    <Button
       type="submit"
+      variant="outline"
       disabled={disabled}
-      className={`portal-button relative overflow-hidden bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-2 px-3 sm:px-4 rounded-md text-sm border border-border hover:border-border  transition-all duration-300 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      className="portal-button relative overflow-hidden bg-overlay hover:bg-muted-surface text-primary-soft hover:text-cream py-2 px-3 sm:px-4 h-auto text-sm border border-border hover:border-border"
     >
       {label}
-    </button>
+    </Button>
   );
 }
 

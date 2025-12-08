@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/app/i18n";
+import { Button } from "@/components/ui/button";
 
 interface TourStep {
   target: string;
@@ -301,57 +302,59 @@ export default function UserTour({ steps, isVisible, onComplete, onSkip }: UserT
         <div className="flex justify-between">
           <div className="flex space-x-2">
             {currentStep > 0 && (
-              <button
+              <Button
+                variant="outline"
                 onClick={prevStep}
-                className={"px-3 py-1.5 text-sm bg-deep text-primary-soft border border-border rounded hover:bg-muted-surface hover:text-cream transition-colors "}
+                className="h-auto px-3 py-1.5 text-sm text-primary-soft border-border hover:bg-muted-surface hover:text-cream"
               >
                 {t("tour.previous") || "上一步"}
-              </button>
+              </Button>
             )}
             {currentStepData.allowSkip !== false && (
-              <button
+              <Button
+                variant="ghost"
                 onClick={skipTour}
-                className={"px-3 py-1.5 text-sm text-ink-soft hover:text-primary-soft transition-colors "}
+                className="h-auto px-3 py-1.5 text-sm text-ink-soft hover:text-primary-soft"
               >
                 {t("tour.skip") || "跳过"}
-              </button>
+              </Button>
             )}
           </div>
           
           {/* Language selection buttons */}
           {currentStepData.isLanguageSelection ? (
             <div className="flex space-x-3">
-              <button
+              <Button
                 onClick={() => {
                   setLanguage("zh");
                   document.documentElement.lang = "zh";
                   nextStep();
                 }}
-                className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
+                className="h-auto px-4 py-1.5 text-sm bg-primary-bright text-deep hover:bg-primary-soft font-medium"
               >
                 中文
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {
                   setLanguage("en");
                   document.documentElement.lang = "en";
                   nextStep();
                 }}
-                className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
+                className="h-auto px-4 py-1.5 text-sm bg-primary-bright text-deep hover:bg-primary-soft font-medium"
               >
                 English
-              </button>
+              </Button>
             </div>
           ) : (
-            <button
+            <Button
               onClick={nextStep}
-              className={"px-4 py-1.5 text-sm bg-primary-bright text-deep rounded hover:bg-primary-soft transition-colors font-medium "}
+              className="h-auto px-4 py-1.5 text-sm bg-primary-bright text-deep hover:bg-primary-soft font-medium"
             >
               {currentStep === steps.length - 1 
                 ? (t("tour.finish") || "完成") 
                 : (t("tour.next") || "下一步")
               }
-            </button>
+            </Button>
           )}
         </div>
       </div>

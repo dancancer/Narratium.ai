@@ -12,6 +12,7 @@
 import { useRef, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import MessageItem, { type Message } from "./MessageItem";
+import { Button } from "@/components/ui/button";
 import type { TavernHelperScript } from "@/lib/models/character-model";
 
 // ============================================================================
@@ -106,7 +107,7 @@ export default function MessageList({
 
   return (
     <div
-      className="flex-grow overflow-y-auto pt-6 px-6 pb-2 mb-20 fantasy-scrollbar"
+      className="flex-grow overflow-y-auto pt-6 px-6 pb-2 -mb-4"
       ref={scrollRef}
     >
       <div className="max-w-4xl mx-auto">
@@ -223,14 +224,16 @@ function NavButton({ direction, onClick, disabled }: NavButtonProps) {
   const Icon = isPrev ? ChevronLeft : ChevronRight;
 
   return (
-    <button
+    <Button
+      variant="outline"
+      size="icon"
       onClick={onClick}
       disabled={disabled}
-      className="w-8 h-8 flex items-center justify-center rounded-md border border-border bg-surface hover:border-border hover:text-primary-bright disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+      className="h-8 w-8 border-border bg-surface hover:border-border hover:text-primary-bright"
       aria-label={isPrev ? "切换上一条开场" : "切换下一条开场"}
     >
       <Icon className="h-4 w-4" />
-    </button>
+    </Button>
   );
 }
 

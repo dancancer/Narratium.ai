@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -154,7 +155,7 @@ export default function ImportPresetModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-xl p-0 overflow-hidden  border-border gap-0">
         <div className="p-3 border-b border-border/40 bg-gradient-to-r from-muted-surface/80 via-deep/60 to-muted-surface/80 backdrop-blur-sm">
           <DialogHeader>
             <DialogTitle className={"text-base font-semibold text-cream-soft "}>
@@ -196,13 +197,13 @@ export default function ImportPresetModal({
                 </div>
                 
                 <div>
-                  <button
+                  <Button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isImporting}
-                    className="px-4 py-2 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium rounded-md transition-all duration-300   disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium"
                   >
                     {isImporting ? t("importPreset.importing") : t("importPreset.browseFiles")}
-                  </button>
+                  </Button>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -229,25 +230,26 @@ export default function ImportPresetModal({
                       value={customName}
                       onChange={(e) => setCustomName(e.target.value)}
                       placeholder={fileName}
-                      className="w-full px-3 py-2 bg-deep/80 border border-border/60 rounded-md text-cream-soft placeholder-ink/80 focus:outline-none focus:ring-1 focus:ring-primary-500/40 transition-all duration-300"
+                      className="w-full px-3 py-2 /80 border border-border/60 rounded-md text-cream-soft placeholder-ink/80 focus:outline-none focus:ring-1 focus:ring-primary-500/40 transition-all duration-300"
                     />
                     <p className={`mt-1 text-xs text-ink-soft/70 ${fontClass}`}>{t("importPreset.presetNameDesc")}</p>
                   </div>
                   
                   <div className="flex justify-end space-x-2 pt-2">
-                    <button
+                    <Button
+                      variant="outline"
                       onClick={() => handleOpenChange(false)}
-                      className="px-3 py-1.5 bg-muted-surface/80 hover:bg-muted-surface border border-border/60 text-ink-soft hover:text-cream-soft rounded-md transition-all duration-300"
+                      className="px-3 py-1.5 bg-muted-surface/80 hover:bg-muted-surface border border-border/60 text-ink-soft hover:text-cream-soft"
                     >
                       {t("importPreset.cancel")}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={handleImport}
                       disabled={isImporting}
-                      className="px-4 py-1.5 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium rounded-md transition-all duration-300   disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-1.5 bg-gradient-to-r from-primary-600/80 to-primary-500/80 hover:from-primary-500/90 hover:to-primary-400/90 text-white font-medium"
                     >
                       {isImporting ? t("importPreset.importing") : t("importPreset.confirmImport")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -293,12 +295,13 @@ export default function ImportPresetModal({
         
         <div className="p-3 border-t border-border/40 bg-gradient-to-r from-muted-surface/60 via-deep/40 to-muted-surface/60 backdrop-blur-sm">
           <div className="flex justify-end space-x-2">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => handleOpenChange(false)}
-              className="px-3 py-1.5 text-sm font-medium text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke/50"
+              className="px-3 py-1.5 text-sm font-medium text-ink-soft hover:text-cream-soft hover:bg-stroke/50"
             >
               {t("importPreset.cancel")}
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>

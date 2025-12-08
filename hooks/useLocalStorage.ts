@@ -22,6 +22,8 @@ interface UseLocalStorageOptions<T> {
   serializer?: (value: T) => string;
   /** 反序列化函数 (默认 JSON.parse) */
   deserializer?: (value: string) => T;
+  /** 是否在初始化时立即读取 localStorage，禁用可避免 SSR Hydration 问题 */
+  readOnInit?: boolean;
 }
 
 interface UseLocalStorageReturn<T> {
@@ -101,9 +103,13 @@ export function useLocalStorage<T>(
 ): UseLocalStorageReturn<T> {
   const serializer = options?.serializer ?? JSON.stringify;
   const deserializer = options?.deserializer ?? JSON.parse;
+  const readOnInit = options?.readOnInit ?? true;
 
   /* ─── 惰性初始化状态 ─── */
   const [storedValue, setStoredValue] = useState<T>(() => {
+    if (!readOnInit) {
+      return defaultValue;
+    }
     const item = safeGetItem(key, deserializer);
     return item !== null ? item : defaultValue;
   });

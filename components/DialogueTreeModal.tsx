@@ -22,6 +22,7 @@ import {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { switchDialogueBranch } from "@/function/dialogue/truncate";
@@ -287,18 +288,19 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <DialogueFlowStyles />
       <div className="absolute inset-0 backdrop-blur-sm"></div>
-      <div className="bg-deep bg-opacity-75 border border-border rounded-md  p-4 w-[90%] h-[80%] max-w-5xl mx-4  relative z-10 backdrop-filter backdrop-blur-sm">
+      <div className=" bg-opacity-75 border border-border rounded-md  p-4 w-[90%] h-[80%] max-w-5xl mx-4  relative z-10 backdrop-filter backdrop-blur-sm">
         <div className="flex justify-between items-center mb-4">
           <h3 className={"text-cream text-lg "}>{t("dialogue.treeVisualization")}</h3>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => {
               trackButtonClick("DialogueTreeModal", "close_modal");
               onClose();
             }}
-            className="text-text-muted hover:text-primary-400 transition-colors duration-300"
           >
             <X size={20} />
-          </button>
+          </Button>
         </div>
 
         {!characterId ? (
@@ -358,25 +360,20 @@ export default function DialogueTreeModal({ isOpen, onClose, characterId, onDial
                 <span className={`text-primary text-xs ${fontClass}`}>
                   {layoutMethod === "elk" ? "ELK" : "Grid"} · {manualCount} {t("dialogue.manualPositions")}
                 </span>
-                <button
-                  onClick={() => handleResetLayout()}
-                  className={`text-text-muted hover:text-primary-400 transition-colors duration-300 text-xs ${fontClass} px-2 py-1 rounded hover:bg-muted-surface`}
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleResetLayout()}>
                   {t("dialogue.resetLayout")}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => loadDialogue(dataLoaded ? "incremental" : "full")}
-                  className={`px-3 py-1 rounded-md border border-border text-cream hover:text-primary-300 hover:border-primary-500 transition-colors text-xs ${fontClass}`}
                   disabled={isRefreshing}
                 >
                   {isRefreshing ? t("common.loading") : t("common.refresh")}
-                </button>
-                <button
-                  onClick={handleHighlightPath}
-                  className={`px-3 py-1 rounded-md border border-border text-cream hover:text-primary-300 hover:border-primary-500 transition-colors text-xs ${fontClass}`}
-                >
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleHighlightPath}>
                   {t("dialogue.highlightPath")}
-                </button>
+                </Button>
               </Panel>
             </ReactFlow>
           </div>

@@ -2,6 +2,7 @@
 
 import { Download, X, Monitor, Smartphone, Apple } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
+import { Button } from "@/components/ui/button";
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -74,12 +75,14 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
                     {t("appDownload.subtitle")}
                   </p>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={onClose}
-                  className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-white/10"
+                  className="text-gray-400 hover:text-white p-1 hover:bg-white/10"
                 >
                   <X size={20} />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -87,10 +90,11 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
             <div className="relative px-6 pb-4">
               <div className="space-y-3">
                 {downloadOptions.map((option) => (
-                  <button
+                  <Button
                     key={option.platform}
+                    variant="outline"
                     onClick={() => handlePlatformDownload(option.url, option.platform)}
-                    className="w-full flex items-center p-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-gray-700/80 hover:to-gray-600/80 rounded-xl transition-all duration-200 border border-gray-600/50 hover:border-gray-500/70 backdrop-blur-sm group hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full flex items-center p-4 h-auto bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-gray-700/80 hover:to-gray-600/80 rounded-xl border border-gray-600/50 hover:border-gray-500/70 backdrop-blur-sm group hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <div className={`${option.color} mr-4 group-hover:scale-110 transition-transform duration-200`}>
                       {option.icon}
@@ -106,7 +110,7 @@ export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
                     <div className="text-gray-500 group-hover:text-gray-300 transition-colors">
                       <Download size={16} />
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

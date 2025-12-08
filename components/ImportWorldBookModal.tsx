@@ -212,7 +212,7 @@ export default function ImportWorldBookModal({ isOpen, characterId, onClose, onI
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-xl p-0 overflow-hidden  border-border gap-0">
         <DialogTitle className="sr-only">{t("worldBook.importWorldBook")}</DialogTitle>
         <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-blue-500/5 opacity-50 animate-pulse pointer-events-none" />
 

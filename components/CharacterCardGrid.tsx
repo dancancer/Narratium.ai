@@ -16,7 +16,6 @@
  * - Responsive design adaptation
  * 
  * Dependencies:
- * - framer-motion: For animations
  * - react-parallax-tilt: For card tilt effect
  * - CharacterAvatarBackground: For avatar display
  * - useLanguage: For internationalization
@@ -24,12 +23,12 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Tilt from "react-parallax-tilt";
 import { ArrowUp, PencilLine, Trash2, UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 
 /**
  * Interface definitions for the component's data structures
@@ -67,19 +66,12 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
   const { t, fontClass, serifFontClass } = useLanguage();
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, staggerChildren: 0.1 }}
-      className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4"
-    >
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 animate-in fade-in duration-500">
       {characters.map((character, index) => (
-        <motion.div
+        <div
           key={character.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className="scale-[0.75] sm:scale-[0.85]"
+          className="scale-[0.75] sm:scale-[0.85] animate-in fade-in slide-in-from-bottom-2 duration-300"
+          style={{ animationDelay: `${index * 50}ms` }}
         >
           <Tilt
             tiltMaxAngleX={-15}
@@ -97,34 +89,40 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
               {/* Action buttons for each card */}
               <div className="absolute top-1 right-1 sm:top-2 sm:right-2 flex space-x-0.5 sm:space-x-1 z-10">
                 {/* move character to top of the screen */}
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={(e) => {e.stopPropagation(); trackButtonClick("move_to_top_character_btn", "置顶角色"); onMoveToTopClick(character.id);}}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 h-auto w-auto bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight"
                   title={t("characterCardsPage.move_to_top")}
                   aria-label={t("characterCardsPage.move_to_top")}
                 >
                   <ArrowUp className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={(e) => {trackButtonClick("edit_character_btn", "编辑角色"); onEditClick(character, e);}}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 h-auto w-auto bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight"
                   title={t("characterCardsPage.edit")}
                   aria-label={t("characterCardsPage.edit")}
                 >
                   <PencilLine className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={(e) => {
                     trackButtonClick("delete_character_btn", "删除角色");
                     e.stopPropagation();
                     onDeleteClick(character.id);
                   }}
-                  className="p-2 sm:p-1.5 bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight transition-colors"
+                  className="p-2 sm:p-1.5 h-auto w-auto bg-muted-surface hover:bg-muted-surface rounded-full text-primary-soft hover:text-highlight"
                   title={t("characterCardsPage.delete")}
                   aria-label={t("characterCardsPage.delete")}
                 >
                   <Trash2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
-                </button>
+                </Button>
               </div>
             
               {/* Character card content */}
@@ -152,9 +150,9 @@ const CharacterCardGrid: React.FC<CharacterCardGridProps> = ({
               </Link>
             </div>
           </Tilt>
-        </motion.div>
+        </div>
       ))}
-    </motion.div>
+    </div>
   );
 };
 

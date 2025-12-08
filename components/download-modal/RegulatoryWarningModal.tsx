@@ -10,6 +10,7 @@
 
 import { AlertTriangle } from "lucide-react";
 import { useLocalStorageBoolean } from "@/hooks/useLocalStorage";
+import { Button } from "@/components/ui/button";
 
 export const WARNING_STORAGE_KEY = "narratium_regulatory_warning_shown";
 
@@ -45,7 +46,7 @@ export function RegulatoryWarningModal({
       <div className="absolute inset-0 backdrop-blur-sm bg-black/70 animate-in fade-in duration-200" />
 
       {/* 弹窗内容 */}
-      <div className="bg-deep rounded-md  border border-border relative z-10 max-w-md w-full mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
+      <div className=" rounded-md  border border-border relative z-10 max-w-md w-full mx-4 p-6 animate-in fade-in zoom-in-95 duration-200">
         <div className="text-center">
           {/* 警告图标 */}
           <div className="mb-4">
@@ -64,19 +65,20 @@ export function RegulatoryWarningModal({
 
           {/* 按钮组 */}
           <div className="flex flex-col gap-3">
-            <button
+            <Button
               onClick={() => handleClose(false)}
-              className={`w-full bg-gradient-to-br from-sand to-primary-bright text-ink font-semibold py-2.5 px-4 rounded-md transition-all duration-200 hover: hover: ${fontClass}`}
+              className={`w-full bg-gradient-to-br from-sand to-primary-bright text-ink font-semibold py-2.5 px-4 h-auto ${fontClass}`}
             >
               {t("downloadModal.regulatoryWarning.understand")}
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="ghost"
               onClick={() => handleClose(true)}
-              className={`w-full text-ink-soft hover:text-primary-soft py-2 px-4 rounded-md transition-colors duration-200 text-sm ${fontClass}`}
+              className={`w-full text-ink-soft hover:text-primary-soft py-2 px-4 h-auto text-sm ${fontClass}`}
             >
               {t("downloadModal.regulatoryWarning.doNotShowAgain")}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -13,7 +13,6 @@
  * - Auto line wrapping for long content
  * 
  * Dependencies:
- * - framer-motion: For smooth animations
  * - React hooks: For state management
  */
 
@@ -21,6 +20,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { PenSquare, Send, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface InlineUserInputProps {
   question: string;
@@ -88,9 +88,11 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
             </div>
             <div className="flex flex-wrap gap-2">
               {options.map((option, index) => (
-                <button
+                <Button
                   key={index}
-                  className="inline-flex items-center px-3 py-1.5 text-xs text-primary-soft/80 bg-black/30 border border-primary-500/20 rounded-full hover:bg-black/40 hover:border-primary-400/40 hover:text-cream transition-all duration-200 cursor-pointer animate-in fade-in zoom-in-95"
+                  variant="outline"
+                  size="sm"
+                  className="inline-flex items-center px-3 py-1.5 h-auto text-xs text-primary-soft/80 bg-black/30 border border-primary-500/20 rounded-full hover:bg-black/40 hover:border-primary-400/40 hover:text-cream animate-in fade-in zoom-in-95"
                   style={{ animationDelay: `${index * 50}ms` }}
                   onClick={() => {
                     setCustomInput(option);
@@ -100,7 +102,7 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
                   }}
                 >
                   {option}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -121,17 +123,19 @@ const InlineUserInput: React.FC<InlineUserInputProps> = ({
             className="w-full pl-4 pr-12 py-2.5 text-sm text-cream bg-black/30 border border-primary-500/30 rounded-full focus:outline-none focus:border-primary-400/60 focus:bg-black/40 placeholder-primary-soft/60 transition-all duration-300 hover:border-primary-500/40"
             autoFocus
           />
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={handleCustomSubmit}
             disabled={isLoading || !customInput.trim()}
-            className="absolute right-1.5 p-1.5 text-primary-400 rounded-full hover:bg-primary-500/15 disabled:text-primary-soft/40 disabled:hover:bg-transparent transition-all duration-200"
+            className="absolute right-1.5 p-1.5 h-auto w-auto text-primary-400 rounded-full hover:bg-primary-500/15"
           >
             {isLoading ? (
               <div className="w-4 h-4 border-2 border-primary-soft/40 border-t-primary-400 rounded-full animate-spin" />
             ) : (
               <Send className="w-4 h-4" />
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

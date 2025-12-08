@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Send, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AgentUserInputProps {
   question: string;
@@ -47,48 +48,51 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
       {options && options.length > 0 && (
         <div className="space-y-3">
           <div className="flex space-x-2 text-xs">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setInputMode("options")}
-              className={`px-3 py-1 rounded-full transition-colors ${
+              className={`h-auto px-3 py-1 rounded-full ${
                 inputMode === "options"
                   ? "bg-primary-500/20 text-primary-400"
                   : "bg-black/20 text-primary-soft/60 hover:text-primary-soft"
               }`}
             >
               Choose from options
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setInputMode("custom")}
-              className={`px-3 py-1 rounded-full transition-colors ${
+              className={`h-auto px-3 py-1 rounded-full ${
                 inputMode === "custom"
                   ? "bg-primary-500/20 text-primary-400"
                   : "bg-black/20 text-primary-soft/60 hover:text-primary-soft"
               }`}
             >
               Custom input
-            </button>
+            </Button>
           </div>
 
           {inputMode === "options" && (
             <div className="grid gap-2">
               {options.map((option, index) => (
-                <button
+                <Button
                   key={index}
+                  variant="outline"
                   onClick={() => setSelectedOption(option)}
-                  className={`text-left p-3 rounded-md border transition-all animate-in fade-in slide-in-from-left-5 ${
+                  className={`h-auto justify-start text-left p-3 animate-in fade-in slide-in-from-left-5 ${
                     selectedOption === option
                       ? "bg-primary-500/20 border-primary-500/40 text-primary-soft"
                       : "bg-black/20 border-primary-500/20 text-primary-soft/80 hover:bg-black/30 hover:border-primary-500/30"
                   }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between w-full">
                     <span className="text-sm">{option}</span>
                     {selectedOption === option && (
                       <div className="w-2 h-2 bg-primary-400 rounded-full" />
                     )}
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
           )}
@@ -113,14 +117,14 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
 
       {/* Submit Button */}
       <div className="flex justify-end mt-4">
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={
             isLoading || 
             (inputMode === "options" && !selectedOption) || 
             (inputMode === "custom" && !customInput.trim())
           }
-          className="flex items-center space-x-2 bg-gradient-to-r from-primary-500 to-orange-400 text-black rounded-md py-2 px-4 font-medium text-sm hover:from-primary-400 hover:to-orange-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="h-auto bg-gradient-to-r from-primary-500 to-orange-400 text-black py-2 px-4 font-medium text-sm hover:from-primary-400 hover:to-orange-300"
         >
           {isLoading ? (
             <>
@@ -133,7 +137,7 @@ export default function AgentUserInput({ question, options, onResponse, isLoadin
               <span>Send Response</span>
             </>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -285,9 +285,6 @@
 }
 
 @layer components {
-  .breathing-bg {
-    @apply bg-background text-foreground;
-  }
 
   .magic-border {
     @apply border border-border;

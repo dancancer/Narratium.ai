@@ -10,7 +10,6 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   Power,
   PowerOff,
@@ -78,13 +77,7 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
   const statusText = getPluginStatusText(plugin);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-      className="group bg-gradient-to-br from-overlay/30 to-deep/50 rounded-xl p-5 border border-border/30 hover:border-cream/40 transition-all duration-300 backdrop-blur-sm hover: hover:shadow-cream/10"
-    >
+    <div className="group bg-gradient-to-br from-overlay/30 to-deep/50 rounded-xl p-5 border border-border/30 hover:border-cream/40 transition-all duration-300 backdrop-blur-sm hover:-translate-y-0.5 hover:shadow-cream/10 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-start justify-between">
         {/* ═══════════════════════════════════════════════════════════
             插件信息 - Plugin Info
@@ -157,11 +150,9 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             操作按钮 - Action Buttons
             ═══════════════════════════════════════════════════════════ */}
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={() => onToggle(plugin.manifest.id, !plugin.enabled)}
-            className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+            className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-95 ${
               plugin.enabled
                 ? "bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30"
                 : "bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30"
@@ -175,26 +166,22 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             <span className="hidden sm:inline">
               {plugin.enabled ? t("plugins.disable") : t("plugins.enable")}
             </span>
-          </motion.button>
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={() => {
               if (plugin.manifest.homepage) {
                 window.open(plugin.manifest.homepage, "_blank");
               }
             }}
             disabled={!plugin.manifest.homepage}
-            className="p-2 bg-ink/20 hover:bg-ink/40 text-primary-soft rounded-md transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="p-2 bg-ink/20 hover:bg-ink/40 text-primary-soft rounded-md transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95"
             title={t("plugins.homepage")}
           >
             <ExternalLink className="w-4 h-4" />
-          </motion.button>
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             className="p-2 bg-ink/20 hover:bg-ink/40 text-primary-soft rounded-md transition-all duration-200"
             onClick={() => {
               console.log("Plugin details:", plugin);
@@ -202,9 +189,9 @@ export function PluginCard({ plugin, onToggle }: PluginCardProps) {
             title={t("plugins.details")}
           >
             <Info className="w-4 h-4" />
-          </motion.button>
+          </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

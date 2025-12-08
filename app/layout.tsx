@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./styles/local-fonts.css";
 import "./styles/fonts.css";
-import MainLayout from "@/components/MainLayout";
+import MainShell from "@/components/layout/MainShell";
 import { LanguageProvider } from "@/app/i18n/LanguageProvider";
 import { SoundProvider } from "@/contexts/SoundContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
@@ -96,7 +96,7 @@ export default function RootLayout({
           <GoogleAnalytics />
           <SoundProvider>
             <LanguageProvider>
-              <MainLayout>{children}</MainLayout>
+              <MainShell>{children}</MainShell>
               <ToastProvider />
             </LanguageProvider>
           </SoundProvider>

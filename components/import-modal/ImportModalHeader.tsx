@@ -10,6 +10,7 @@
 
 import React from "react";
 import { FileText, Globe2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface TabConfig {
   id: "file" | "global";
@@ -40,38 +41,27 @@ export function ImportModalHeader({ title, activeTab, tabs, serifFontClass, onTa
         <h2 className={"text-base font-semibold text-cream-soft  "}>
           {title}
         </h2>
-        <button
-          onClick={onClose}
-          className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-all duration-300 rounded-md hover:bg-stroke/50 group"
-        >
-          <X className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-90" />
-        </button>
+        <Button variant="ghost" size="icon" onClick={onClose} className="w-7 h-7">
+          <X className="h-4 w-4" />
+        </Button>
       </div>
 
-      <div className="flex mt-2 space-x-0.5 bg-deep/60 backdrop-blur-sm rounded-md p-0.5 border border-border/30">
+      <div className="flex mt-2 space-x-0.5 backdrop-blur-sm rounded-md p-0.5 border border-border/30">
         {tabs.map((tab) => {
           const Icon = ICON_MAP[tab.icon];
-          const colors = COLOR_MAP[tab.activeColor];
           const isActive = activeTab === tab.id;
 
           return (
-            <button
+            <Button
               key={tab.id}
+              variant={isActive ? "default" : "ghost"}
+              size="sm"
               onClick={() => onTabChange(tab.id)}
-              className={`relative flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-all duration-300 ${
-                isActive
-                  ? `bg-gradient-to-r ${colors.active} text-white  ${colors.glow}`
-                  : "text-ink-soft hover:text-cream-soft hover:bg-muted-surface/50"
-              } `}
+              className="flex-1"
             >
-              <span className="relative z-10 flex items-center justify-center">
-                <Icon className="mr-1 h-3 w-3" />
-                {tab.label}
-              </span>
-              {isActive && (
-                <div className={`absolute inset-0 bg-gradient-to-r ${colors.active.replace("/90", "/20")} rounded-md animate-pulse`} />
-              )}
-            </button>
+              <Icon className="mr-1 h-3 w-3" />
+              {tab.label}
+            </Button>
           );
         })}
       </div>

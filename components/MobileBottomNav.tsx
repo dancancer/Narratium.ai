@@ -29,6 +29,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Home, IdCard, LogIn, Sparkles, UserRound } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 /**
  * Interface definitions for the component's props
@@ -88,7 +89,7 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
       {/* Background with blur effect */}
-      <div className="absolute inset-0 bg-deep/95 backdrop-blur-md border-t border-border/50"></div>
+      <div className="absolute inset-0 /95 backdrop-blur-md border-t border-border/50"></div>
       
       {/* Navigation items */}
       <div className="relative flex items-center justify-around px-2 py-3">
@@ -138,9 +139,10 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
         </Link>
 
         {/* Login/User */}
-        <button
+        <Button
+          variant="ghost"
           onClick={isAuthenticated ? handleOpenAccount : openLoginModal}
-          className={`flex flex-col items-center justify-center p-2 rounded-md transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center p-2 h-auto rounded-md ${
             isAuthenticated 
               ? "text-primary-bright hover:bg-overlay/30" 
               : "text-ink-soft hover:text-primary-bright hover:bg-overlay/30"
@@ -156,11 +158,11 @@ export default function MobileBottomNav({ openLoginModal, openAccountModal }: Mo
           <span className={`text-2xs ${fontClass}`}>
             {isAuthenticated ? t("sidebar.openAccount") : t("sidebar.nologin")}
           </span>
-        </button>
+        </Button>
       </div>
 
       {/* Bottom safe area for devices with home indicator */}
-      <div className="h-safe-area-inset-bottom bg-deep/95 mobile-bottom-nav"></div>
+      <div className="h-safe-area-inset-bottom /95 mobile-bottom-nav"></div>
     </div>
   );
 } 

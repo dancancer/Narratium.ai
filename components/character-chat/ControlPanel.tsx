@@ -12,6 +12,7 @@
 import { useState, useCallback } from "react";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { ArrowRight, Globe, Grid, User, ChevronUp, Link2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -132,26 +133,27 @@ export default function ControlPanel({
       </div>
 
       {/* 主控制按钮 */}
-      <button
-        type="button"
+      <Button
+        variant="outline"
         onClick={togglePanel}
-        className={`px-1.5 sm:px-2 md:px-4 py-1.5 text-xs rounded-full border transition-all duration-300 ${isExpanded ? "bg-primary text-overlay border-primary shadow-[0_0_8px_rgba(209,163,92,0.5)]" : "bg-overlay text-primary border-border hover:border-primary  hover:"}`}
+        className={`h-auto px-1.5 sm:px-2 md:px-4 py-1.5 text-xs ${isExpanded ? "bg-primary text-overlay border-primary shadow-[0_0_8px_rgba(209,163,92,0.5)]" : "bg-overlay text-primary border-border hover:border-primary"}`}
       >
         <span className="flex items-center">
           <ChevronUp size={12} className={`mr-1 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
           <span className="text-2xs sm:text-xs">{isExpanded ? "收起控制" : "展开控制"}</span>
         </span>
-      </button>
+      </Button>
 
       {/* 调试按钮 */}
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        size="icon"
         onClick={onOpenScriptDebug}
-        className="ml-2 px-2 py-1.5 text-xs rounded-full border border-border bg-overlay text-ink-soft hover:text-primary hover:border-primary transition-all"
+        className="ml-2 h-auto px-2 py-1.5 border-border bg-overlay text-ink-soft hover:text-primary hover:border-primary"
         title="Script Debugger"
       >
         <Link2 size={12} />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -172,32 +174,32 @@ interface ControlButtonProps {
 function ControlButton({ active, onClick, activeColor, inactiveColor, icon, label }: ControlButtonProps) {
   const colorMap = {
     primary: {
-      active: "bg-primary text-overlay border-primary shadow-[0_0_8px_rgba(209,163,92,0.5)]",
-      inactive: `bg-overlay text-${inactiveColor || "primary"} border-border hover:border-primary  hover:`,
+      active: "bg-primary text-overlay border-primary",
+      inactive: `bg-overlay text-${inactiveColor || "primary"} border-border hover:border-primary`,
     },
     success: {
-      active: "bg-success text-overlay border-success shadow-[0_0_8px_color-mix(in_srgb,var(--color-success)_45%,transparent)]",
-      inactive: `bg-overlay text-${inactiveColor || "success"} border-border hover:border-success  hover:`,
+      active: "bg-success text-overlay border-success",
+      inactive: `bg-overlay text-${inactiveColor || "success"} border-border hover:border-success`,
     },
     info: {
-      active: "bg-info text-overlay border-info shadow-[0_0_8px_color-mix(in_srgb,var(--color-info)_45%,transparent)]",
-      inactive: `bg-overlay text-${inactiveColor || "info"} border-border hover:border-info  hover:`,
+      active: "bg-info text-overlay border-info",
+      inactive: `bg-overlay text-${inactiveColor || "info"} border-border hover:border-info`,
     },
   };
 
   const className = active ? colorMap[activeColor].active : colorMap[activeColor].inactive;
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="outline"
       onClick={onClick}
-      className={`px-1.5 sm:px-2 md:px-4 py-1.5 text-xs rounded-full border transition-all duration-300 whitespace-nowrap min-w-fit ${className}`}
+      className={`h-auto px-1.5 sm:px-2 md:px-4 py-1.5 text-xs whitespace-nowrap min-w-fit ${className}`}
     >
       <span className="flex items-center">
         {icon}
         <span className="text-2xs sm:text-xs">{label}</span>
       </span>
-    </button>
+    </Button>
   );
 }
 

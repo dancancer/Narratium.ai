@@ -19,6 +19,7 @@ import {
   Github,
   Settings,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Current app version from package.json
 const CURRENT_VERSION = "1.1.9";
@@ -90,7 +91,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
 
   return (
     <div
-      className={`h-full breathing-bg magic-border text-text transition-all duration-300 ease-in-out flex flex-col ${isOpen ? "w-72" : "w-16"} z-50`}
+      className={`h-full  magic-border text-text transition-all duration-300 ease-in-out flex flex-col ${isOpen ? "w-72" : "w-16"} z-50`}
     >
       <div className="flex justify-between items-center h-16 py-3 px-4">
         <div className={`logo-magic-container transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? "opacity-100 max-w-[200px]" : "opacity-0 max-w-0"}`}>
@@ -103,7 +104,9 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
             </span>
           </div>
         </div>
-        <button
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() => {
             toggleSidebar();
             setSidebarState(isOpen ? "closed" : "open");
@@ -112,7 +115,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               isOpen ? "4rem" : "-1rem",
             );
           }}
-          className={"flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:border-accent  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background w-8 h-8"}
+          className="h-8 w-8 text-cream bg-surface border-stroke hover:bg-accent hover:text-accent-foreground hover:border-accent"
           aria-label={isOpen ? (language === "zh" ? "收起侧边栏" : "Collapse Sidebar") : (language === "zh" ? "展开侧边栏" : "Expand Sidebar")}
         >
           {isOpen ? (
@@ -120,7 +123,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
           ) : (
             <ChevronRight size={16} className="transition-transform duration-300" />
           )}
-        </button>
+        </Button>
       </div>
       <div className="mx-2 my-1 menu-divider"></div>
       <nav className={"mt-3 flex-none px-2"}>
@@ -130,13 +133,15 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               <div className={`${sectionTitleClass} ${isOpen ? "px-2 py-1 max-w-full opacity-100 w-full" : "px-0 py-0 max-w-0 w-0 opacity-0"}`}>
                 <span>{t("sidebar.home")}</span>
                 {isOpen && (
-                  <button 
+                  <Button 
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setIsHomeOpen(!isHomeOpen)}
-                    className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-primary-400 transition-colors duration-300  rounded-sm"
+                    className="h-5 w-5 text-text-muted hover:text-primary-400"
                     aria-label={isHomeOpen ? t("sidebar.collapseHome") : t("sidebar.expandHome")}
                   >
                     <ChevronDown size={12} className={`transition-transform duration-300 ${isHomeOpen ? "rotate-180" : ""}`} />
-                  </button>
+                  </Button>
                 )}
               </div>
               <div className={`overflow-hidden transition-all duration-300 ${isOpen ? (isHomeOpen ? "max-h-20 opacity-100 mb-1" : "max-h-0 opacity-0 mb-0") : "max-h-20 opacity-100 mb-1"} mx-1`}>
@@ -188,13 +193,15 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               <div className={`${sectionTitleClass} ${isOpen ? "px-2 py-1 max-w-full opacity-100 w-full" : "px-0 py-0 max-w-0 w-0 opacity-0"}`}>
                 <span>{t("sidebar.gameArea")}</span>
                 {isOpen && (
-                  <button 
+                  <Button 
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setIsGameOpen(!isGameOpen)}
-                    className="w-5 h-5 flex items-center justify-center text-text-muted hover:text-primary-400 transition-colors duration-300  rounded-sm"
+                    className="h-5 w-5 text-text-muted hover:text-primary-400"
                     aria-label={isGameOpen ? t("sidebar.collapseCreation") : t("sidebar.expandCreation")}
                   >
                     <ChevronDown size={12} className={`transition-transform duration-300 ${isGameOpen ? "rotate-180" : ""}`} />
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -261,10 +268,11 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
         
         <div className="mb-2">
           {!isAuthenticated ? (
-            <button 
+            <Button 
+              variant="ghost"
               onClick={openLoginModal}
               data-tour="login-button"
-              className={`focus:outline-none group relative overflow-hidden rounded-md w-full transition-all duration-300 ${!isOpen ? "p-2 flex justify-center" : "py-1.5 px-2 flex items-center justify-center"} cursor-pointer`}
+              className={`h-auto group relative overflow-hidden w-full ${!isOpen ? "p-2 justify-center" : "py-1.5 px-2 justify-center"}`}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
               <div className="relative flex items-center justify-center w-full transition-all duration-300 z-10">
@@ -294,11 +302,12 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               </div>
               <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-primary-bright to-transparent w-0 group-hover:w-full transition-all duration-500"></div>
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
+              variant="ghost"
               onClick={handleOpenAccount}
-              className={`focus:outline-none group relative overflow-hidden rounded-md w-full transition-all duration-300 ${!isOpen ? "p-2 flex justify-center" : "py-1.5 px-2 flex items-center justify-center"} cursor-pointer`}
+              className={`h-auto group relative overflow-hidden w-full ${!isOpen ? "p-2 justify-center" : "py-1.5 px-2 justify-center"}`}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-layer/0 to-canvas/0 opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
               <div className="relative flex items-center justify-center w-full transition-all duration-300 z-10">
@@ -348,7 +357,7 @@ export default function Sidebar({ isOpen, toggleSidebar, openLoginModal, openAcc
               </div>
               <div className="absolute inset-0 w-full h-full bg-stroke opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               <div className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-primary-bright to-transparent w-0 group-hover:w-full transition-all duration-500"></div>
-            </button>
+            </Button>
           )}
         </div>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { X, Plus, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import type { LLMType, SidebarViewProps } from "./types";
+import { Button } from "@/components/ui/button";
 
 // ╔════════════════════════════════════════╗
 // ║ 移动端模型侧边栏视图（纯展示层）        ║
@@ -69,16 +70,18 @@ export function MobileSidebarView(props: SidebarViewProps) {
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full h-full bg-deep breathing-bg text-text flex flex-col">
+      <div className="relative w-full h-full   text-text flex flex-col">
         {/* ===== 头部 ===== */}
         <div className="flex-shrink-0 flex justify-between items-center p-4 border-b border-border bg-gradient-to-r from-canvas to-input">
           <h1 className={"text-lg magical-text "}>{t("modelSettings.title")}</h1>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
-            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-full border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+            className="w-8 h-8 text-cream bg-surface rounded-full border border-stroke hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
           >
             <X className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
 
         {/* ===== 主体滚动区 ===== */}
@@ -89,13 +92,14 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 <label className={`text-cream text-sm font-medium ${fontClass}`}>
                   {t("modelSettings.configurations") || "API Configurations"}
                 </label>
-                <button 
+                <Button 
+                  variant="outline"
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
-                  className="text-sm text-primary hover:text-cream transition-all duration-200 px-3 py-2 rounded border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-2"
+                  className="text-sm text-primary hover:text-cream px-3 py-2 h-auto border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-2"
                 >
                   <Plus className="w-3 h-3" />
                   {t("modelSettings.newConfig") || "New Config"}
-                </button>
+                </Button>
               </div>
               
               {!showNewConfigForm && configs.length > 0 && (
@@ -151,12 +155,14 @@ export function MobileSidebarView(props: SidebarViewProps) {
                           </>
                         )}
                       </div>
-                      <button 
+                      <Button 
+                        variant="ghost"
+                        size="icon"
                         onClick={(e) => { trackButtonClick("ModelSidebar", "删除配置"); e.stopPropagation(); handleDeleteConfig(config.id); }}
-                        className="text-red-400 hover:text-red-300 text-lg p-2 transition-colors ml-2 flex-shrink-0"
+                        className="text-red-400 hover:text-red-300 text-lg p-2 h-auto w-auto ml-2 flex-shrink-0"
                       >
                         ×
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -276,10 +282,10 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 <div className="mb-4">
                   <div className="relative">
                     {llmType !== "ollama" && (
-                      <button 
-                        className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-colors magical-text ${fontClass}`} 
+                      <Button 
+                        className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 h-auto text-sm border border-primary w-full magical-text ${fontClass}`} 
                         onClick={() => handleGetModelList(llmType, baseUrl, apiKey)}
-                      >{t("modelSettings.getModelList") || "Get Model List"}</button>
+                      >{t("modelSettings.getModelList") || "Get Model List"}</Button>
                     )}
                     
                     {getModelListSuccess && (
@@ -347,18 +353,19 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 </div>
 
                 <div className="flex gap-3">
-                  <button
+                  <Button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "创建配置"); e.stopPropagation(); handleSave();}}
-                    className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-3 px-4 text-sm rounded border border-primary transition-colors magical-text ${fontClass}`}
+                    className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-3 px-4 h-auto text-sm border border-primary magical-text ${fontClass}`}
                   >
                     {t("modelSettings.createConfig") || "Create Configuration"}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={() => {trackButtonClick("cancel_create_config_btn", "取消创建配置"); handleCancelCreate();}}
-                    className={`px-4 py-3 bg-card text-sm text-text rounded border border-border hover:bg-stroke transition-colors ${fontClass}`}
+                    className={`px-4 py-3 h-auto bg-card text-sm text-text border border-border hover:bg-stroke ${fontClass}`}
                   >
                     {t("common.cancel") || "Cancel"}
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -366,12 +373,12 @@ export function MobileSidebarView(props: SidebarViewProps) {
             {!showNewConfigForm && activeConfigId && (
               <div className="space-y-4">
                 <div className="relative">
-                  <button
+                  <Button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "保存配置"); e.stopPropagation(); handleSave();}}
-                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
+                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 h-auto text-sm border border-primary w-full hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                   >
                     {t("modelSettings.saveSettings") || "Save Settings"}
-                  </button>
+                  </Button>
 
                   {saveSuccess && (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
@@ -386,10 +393,10 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 </div>
 
                 <div className="relative">
-                  <button
+                  <Button
                     onClick={(e) => {trackButtonClick("ModelSidebar", "测试模型"); e.stopPropagation(); handleTestModel();}}
                     disabled={isTesting || (!baseUrl && llmType !== "gemini") || !model}
-                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 h-auto text-sm border border-primary w-full hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                   >
                     {isTesting ? (
                       <span className="flex items-center justify-center">
@@ -399,7 +406,7 @@ export function MobileSidebarView(props: SidebarViewProps) {
                     ) : (
                       t("modelSettings.testModel") || "Test Model"
                     )}
-                  </button>
+                  </Button>
 
                   {testModelSuccess && (
                     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
@@ -431,13 +438,13 @@ export function MobileSidebarView(props: SidebarViewProps) {
                 <p className="text-sm text-text-muted mb-4 text-center">
                   {t("modelSettings.noConfigs")}
                 </p>
-                <button
+                <Button
                   onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 text-sm rounded border border-primary transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-2`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-3 px-4 h-auto text-sm border border-primary hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-2`}
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t("modelSettings.createFirstConfig") || "Create Your First Configuration"}
-                </button>
+                </Button>
               </div>
             )}
           </div>

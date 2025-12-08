@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -116,7 +117,7 @@ export default function RegexScriptEntryEditor({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-2xl p-0 overflow-hidden  border-border gap-0">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-500/3 via-transparent to-primary-500/3 opacity-50 pointer-events-none"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent pointer-events-none"></div>
         
@@ -227,31 +228,13 @@ export default function RegexScriptEntryEditor({
             </div>
 
             <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-border/30">
-              <button
-                onClick={() => handleOpenChange(false)}
-                className="px-4 py-2 bg-gradient-to-br from-muted-surface to-deep hover:from-muted-surface hover:to-muted-surface 
-                  text-cream rounded-md border border-border/60 transition-all duration-300 text-sm font-medium
-                  hover:border-border hover: group"
-              >
-                <span className={" group-hover:scale-105 transition-transform inline-block"}>
-                  {t("regexScriptEditor.cancel")}
-                </span>
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="px-4 py-2 bg-gradient-to-br from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 
-                  text-deep rounded-md font-medium transition-all duration-300 text-sm
-                  disabled:opacity-50 disabled:cursor-not-allowed   group
-                  disabled:hover:shadow-none"
-              >
-                <span className={` flex items-center group-hover:scale-105 transition-transform ${isSaving ? "" : "group-hover:text-white"}`}>
-                  {isSaving && (
-                    <Loader2 className="animate-spin -ml-1 mr-2 h-3 w-3 text-deep" />
-                  )}
-                  {isSaving ? t("regexScriptEditor.saving") : t("regexScriptEditor.save")}
-                </span>
-              </button>
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
+                {t("regexScriptEditor.cancel")}
+              </Button>
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving && <Loader2 className="animate-spin h-3 w-3" />}
+                {isSaving ? t("regexScriptEditor.saving") : t("regexScriptEditor.save")}
+              </Button>
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@
  * - Prioritizes essential information for a clean look
  * 
  * Dependencies:
- * - framer-motion: For smooth animations
  * - lucide-react: For iconography
  * - i18n: For internationalization
  */
@@ -18,7 +17,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { 
   Clock, 
   Brain, 
@@ -37,6 +35,7 @@ import {
   Award,
 } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
+import { Button } from "@/components/ui/button";
 
 interface AgentProgressPanelProps {
   progress: {
@@ -127,9 +126,10 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
 
       {/* Collapsible Statistics */}
       <div className="space-y-1.5">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsStatsExpanded(!isStatsExpanded)}
-          className="w-full flex items-center justify-between p-1.5 rounded-md hover:bg-black/30 transition-colors"
+          className="h-auto w-full justify-between p-1.5 hover:bg-black/30"
         >
           <span className={`text-xs font-medium text-primary-soft ${fontClass}`}>
             {t("agentProgress.statistics") || "统计信息"}
@@ -139,53 +139,48 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
           ) : (
             <ChevronDown className="w-3.5 h-3.5 text-primary-soft/70" />
           )}
-        </button>
+        </Button>
         
-        <AnimatePresence>
-          {isStatsExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <div className="space-y-1.5 px-1.5 pb-1">
-                <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-primary-soft/80">
-                    <CheckCircle className="w-3 h-3" />
-                    <span className={fontClass}>{t("agentProgress.completed") || "已完成"}</span>
-                  </div>
-                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.completedTasks}</span>
-                </div>
-        
-                <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-primary-soft/80">
-                    <Activity className="w-3 h-3" />
-                    <span className={fontClass}>{t("agentProgress.iterations") || "迭代次数"}</span>
-                  </div>
-                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.totalIterations}</span>
-                </div>
-        
-                <div className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1.5 text-primary-soft/80">
-                    <Database className="w-3 h-3" />
-                    <span className={fontClass}>{t("agentProgress.knowledgeBase") || "知识库"}</span>
-                  </div>
-                  <span className={`font-semibold text-cream ${fontClass}`}>{progress.knowledgeBaseSize}</span>
-                </div>
+        <div
+          className="overflow-hidden transition-[max-height,opacity] duration-200"
+          style={{ maxHeight: isStatsExpanded ? "320px" : "0px", opacity: isStatsExpanded ? 1 : 0 }}
+          aria-hidden={!isStatsExpanded}
+        >
+          <div className="space-y-1.5 px-1.5 pb-1">
+            <div className="flex justify-between items-center text-xs">
+              <div className="flex items-center gap-1.5 text-primary-soft/80">
+                <CheckCircle className="w-3 h-3" />
+                <span className={fontClass}>{t("agentProgress.completed") || "已完成"}</span>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <span className={`font-semibold text-cream ${fontClass}`}>{progress.completedTasks}</span>
+            </div>
+    
+            <div className="flex justify-between items-center text-xs">
+              <div className="flex items-center gap-1.5 text-primary-soft/80">
+                <Activity className="w-3 h-3" />
+                <span className={fontClass}>{t("agentProgress.iterations") || "迭代次数"}</span>
+              </div>
+              <span className={`font-semibold text-cream ${fontClass}`}>{progress.totalIterations}</span>
+            </div>
+    
+            <div className="flex justify-between items-center text-xs">
+              <div className="flex items-center gap-1.5 text-primary-soft/80">
+                <Database className="w-3 h-3" />
+                <span className={fontClass}>{t("agentProgress.knowledgeBase") || "知识库"}</span>
+              </div>
+              <span className={`font-semibold text-cream ${fontClass}`}>{progress.knowledgeBaseSize}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Collapsible Generation Results */}
       {result && (
         <div className="space-y-1.5">
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setIsResultsExpanded(!isResultsExpanded)}
-            className="w-full flex items-center justify-between p-1.5 rounded-md hover:bg-black/30 transition-colors"
+            className="h-auto w-full justify-between p-1.5 hover:bg-black/30"
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-primary-400 fantasy-glow" />
@@ -198,87 +193,87 @@ const AgentProgressPanel: React.FC<AgentProgressPanelProps> = ({
             ) : (
               <ChevronDown className="w-3.5 h-3.5 text-primary-soft/70" />
             )}
-          </button>
+          </Button>
           
-          <AnimatePresence>
-            {isResultsExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <div className="space-y-1.5 px-1.5 pb-1">
-                  {/* Character Card */}
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-primary-soft">
-                      <User className="w-3 h-3 text-primary-400" />
-                      <span className={fontClass}>{t("agentProgress.characterCard") || "角色卡"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.character_data ? "bg-cream" : "bg-slate-600"
-                      }`} />
-                      {result.character_data && (
-                        <button
-                          onClick={() => handleExport("character", result.character_data)}
-                          disabled={isExporting}
-                          className="p-0.5 rounded hover:bg-black/30 transition-colors"
-                        >
-                          <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-            
-                  {/* Status System */}
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-primary-soft">
-                      <FileText className="w-3 h-3 text-primary-400" />
-                      <span className={fontClass}>{t("agentProgress.statusSystem") || "状态系统"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.status_data ? "bg-cream" : "bg-slate-600"
-                      }`} />
-                      {result.status_data && (
-                        <button
-                          onClick={() => handleExport("status", result.status_data)}
-                          disabled={isExporting}
-                          className="p-0.5 rounded hover:bg-black/30 transition-colors"
-                        >
-                          <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-            
-                  {/* World Data */}
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-primary-soft">
-                      <Database className="w-3 h-3 text-primary-400" />
-                      <span className={fontClass}>{t("agentProgress.worldData") || "世界数据"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
-                        result.world_data ? "bg-cream" : "bg-slate-600"
-                      }`} />
-                      {result.world_data && (
-                        <button
-                          onClick={() => handleExport("world", result.world_data)}
-                          disabled={isExporting}
-                          className="p-0.5 rounded hover:bg-black/30 transition-colors"
-                        >
-                          <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
+          <div
+            className="overflow-hidden transition-[max-height,opacity] duration-200"
+            style={{ maxHeight: isResultsExpanded ? "360px" : "0px", opacity: isResultsExpanded ? 1 : 0 }}
+            aria-hidden={!isResultsExpanded}
+          >
+            <div className="space-y-1.5 px-1.5 pb-1">
+              {/* Character Card */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-primary-soft">
+                  <User className="w-3 h-3 text-primary-400" />
+                  <span className={fontClass}>{t("agentProgress.characterCard") || "角色卡"}</span>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
+                    result.character_data ? "bg-cream" : "bg-slate-600"
+                  }`} />
+                  {result.character_data && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleExport("character", result.character_data)}
+                      disabled={isExporting}
+                      className="h-auto w-auto p-0.5 hover:bg-black/30"
+                    >
+                      <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+        
+              {/* Status System */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-primary-soft">
+                  <FileText className="w-3 h-3 text-primary-400" />
+                  <span className={fontClass}>{t("agentProgress.statusSystem") || "状态系统"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
+                    result.status_data ? "bg-cream" : "bg-slate-600"
+                  }`} />
+                  {result.status_data && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleExport("status", result.status_data)}
+                      disabled={isExporting}
+                      className="h-auto w-auto p-0.5 hover:bg-black/30"
+                    >
+                      <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+        
+              {/* World Data */}
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-primary-soft">
+                  <Database className="w-3 h-3 text-primary-400" />
+                  <span className={fontClass}>{t("agentProgress.worldData") || "世界数据"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full fantasy-glow ${
+                    result.world_data ? "bg-cream" : "bg-slate-600"
+                  }`} />
+                  {result.world_data && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleExport("world", result.world_data)}
+                      disabled={isExporting}
+                      className="h-auto w-auto p-0.5 hover:bg-black/30"
+                    >
+                      <Download className="w-3 h-3 text-primary-soft/80 hover:text-cream" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

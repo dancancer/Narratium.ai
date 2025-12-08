@@ -4,6 +4,7 @@ import React from "react";
 import { X, Repeat, BookOpen, Heart, Wand2, Headphones, Info as InfoCircle } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface PresetInfoModalProps {
   isOpen: boolean;
@@ -103,12 +104,14 @@ export default function PresetInfoModal({
         {/* ═══════════════════════════════════════════════════════════
             关闭按钮 - Close Button
             ═══════════════════════════════════════════════════════════ */}
-        <button 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-ink-soft hover:text-primary-bright transition-colors z-20"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20"
         >
-          <X size={18} className="sm:w-5 sm:h-5" />
-        </button>
+          <X size={18} />
+        </Button>
         
         {/* ═══════════════════════════════════════════════════════════
             头部区域 - Header Section

@@ -10,6 +10,7 @@
 
 import NextImage from "next/image";
 import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { GithubFile, extractCharacterInfo } from "@/hooks/useCharacterDownload";
 
 interface CharacterCardProps {
@@ -123,7 +124,7 @@ function CharacterImage({
     >
       {/* 加载占位 */}
       {!isImageLoaded && (
-        <div className="absolute inset-0 bg-deep flex items-center justify-center">
+        <div className="absolute inset-0  flex items-center justify-center">
           <div
             className={`animate-spin border-2 border-primary-soft border-t-transparent rounded-full ${
               isMobile ? "w-4 h-4" : "w-6 h-6"
@@ -230,17 +231,17 @@ function DownloadButton({
   t,
   onClick,
 }: DownloadButtonProps) {
-  const baseClass = `group w-full rounded-md transition-all duration-200 ${fontClass}`;
   const sizeClass = isMobile ? "px-2 py-1.5 text-xs" : "px-3 py-2 text-sm";
 
   const stateClass = isImporting
     ? "bg-ink text-primary-soft cursor-wait"
-    : "bg-gradient-to-br from-sand to-primary-bright text-ink hover: hover:";
+    : "bg-gradient-to-br from-sand to-primary-bright text-ink hover:opacity-90";
 
   return (
-    <button
+    <Button
+      variant="ghost"
       disabled={disabled}
-      className={`${baseClass} ${sizeClass} ${stateClass}`}
+      className={`h-auto group w-full ${fontClass} ${sizeClass} ${stateClass}`}
       onClick={onClick}
     >
       {isImporting ? (
@@ -258,7 +259,7 @@ function DownloadButton({
           {isMobile ? t("downloadModal.downloadShort") : t("downloadModal.downloadAndImport")}
         </div>
       )}
-    </button>
+    </Button>
   );
 }
 

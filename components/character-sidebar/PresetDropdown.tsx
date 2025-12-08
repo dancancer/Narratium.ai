@@ -8,6 +8,7 @@
 
 import React from "react";
 import { Check, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getPresetDisplayName, getPresetDescription } from "@/function/preset/download";
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -42,6 +43,8 @@ interface PresetDropdownProps {
   onShowInfo: (presetName: string) => void;
   /** 无预设时的提示文字 */
   emptyText?: string;
+  /** 是否作为浮层渲染（不使用自身 absolute 定位） */
+  floating?: boolean;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -68,11 +71,19 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
   onSelect,
   onShowInfo,
   emptyText = "没有可用的预设",
+  floating = false,
 }) => {
+  const containerClass = floating
+    ? "relative w-full bg-surface border border-stroke rounded-md overflow-hidden max-h-[320px] shadow-lg"
+    : "absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md  z-10 overflow-hidden max-h-[240px]";
+  const listClass = floating
+    ? "overflow-y-auto max-h-[320px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong"
+    : "overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong";
+
   /* ─── 空状态 ─── */
   if (presets.length === 0) {
     return (
-      <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md  z-10 overflow-hidden">
+      <div className={containerClass}>
         <div className="p-3 text-center text-ink-soft">
           <span className={`text-2xs md:text-xs ${fontClass}`}>{emptyText}</span>
         </div>
@@ -81,8 +92,8 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
   }
 
   return (
-    <div className="absolute left-0 right-0 mt-1 mx-6 bg-surface border border-stroke rounded-md  z-10 overflow-hidden max-h-[240px]">
-      <div className="overflow-y-auto max-h-[240px] scrollbar-thin scrollbar-track-input scrollbar-thumb-stroke hover:scrollbar-thumb-stroke-strong">
+    <div className={containerClass}>
+      <div className={listClass}>
         {presets.map((preset, index) => {
           const isSelected = selectedPreset === preset.name;
           const isLast = index === presets.length - 1;
@@ -105,15 +116,17 @@ const PresetDropdown: React.FC<PresetDropdownProps> = ({
                       {getPresetDisplayName(preset.name, language)}
                     </span>
                     {/* 信息按钮 */}
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
                         onShowInfo(preset.name);
                       }}
-                      className="ml-2 w-4 h-4 flex items-center justify-center text-ink-soft hover:text-primary-bright transition-all duration-300 rounded-full hover:bg-stroke/50 group/info"
+                      className="ml-2 h-4 w-4 text-ink-soft hover:text-primary-bright hover:bg-stroke/50 group/info"
                     >
                       <InfoIcon />
-                    </button>
+                    </Button>
                   </div>
                   <p className={`text-2xs md:text-xs text-ink-soft mt-1 ${fontClass} line-clamp-2`}>
                     {getPresetDescription(preset.name, language)}

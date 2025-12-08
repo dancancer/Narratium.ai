@@ -16,6 +16,8 @@ import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronRight, Edit3, Trash2 } from "lucide-react";
 import { WorldBookEntryData } from "./index";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 // ============================================================================
 //                              类型定义
@@ -282,23 +284,11 @@ const ToggleSwitch = memo(function ToggleSwitch({
   t: (key: string) => string;
 }) {
   return (
-    <button
-      onClick={onToggle}
-      className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full border transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-        isActive
-          ? "bg-primary text-primary-foreground border-primary/70"
-          : "bg-muted text-foreground border-border"
-      }`}
+    <Switch
+      checked={isActive}
+      onCheckedChange={onToggle}
       title={isActive ? t("worldBook.disable") : t("worldBook.enable")}
-    >
-      <span
-        className={`inline-block h-3 w-3 sm:h-4 sm:w-4 transform rounded-full border transition-all duration-200 ${
-          isActive
-            ? "translate-x-5 sm:translate-x-6 bg-primary-foreground border-primary/60"
-            : "translate-x-1 bg-background border-border/70"
-        }`}
-      />
-    </button>
+    />
   );
 });
 
@@ -339,13 +329,15 @@ const KeywordCell = memo(function KeywordCell({
           </Badge>
         )}
       </div>
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onExpand}
-        className="flex-none w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke"
+        className="w-5 h-5 sm:w-6 sm:h-6"
         title={isExpanded ? t("worldBook.collapse") : t("worldBook.expand")}
       >
-        <ChevronRight className={`w-2.5 h-2.5 transition-transform duration-300 ${isExpanded ? "rotate-90" : ""}`} />
-      </button>
+        <ChevronRight className={`w-2.5 h-2.5 ${isExpanded ? "rotate-90" : ""}`} />
+      </Button>
     </div>
   );
 });
@@ -365,20 +357,24 @@ const ActionButtons = memo(function ActionButtons({
 }) {
   return (
     <div className="flex items-center space-x-0.5 sm:space-x-1">
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onEdit}
-        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded hover:bg-stroke group"
+        className="w-5 h-5 sm:w-6 sm:h-6"
         title={t("worldBook.edit")}
       >
-        <Edit3 className="w-2.5 h-2.5 transition-transform duration-300 group-hover:scale-110" />
-      </button>
-      <button
+        <Edit3 className="w-2.5 h-2.5" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onDelete}
-        className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-red-400 hover:text-red-300 transition-colors duration-300 rounded hover:bg-stroke group"
+        className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 hover:text-red-300"
         title={t("worldBook.delete")}
       >
-        <Trash2 className="w-2.5 h-2.5 transition-transform duration-300 group-hover:scale-110" />
-      </button>
+        <Trash2 className="w-2.5 h-2.5" />
+      </Button>
     </div>
   );
 });

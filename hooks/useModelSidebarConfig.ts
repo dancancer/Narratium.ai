@@ -169,12 +169,12 @@ export function useModelSidebarConfig() {
     let name = modelName?.trim() || (type === "gemini" ? "Gemini" : type === "ollama" ? "Ollama" : "OpenAI");
     if (name.length > 15) name = name.substring(0, 15);
     const same = configs.filter(c => c.model === modelName || new RegExp(`【\\d+】${name}`).test(c.name));
-    if (same.length === 0) return `【1】${name}`;
+    if (same.length === 0) return `new model`;
     const max = same.reduce((m, c) => {
       const match = c.name.match(/【(\d+)】/);
       return match ? Math.max(m, parseInt(match[1], 10)) : m;
     }, 0);
-    return `【${max + 1}】${name}`;
+    return `${name}(${max + 1})`;
   }, [configs]);
 
   // 【移除】不再需要派发 window 事件，Store 自动通知订阅者

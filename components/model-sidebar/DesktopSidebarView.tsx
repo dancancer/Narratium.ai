@@ -1,6 +1,8 @@
 import React from "react";
 import { ChevronRight, Plus, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { LLMType, SidebarViewProps } from "./types";
+import { Button } from "@/components/ui/button";
 
 // ╔════════════════════════════════════════╗
 // ║ 桌面端模型侧边栏视图（纯展示层）            ║
@@ -16,6 +18,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
     state,
     actions,
     helpers,
+    variant = "sidebar",
   } = props;
 
   const {
@@ -64,36 +67,50 @@ export function DesktopSidebarView(props: SidebarViewProps) {
   } = actions;
 
   const { describeLlmType, getBaseUrlPlaceholder, getModelPlaceholder } = helpers;
+  const isPanel = variant === "panel";
+  const containerClassName = cn(
+    "h-full text-text transition-all duration-300 overflow-hidden",
+    isPanel ? "w-full bg-background" : "magic-border border-l border-border ",
+    !isPanel && (isOpen ? "w-64" : "w-0"),
+  );
+  const scrollAreaClassName = cn(
+    "h-full transition-opacity duration-300 overflow-y-auto fantasy-scrollbar",
+    isPanel ? "w-full bg-background" : "w-64",
+    isOpen ? "opacity-100" : "opacity-0",
+  );
 
   return (
-    <div
-      className={`h-full magic-border border-l border-border breathing-bg text-text transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-0"
-      }`}
-    >
-      <div className={`w-64 h-full ${isOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 overflow-y-auto fantasy-scrollbar`}>
-        <div className="flex justify-between items-center p-3 border-b border-border bg-gradient-to-r from-canvas to-input">
-          <h1 className={"text-base magical-text "}>{t("modelSettings.title")}</h1>
-          <button
-            onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
-            className="w-6 h-6 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
-          >
-            <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300" />
-          </button>
-        </div>
+    <div className={containerClassName}>
+      <div className={scrollAreaClassName}>
+        {!isPanel && (
+          <div className="flex justify-between items-center p-3 border-b border-border bg-gradient-to-r from-canvas to-input">
+            <h1 className={"text-base magical-text "}>{t("modelSettings.title")}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {trackButtonClick("ModelSidebar", "关闭模型设置"); toggleSidebar();}}
+              className="w-6 h-6 text-cream bg-surface border border-stroke hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)]"
+            >
+              <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300" />
+            </Button>
+          </div>
+        )}
         <div className="p-3 sm:p-3 p-2">
           <div className="mb-3 sm:mb-3 mb-2">
             <div className="flex justify-between items-center mb-2 sm:mb-2 mb-1">
               <label className={`text-cream text-xs sm:text-xs text-2xs font-medium ${fontClass}`}>
                 {t("modelSettings.configurations") || "API Configurations"}
               </label>
-              <button 
+              <Button 
+                variant="outline"
+                size="sm"
                 onClick={(e) => {trackButtonClick("ModelSidebar", "创建新配置"); handleCreateConfig();}}
-                className="text-xs sm:text-xs text-2xs text-primary hover:text-cream transition-all duration-200 px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 rounded border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
+                className="text-xs sm:text-xs text-2xs text-primary hover:text-cream px-2 py-1 sm:px-2 sm:py-1 px-1.5 py-0.5 h-auto border border-border hover:border-primary hover:shadow-[0_0_6px_rgba(209,163,92,0.2)] flex items-center gap-1"
               >
                 <Plus className="sm:w-2.5 sm:h-2.5 w-2 h-2" />
                 <span className="sm:block hidden">{t("modelSettings.newConfig") || "New Config"}</span>
                 <span className="sm:hidden block">+</span>
-              </button>
+              </Button>
             </div>
             
             {!showNewConfigForm && configs.length > 0 && (
@@ -149,12 +166,14 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                         </>
                       )}
                     </div>
-                    <button 
+                    <Button 
+                      variant="ghost"
+                      size="icon"
                       onClick={(e) => { trackButtonClick("ModelSidebar", "删除配置"); e.stopPropagation(); handleDeleteConfig(config.id); }}
-                      className="text-red-400 hover:text-red-300 text-xs sm:text-xs text-2xs p-1 sm:p-1 p-0.5 transition-colors ml-1 flex-shrink-0"
+                      className="text-red-400 hover:text-red-300 text-xs sm:text-xs text-2xs p-1 sm:p-1 p-0.5 h-auto w-auto ml-1 flex-shrink-0"
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -275,10 +294,10 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <div className="mb-4 sm:mb-4 mb-3">
                 <div className="relative">
                   {llmType !== "ollama" && (
-                    <button 
-                      className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-colors magical-text ${fontClass}`} 
+                    <Button 
+                      className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 h-auto text-xs sm:text-xs text-2xs border border-primary w-full magical-text ${fontClass}`} 
                       onClick={() => handleGetModelList(llmType, baseUrl, apiKey)}
-                    >{t("modelSettings.getModelList") || "Get Model List"}</button>
+                    >{t("modelSettings.getModelList") || "Get Model List"}</Button>
                   )}
                   
                   {getModelListSuccess && (
@@ -346,19 +365,20 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </div>
 
               <div className="flex gap-2 sm:gap-2 gap-1">
-                <button
+                <Button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "创建配置"); e.stopPropagation(); handleSave();}}
-                  className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-primary transition-colors magical-text ${fontClass}`}
+                  className={`flex-1 bg-muted-surface hover:bg-ink text-cream font-medium py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 h-auto text-xs sm:text-xs text-2xs border border-primary magical-text ${fontClass}`}
                 >
                   <span className="sm:block hidden">{t("modelSettings.createConfig") || "Create Configuration"}</span>
                   <span className="sm:hidden block">Create</span>
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => {trackButtonClick("cancel_create_config_btn", "取消创建配置"); handleCancelCreate();}}
-                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 bg-card text-xs sm:text-xs text-2xs text-text rounded border border-border hover:bg-stroke transition-colors ${fontClass}`}
+                  className={`px-2 py-1.5 sm:px-2 sm:py-1.5 px-1.5 py-1 h-auto bg-card text-xs sm:text-xs text-2xs text-text border border-border hover:bg-stroke ${fontClass}`}
                 >
                   {t("common.cancel") || "Cancel"}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -366,12 +386,12 @@ export function DesktopSidebarView(props: SidebarViewProps) {
           {!showNewConfigForm && activeConfigId && (
             <div className="space-y-3 sm:space-y-3 space-y-2">
               <div className="relative">
-                <button
+                <Button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "保存配置"); e.stopPropagation(); handleSave();}}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 h-auto text-xs sm:text-xs text-2xs border border-primary w-full hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                 >
                   {t("modelSettings.saveSettings") || "Save Settings"}
-                </button>
+                </Button>
 
                 {saveSuccess && (
                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
@@ -386,10 +406,10 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               </div>
 
               <div className="relative">
-                <button
+                <Button
                   onClick={(e) => {trackButtonClick("ModelSidebar", "测试模型"); e.stopPropagation(); handleTestModel();}}
                   disabled={isTesting || (!baseUrl && llmType !== "gemini") || !model}
-                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded-md border border-primary w-full transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 h-auto text-xs sm:text-xs text-2xs border border-primary w-full hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass}`}
                 >
                   {isTesting ? (
                     <span className="flex items-center justify-center">
@@ -400,7 +420,7 @@ export function DesktopSidebarView(props: SidebarViewProps) {
                   ) : (
                     <><span className="sm:block hidden">{t("modelSettings.testModel") || "Test Model"}</span><span className="sm:hidden block">Test</span></>
                   )}
-                </button>
+                </Button>
 
                 {testModelSuccess && (
                   <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-stroke bg-opacity-80 rounded transition-opacity backdrop-blur-sm">
@@ -432,14 +452,14 @@ export function DesktopSidebarView(props: SidebarViewProps) {
               <p className="text-xs sm:text-xs text-2xs text-text-muted mb-2 sm:mb-2 mb-1">
                 {t("modelSettings.noConfigs")}
               </p>
-              <button
+              <Button
                 onClick={(e) => { trackButtonClick("ModelSidebar", "创建第一个配置"); e.stopPropagation(); handleCreateConfig(); }}
-                className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 text-xs sm:text-xs text-2xs rounded border border-primary transition-all duration-200 hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
+                className={`bg-muted-surface hover:bg-ink text-cream font-normal py-1.5 px-2 sm:py-1.5 sm:px-2 py-1 px-1.5 h-auto text-xs sm:text-xs text-2xs border border-primary hover:shadow-[0_0_8px_rgba(209,163,92,0.2)] ${fontClass} flex items-center justify-center gap-1 w-full max-w-[200px] sm:max-w-[200px] max-w-[150px]`}
               >
                 <Plus className="sm:w-2.5 sm:h-2.5 w-2 h-2" />
                 <span className="sm:block hidden">{t("modelSettings.createFirstConfig") || "Create Your First Configuration"}</span>
                 <span className="sm:hidden block">Create Config</span>
-              </button>
+              </Button>
             </div>
           )}
         </div>

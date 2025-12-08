@@ -4,6 +4,7 @@ import { useLanguage } from "@/app/i18n";
 import { SketchPicker } from "react-color";
 import { useSymbolColorStore } from "@/contexts/SymbolColorStore";
 import { toast } from "@/lib/store/toast-store";
+import { Button } from "@/components/ui/button";
 
 interface SymbolColor {
   symbol: string;
@@ -106,16 +107,17 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
               className="relative z-10 w-full px-3 py-2 bg-gradient-to-br from-deep via-muted-surface to-deep text-cream-soft rounded-md border border-border/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 hover:border-border backdrop-blur-sm  text-sm sm:text-base"
             />
           </div>
-          <button
+          <Button
+            variant="outline"
             onClick={handleAddSymbol}
-            className="relative group px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  border border-border"
+            className="h-auto relative group px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft text-xs sm:text-sm font-medium border-border"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span className="relative z-10 flex items-center space-x-1.5 sm:space-x-2">
               <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5 transition-transform duration-300 group-hover:scale-110" />
               <span>{t("characterChat.add")}</span>
             </span>
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-3 sm:space-y-4">
@@ -133,14 +135,16 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
               <div className="relative z-10 flex items-center gap-2 sm:gap-3">
                 <div className="flex gap-1.5 sm:gap-2">
                   {getPredefinedColors(symbol).map((predefinedColor: string) => (
-                    <button
+                    <Button
                       key={predefinedColor}
-                      className="relative group/color w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-white/20 hover:scale-110 transition-transform  "
+                      variant="ghost"
+                      size="icon"
+                      className="relative group/color h-5 w-5 sm:h-6 sm:w-6 rounded-full border border-white/20 hover:scale-110 p-0"
                       style={{ backgroundColor: predefinedColor }}
                       onClick={() => handlePredefinedColorSelect(symbol, predefinedColor)}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-full opacity-0 group-hover/color:opacity-100 transition-opacity duration-300"></div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
 
@@ -169,23 +173,26 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
                 </div>
 
                 {!DEFAULT_SYMBOLS_PREDEFINED.includes(symbol) && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDeleteSymbol(symbol)}
-                    className="relative group/delete p-1 text-red-400 hover:text-red-300 transition-colors duration-300"
+                    className="relative group/delete h-auto w-auto p-1 text-red-400 hover:text-red-300"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent rounded opacity-0 group-hover/delete:opacity-100 transition-opacity duration-300"></div>
                     <span className="relative z-10 text-base sm:text-lg">×</span>
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
           ))}
         </div>
 
-        <button
+        <Button
+          variant="outline"
           onClick={handleSave}
           disabled={isSaving}
-          className={`relative group mt-4 sm:mt-6 w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  border border-border ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`h-auto relative group mt-4 sm:mt-6 w-full px-3 sm:px-4 py-2 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft text-xs sm:text-sm font-medium border-border ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <span className="relative z-10 flex items-center justify-center space-x-1.5 sm:space-x-2">
@@ -196,7 +203,7 @@ export const TagColorEditor: React.FC<TagColorEditorProps> = ({ onSave, onViewSw
             )}
             <span>{isSaving ? t("characterChat.saving") : t("characterChat.saveChanges")}</span>
           </span>
-        </button>
+        </Button>
       </div>
     </div>
   );

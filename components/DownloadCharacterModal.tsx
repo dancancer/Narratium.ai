@@ -23,6 +23,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    类型定义
@@ -81,7 +82,7 @@ export default function DownloadCharacterModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className={`p-0 overflow-hidden bg-deep border-border gap-0 ${
+      <DialogContent className={`p-0 overflow-hidden  border-border gap-0 ${
         isMobile
           ? "h-full max-h-[calc(100vh-12rem)] rounded-none pb-28 max-w-full"
           : "max-w-6xl max-h-[90vh] rounded-md"
@@ -165,31 +166,23 @@ function ModalHeader({ isMobile, loading, serifFontClass, t, onRefresh, onClose 
       </h2>
 
       <div className="flex items-center gap-2">
-        {/* 刷新按钮 */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onRefresh}
           disabled={loading}
-          className={`group p-2 rounded-full text-ink-soft hover:text-primary-bright hover:bg-muted-surface transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40 ${
-            loading ? "opacity-60 cursor-wait" : ""
-          }`}
           title={t("downloadModal.refresh")}
-          type="button"
         >
-          <RefreshCw
-            size={isMobile ? 16 : 20}
-            className={`${loading ? "animate-spin" : ""} transition-transform duration-300 group-hover:rotate-180`}
-          />
-        </button>
-
-        {/* 关闭按钮 */}
-        <button
+          <RefreshCw size={isMobile ? 16 : 20} className={loading ? "animate-spin" : ""} />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="p-2 rounded-full text-ink-soft hover:text-primary-bright hover:bg-muted-surface transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-highlight/40"
           title={t("common.close")}
-          type="button"
         >
           <X size={isMobile ? 20 : 24} />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -225,26 +218,28 @@ function TagFilter({ isMobile, selectedTag, tagCounts, fontClass, serifFontClass
       </h3>
 
       <div className={`flex flex-wrap ${isMobile ? "gap-1.5" : "gap-2"}`}>
-        {/* 全部标签 */}
-        <button
+        <Button
+          variant={selectedTag === "all" ? "default" : "outline"}
+          size="sm"
           onClick={() => onTagSelect("all")}
-          className={`${buttonBase} ${buttonSize} ${getButtonStyle(selectedTag === "all", false)}`}
+          className={`${buttonBase} ${buttonSize}`}
         >
           {isMobile
             ? `${t("downloadModal.all")} (${tagCounts.all})`
             : t("downloadModal.allCharacters").replace("{count}", String(tagCounts.all))}
-        </button>
+        </Button>
 
-        {/* 分类标签 */}
         {TAGS.map(tag => (
-          <button
+          <Button
             key={tag}
+            variant={selectedTag === tag ? "default" : "outline"}
+            size="sm"
             onClick={() => onTagSelect(tag)}
             disabled={tagCounts[tag] === 0}
-            className={`${buttonBase} ${buttonSize} ${getButtonStyle(selectedTag === tag, tagCounts[tag] === 0)}`}
+            className={`${buttonBase} ${buttonSize}`}
           >
             {t(`downloadModal.tags.${tag}`)} ({tagCounts[tag] || 0})
-          </button>
+          </Button>
         ))}
       </div>
     </div>

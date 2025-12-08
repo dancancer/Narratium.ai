@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { Layers, Palette, X } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { TagColorEditor } from "@/components/TagColorEditor";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +40,7 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden bg-deep border-border gap-0 h-[85vh] sm:h-[calc(100vh-4rem)] max-h-[500px] sm:max-h-[700px]">
+      <DialogContent className="max-w-3xl p-0 overflow-hidden  border-border gap-0 h-[85vh] sm:h-[calc(100vh-4rem)] max-h-[500px] sm:max-h-[700px]">
         <DialogTitle className="sr-only">{t("characterChat.advancedSettings")}</DialogTitle>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-3xl"></div>
@@ -62,10 +63,11 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
           <div className="w-24 sm:w-56 border-r border-neutral-700/50 p-2 sm:p-5 bg-neutral-800/20 relative">
             <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-50"></div>
             <div className="relative z-10 space-y-1 sm:space-y-2">
-              <button
-                className={`w-full text-left px-1.5 sm:px-3 py-1.5 sm:py-2.5 rounded-md transition-all duration-200 ease-in-out text-2xs sm:text-sm font-medium ${fontClass} ${
+              <Button
+                variant="ghost"
+                className={`h-auto w-full justify-start px-1.5 sm:px-3 py-1.5 sm:py-2.5 text-2xs sm:text-sm font-medium ${fontClass} ${
                   activeTab === "tagColors"
-                    ? "bg-gradient-to-r from-slate-700/80 via-primary-800/60 to-slate-700/80 text-primary-200  border border-primary-600/30  "
+                    ? "bg-gradient-to-r from-slate-700/80 via-primary-800/60 to-slate-700/80 text-primary-200 border border-primary-600/30"
                     : "text-neutral-400 hover:bg-neutral-700/40 hover:text-neutral-200"
                 }`}
                 onClick={() => setActiveTab("tagColors")}
@@ -74,7 +76,7 @@ const AdvancedSettingsEditor: React.FC<AdvancedSettingsEditorProps> = ({ isOpen,
                   <Palette className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary-400" />
                   <span className="truncate">{t("characterChat.tagColorEditor")}</span>
                 </div>
-              </button>
+              </Button>
             </div>
           </div>
 

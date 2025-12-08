@@ -56,6 +56,24 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
   });
   const { expandedRows, toggleRow, setExpandedRows } = useRowExpansion();
 
+  /* ─────────────────────────────────────────────────────────────────────────
+   * 稳定回调：避免 PresetTable 因回调引用变化而重渲染
+   * ───────────────────────────────────────────────────────────────────────── */
+  const handleEditPresetName = useCallback((preset: PresetData) => {
+    setCurrentEditingPreset(preset);
+    setIsEditNameModalOpen(true);
+  }, []);
+
+  const handleCopyPreset = useCallback((preset: PresetData) => {
+    setCurrentCopyingPreset(preset);
+    setIsCopyModalOpen(true);
+  }, []);
+
+  const handleEditPrompt = useCallback((prompt: PresetPromptData) => {
+    setCurrentEditingPrompt(prompt);
+    setIsEditModalOpen(true);
+  }, []);
+
   const sortComparators = useMemo(
     () => ({
       name: (a: PresetData, b: PresetData) => a.name.localeCompare(b.name),
@@ -87,20 +105,18 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
     };
   }, []);
 
-  const loadPresets = useCallback(async () => {
-    setIsLoading(true);
+  const refreshPresets = useCallback(async () => {
     try {
       const result = await getAllPresets();
       if (result.success && result.data) {
         setPresets(result.data.map(formatPreset));
+        return;
       } else {
         toast.error(t("preset.loadFailed") || "Failed to load presets");
       }
     } catch (error) {
       console.error("Error loading presets:", error);
       toast.error(t("preset.loadFailed") || "Failed to load presets");
-    } finally {
-      setIsLoading(false);
     }
   }, [formatPreset, t]);
 
@@ -129,7 +145,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
       try {
         const result = await togglePresetEnabled(presetId, enableState);
         if (result.success) {
-          await loadPresets();
+          await refreshPresets();
           if (selectedPreset?.id === presetId) {
             await selectPreset(presetId);
           }
@@ -142,7 +158,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         toast.error(t("preset.togglePresetFailed") || "Failed to toggle preset");
       }
     },
-    [loadPresets, selectPreset, selectedPreset?.id, t],
+    [refreshPresets, selectPreset, selectedPreset?.id, t],
   );
 
   const handleDeletePreset = useCallback(
@@ -151,7 +167,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         const result = await deletePreset(presetId);
         if (result.success) {
           setSelectedPreset(null);
-          await loadPresets();
+          await refreshPresets();
           toast.success(t("preset.deleteSuccess"));
         } else {
           toast.error(t("preset.deleteFailed") || "Failed to delete preset");
@@ -161,7 +177,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         toast.error(t("preset.deleteFailed") || "Failed to delete preset");
       }
     },
-    [loadPresets, t],
+    [refreshPresets, t],
   );
 
   const handleDeletePrompt = useCallback(
@@ -170,7 +186,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         const result = await deletePromptFromPreset(presetId, promptIdentifier);
         if (result.success) {
           await selectPreset(presetId);
-          await loadPresets();
+          await refreshPresets();
           toast.success(t("preset.deletePromptSuccess"));
         } else {
           toast.error(t("preset.deletePromptFailed") || "Failed to delete prompt");
@@ -180,7 +196,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         toast.error(t("preset.deletePromptFailed") || "Failed to delete prompt");
       }
     },
-    [loadPresets, selectPreset, t],
+    [refreshPresets, selectPreset, t],
   );
 
   const handleTogglePrompt = useCallback(
@@ -189,7 +205,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         const result = await togglePromptEnabled(presetId, promptIdentifier, enableState);
         if (result.success) {
           await selectPreset(presetId);
-          await loadPresets();
+          await refreshPresets();
           toast.success(enableState ? t("preset.promptEnabledSuccess") : t("preset.promptDisabledSuccess"));
         } else {
           toast.error(t("preset.togglePromptFailed") || "Failed to toggle prompt");
@@ -199,38 +215,51 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         toast.error(t("preset.togglePromptFailed") || "Failed to toggle prompt");
       }
     },
-    [loadPresets, selectPreset, t],
+    [refreshPresets, selectPreset, t],
   );
 
   useEffect(() => {
-    loadPresets().then(async () => {
-      const activatePresetId = sessionStorage.getItem("activate_preset_id");
-      const activatePresetName = sessionStorage.getItem("activate_preset_name");
+    let isActive = true;
 
-      if (activatePresetId) {
-        await handleTogglePreset(activatePresetId, true);
-        sessionStorage.removeItem("activate_preset_id");
-      } else if (activatePresetName) {
-        const all = await getAllPresets();
-        if (all.success && all.data) {
-          const match = all.data.find((p) => p.name && p.name.toLowerCase().includes(activatePresetName.toLowerCase()));
-          if (match?.id) {
-            await handleTogglePreset(match.id, true);
-          } else {
-            toast.error(`No preset found matching "${activatePresetName}"`);
+    setIsLoading(true);
+    refreshPresets()
+      .then(async () => {
+        if (!isActive) return;
+
+        const activatePresetId = sessionStorage.getItem("activate_preset_id");
+        const activatePresetName = sessionStorage.getItem("activate_preset_name");
+
+        if (activatePresetId) {
+          await handleTogglePreset(activatePresetId, true);
+          sessionStorage.removeItem("activate_preset_id");
+        } else if (activatePresetName) {
+          const all = await getAllPresets();
+          if (all.success && all.data) {
+            const match = all.data.find((p) => p.name && p.name.toLowerCase().includes(activatePresetName.toLowerCase()));
+            if (match?.id) {
+              await handleTogglePreset(match.id, true);
+            } else {
+              toast.error(`No preset found matching "${activatePresetName}"`);
+            }
           }
+          sessionStorage.removeItem("activate_preset_name");
         }
-        sessionStorage.removeItem("activate_preset_name");
-      }
-    });
-  }, [handleTogglePreset, loadPresets]);
+      })
+      .finally(() => {
+        if (isActive) setIsLoading(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [handleTogglePreset, refreshPresets]);
 
   const filteredPresets = filterItems(presets, filterBy, filterMap);
   const sortedPresets = sortItems(filteredPresets, sortBy, sortOrder, sortComparators);
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center breathing-bg">
+      <div className="h-full flex items-center justify-center ">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
@@ -243,7 +272,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
   }
 
   return (
-    <div className="h-full flex flex-col breathing-bg text-cream-soft">
+    <div className="h-full flex flex-col  text-cream-soft">
       <PresetHeader
         characterName={characterName}
         presets={presets}
@@ -264,8 +293,6 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         onSortByChange={handleSortByChange}
         onSortOrderToggle={handleSortOrderToggle}
         onFilterChange={handleFilterChange}
-        fontClass={fontClass}
-        serifFontClass={serifFontClass}
         t={t}
       />
 
@@ -274,24 +301,14 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
         expandedRows={expandedRows}
         selectedPreset={selectedPreset}
         fontClass={fontClass}
-        serifFontClass={serifFontClass}
         t={t}
         onTogglePreset={handleTogglePreset}
-        onToggleRow={(id) => toggleRow(id)}
+        onToggleRow={toggleRow}
         onSelectPreset={selectPreset}
-        onEditPresetName={(preset) => {
-          setCurrentEditingPreset(preset);
-          setIsEditNameModalOpen(true);
-        }}
-        onCopyPreset={(preset) => {
-          setCurrentCopyingPreset(preset);
-          setIsCopyModalOpen(true);
-        }}
+        onEditPresetName={handleEditPresetName}
+        onCopyPreset={handleCopyPreset}
         onDeletePreset={handleDeletePreset}
-        onEditPrompt={(prompt) => {
-          setCurrentEditingPrompt(prompt);
-          setIsEditModalOpen(true);
-        }}
+        onEditPrompt={handleEditPrompt}
         onTogglePrompt={handleTogglePrompt}
         onDeletePrompt={handleDeletePrompt}
       />
@@ -301,7 +318,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           isOpen={isImportModalOpen}
           onClose={() => setIsImportModalOpen(false)}
           onImport={() => {
-            loadPresets();
+            refreshPresets();
             toast.success(t("preset.importSuccess") || "Import success");
           }}
         />
@@ -313,7 +330,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={() => {
             setIsCreateModalOpen(false);
-            loadPresets();
+            refreshPresets();
           }}
         />
       )}
@@ -331,7 +348,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
             setIsEditModalOpen(false);
             setCurrentEditingPrompt(null);
             if (selectedPreset) await selectPreset(selectedPreset.id);
-            await loadPresets();
+            await refreshPresets();
           }}
         />
       )}
@@ -346,7 +363,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           presetId={currentEditingPreset.id}
           currentName={currentEditingPreset.name}
           onSuccess={async () => {
-            await loadPresets();
+            await refreshPresets();
             if (selectedPreset?.id === currentEditingPreset.id) {
               await selectPreset(currentEditingPreset.id);
             }
@@ -368,7 +385,7 @@ export default function PresetEditor({ onClose, characterName, characterId }: Pr
           onSuccess={() => {
             setIsCopyModalOpen(false);
             setCurrentCopyingPreset(null);
-            loadPresets();
+            refreshPresets();
           }}
         />
       )}

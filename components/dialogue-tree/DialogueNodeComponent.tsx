@@ -14,6 +14,7 @@ import { Handle, Position, NodeProps } from "reactflow";
 import { CornerDownRight, ChevronDown, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -134,12 +135,14 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
 
       {/* 跳转按钮 */}
       <div className="absolute top-2 right-2 z-10">
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={(e) => {
             trackButtonClick("DialogueTreeModal", "跳转到节点");
             handleJumpClick(e);
           }}
-          className={`${colors.jumpButton} transition-colors duration-300 p-1 rounded-full hover:bg-muted-surface focus:outline-none`}
+          className={`${colors.jumpButton} p-1 h-auto w-auto rounded-full hover:bg-muted-surface`}
           title={t("dialogue.jumpToNode")}
           disabled={isJumping}
         >
@@ -148,7 +151,7 @@ export function DialogueNodeComponent({ id, data }: NodeProps<DialogueNodeData>)
           ) : (
             <CornerDownRight className="w-3.5 h-3.5" />
           )}
-        </button>
+        </Button>
       </div>
 
       {/* 顶部连接点 */}

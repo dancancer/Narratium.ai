@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -106,7 +107,7 @@ export default function WorldBookEntryEditor({
   return (
     <>
       <Dialog open={isOpen && !isFullscreen && !!editingEntry} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden bg-deep border-border gap-0 max-h-[85vh]">
+        <DialogContent className="max-w-3xl p-0 overflow-hidden  border-border gap-0 max-h-[85vh]">
           <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
           
           {editingEntry && (
@@ -163,22 +164,26 @@ export default function WorldBookEntryEditor({
                             placeholder={t("worldBook.keywordPlaceholder")}
                           />
                           {editingEntry.keys.length > 1 && (
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => handleRemoveKeyword(index)}
-                              className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-md hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                              className="w-8 h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
                             >
                               <X size={14} />
-                            </button>
+                            </Button>
                           )}
                         </div>
                       ))}
-                      <button
+                      <Button
+                        variant="link"
+                        size="sm"
                         onClick={handleAddKeyword}
-                        className={`text-sm text-primary-400 hover:text-primary-300 transition-all duration-300 flex items-center space-x-1 group ${fontClass}`}
+                        className={`text-primary-400 hover:text-primary-300 ${fontClass}`}
                       >
-                        <Plus size={14} className="transition-transform duration-300 group-hover:scale-110" />
+                        <Plus size={14} />
                         <span>{t("worldBook.addKeyword")}</span>
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -196,21 +201,25 @@ export default function WorldBookEntryEditor({
                             className={`flex-1 bg-muted-surface/80 border border-border/60 rounded-md px-3 py-2.5 text-cream-soft focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 backdrop-blur-sm ${fontClass}`}
                             placeholder={t("worldBook.keywordPlaceholder")}
                           />
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleRemoveSecondaryKeyword(index)}
-                            className="w-8 h-8 flex items-center justify-center text-red-400 hover:text-red-300 transition-all duration-300 rounded-md hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
+                            className="w-8 h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10 opacity-0 group-hover:opacity-100"
                           >
                             <X size={14} />
-                          </button>
+                          </Button>
                         </div>
                       ))}
-                      <button
+                      <Button
+                        variant="link"
+                        size="sm"
                         onClick={handleAddSecondaryKeyword}
-                        className={`text-sm text-blue-400 hover:text-blue-300 transition-all duration-300 flex items-center space-x-1 group ${fontClass}`}
+                        className={`text-blue-400 hover:text-blue-300 ${fontClass}`}
                       >
-                        <Plus size={14} className="transition-transform duration-300 group-hover:scale-110" />
+                        <Plus size={14} />
                         <span>{t("worldBook.addKeyword")}</span>
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -253,7 +262,7 @@ export default function WorldBookEntryEditor({
                         type="checkbox"
                         checked={editingEntry.enabled}
                         onChange={(e) => onEntryChange({ ...editingEntry, enabled: e.target.checked })}
-                        className="w-4 h-4 rounded border-border bg-deep text-primary-500 focus:ring-primary-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border  text-primary-500 focus:ring-primary-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-primary-200 transition-colors duration-300">{t("worldBook.enabledLabel")}</span>
                     </label>
@@ -263,7 +272,7 @@ export default function WorldBookEntryEditor({
                         type="checkbox"
                         checked={editingEntry.use_regex}
                         onChange={(e) => onEntryChange({ ...editingEntry, use_regex: e.target.checked })}
-                        className="w-4 h-4 rounded border-border bg-deep text-blue-500 focus:ring-blue-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border  text-blue-500 focus:ring-blue-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-blue-200 transition-colors duration-300">{t("worldBook.regexLabel")}</span>
                     </label>
@@ -273,7 +282,7 @@ export default function WorldBookEntryEditor({
                         type="checkbox"
                         checked={editingEntry.selective}
                         onChange={(e) => onEntryChange({ ...editingEntry, selective: e.target.checked })}
-                        className="w-4 h-4 rounded border-border bg-deep text-green-500 focus:ring-green-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border  text-green-500 focus:ring-green-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-green-200 transition-colors duration-300">{t("worldBook.selectiveLabel")}</span>
                     </label>
@@ -283,7 +292,7 @@ export default function WorldBookEntryEditor({
                         type="checkbox"
                         checked={editingEntry.constant}
                         onChange={(e) => onEntryChange({ ...editingEntry, constant: e.target.checked })}
-                        className="w-4 h-4 rounded border-border bg-deep text-purple-500 focus:ring-purple-500/50 focus:ring-2 transition-all duration-300"
+                        className="w-4 h-4 rounded border-border  text-purple-500 focus:ring-purple-500/50 focus:ring-2 transition-all duration-300"
                       />
                       <span className="text-sm text-cream-soft group-hover:text-purple-200 transition-colors duration-300">{t("worldBook.constantLabel")}</span>
                     </label>
@@ -298,13 +307,15 @@ export default function WorldBookEntryEditor({
                         <span className={`text-xs text-ink-soft/70 bg-muted-surface/60 px-2 py-1 rounded-md ${fontClass}`}>
                           {editingEntry.content.length} {t("worldBook.characters")}
                         </span>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setIsFullscreen(true)}
-                          className="w-7 h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke/50 group"
+                          className="w-7 h-7"
                           title={t("worldBook.fullscreenContent")}
                         >
-                          <Maximize size={14} className="transition-transform duration-300 group-hover:scale-110" />
-                        </button>
+                          <Maximize size={14} />
+                        </Button>
                       </div>
                     </div>
                     <textarea
@@ -317,28 +328,22 @@ export default function WorldBookEntryEditor({
                 </div>
               </div>
 
-              <div className="p-4 border-t border-border/60 bg-deep/90 backdrop-blur-sm flex justify-end space-x-3 relative z-10">
-                <button
+              <div className="p-4 border-t border-border/60 backdrop-blur-sm flex justify-end space-x-3 relative z-10">
+                <Button
+                  variant="ghost"
                   onClick={onClose}
                   disabled={isSaving}
-                  className={`px-4 py-2.5 text-sm text-ink-soft hover:text-cream-soft transition-all duration-300 disabled:opacity-50 rounded-md hover:bg-stroke/30 ${fontClass}`}
+                  className={fontClass}
                 >
                   {t("worldBook.cancel")}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={onSave}
-                  className={`px-6 py-2.5 rounded-md text-sm font-medium transition-all duration-300 ${fontClass} ${"bg-gradient-to-r from-primary-600 to-orange-600 hover:from-primary-500 hover:to-orange-500 text-white  shadow-primary-500/25 hover:shadow-primary-500/40 hover:scale-105"
-                  }`}
+                  disabled={isSaving}
+                  className={fontClass}
                 >
-                  {isSaving ? (
-                    <span className="flex items-center">
-                      <div className="relative w-4 h-4 mr-2">
-                        <div className="absolute inset-0 rounded-full border-2 border-t-white border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
-                      </div>
-                      {t("worldBook.saving")}
-                    </span>
-                  ) : t("worldBook.save")}
-                </button>
+                  {isSaving ? t("worldBook.saving") : t("worldBook.save")}
+                </Button>
               </div>
             </>
           )}
@@ -347,7 +352,7 @@ export default function WorldBookEntryEditor({
 
       {/* 全屏模式 */}
       <Dialog open={isFullscreen && !!editingEntry} onOpenChange={(open) => !open && setIsFullscreen(false)}>
-        <DialogContent className="max-w-5xl p-0 overflow-hidden bg-deep border-border gap-0 h-[85vh]">
+        <DialogContent className="max-w-5xl p-0 overflow-hidden  border-border gap-0 h-[85vh]">
           <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-orange-500/5 pointer-events-none"></div>
           
           <div className="p-4 bg-muted-surface/90 border-b border-border/60 relative z-10">

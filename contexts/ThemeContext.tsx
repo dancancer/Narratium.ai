@@ -16,6 +16,12 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 const STORAGE_KEY = "narratium-theme";
 
 const resolveInitialTheme = (): ThemeMode => {
+  if (typeof document !== "undefined") {
+    const preset = document.documentElement.dataset.theme;
+    if (preset === "light" || preset === "dark") {
+      return preset;
+    }
+  }
   if (typeof window === "undefined") {
     return "dark";
   }
@@ -35,6 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     {
       serializer: (mode) => mode,
       deserializer: (mode) => (mode === "light" ? "light" : "dark"),
+      readOnInit: false,
     },
   );
 

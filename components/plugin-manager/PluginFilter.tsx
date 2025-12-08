@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -70,7 +71,7 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-2 bg-gradient-to-r from-ink/25 to-ink/15 hover:from-ink/35 hover:to-ink/25 text-cream px-4 py-2.5 rounded-xl border border-border/40 hover:border-cream/30 transition-all duration-200 group min-w-[140px]">
+        <Button variant="outline" className="flex items-center space-x-2 bg-gradient-to-r from-ink/25 to-ink/15 hover:from-ink/35 hover:to-ink/25 text-cream px-4 py-2.5 h-auto rounded-xl border border-border/40 hover:border-cream/30 group min-w-[140px]">
           <Filter className="w-4 h-4 text-primary-soft group-hover:text-cream transition-colors" />
           {currentFilter && (
             <>
@@ -86,10 +87,10 @@ export function PluginFilter({ value, onChange, pluginCounts }: PluginFilterProp
               <ChevronDown className="w-4 h-4 text-primary-soft transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </>
           )}
-        </button>
+        </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-[200px] bg-deep border-border/40">
+      <DropdownMenuContent className="w-[200px]  border-border/40">
         {FILTER_OPTIONS.map((option) => (
           <DropdownMenuItem
             key={option.value}

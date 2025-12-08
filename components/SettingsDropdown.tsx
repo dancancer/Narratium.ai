@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface SettingsDropdownProps {
   toggleModelSidebar: () => void;
@@ -117,13 +118,14 @@ export default function SettingsDropdown({ toggleModelSidebar }: SettingsDropdow
     <div className="relative">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             data-tour="settings-button"
-            className="w-8 h-8 flex items-center justify-center text-cream bg-surface rounded-md border border-stroke  transition-all duration-300 hover:bg-muted-surface hover:border-stroke-strong hover:text-primary-400 hover:shadow-[0_0_8px_rgba(251,146,60,0.4)] outline-none focus:ring-2 focus:ring-primary-500/50"
             aria-label={t("common.settings")}
           >
-            <Settings size={16} className="transition-transform duration-300 group-data-[state=open]:rotate-90" />
-          </button>
+            <Settings size={16} />
+          </Button>
         </DropdownMenuTrigger>
         
         <DropdownMenuContent align="end" className="w-56">

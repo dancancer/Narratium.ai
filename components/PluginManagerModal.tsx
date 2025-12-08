@@ -13,6 +13,7 @@ import React, { useState, useEffect } from "react";
 import { Package, RefreshCw } from "lucide-react";
 import { useLanguage } from "@/app/i18n";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { PluginFilter, type FilterValue } from "./plugin-manager/PluginFilter";
 import { PluginList } from "./plugin-manager/PluginList";
 import { PluginStats } from "./plugin-manager/PluginStats";
@@ -111,7 +112,7 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
   // ========== 渲染 ==========
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[85vh] p-0 overflow-hidden bg-deep bg-opacity-90 border-border/40 backdrop-filter backdrop-blur-md">
+      <DialogContent className="max-w-3xl max-h-[85vh] p-0 overflow-hidden  bg-opacity-90 border-border/40 backdrop-filter backdrop-blur-md">
         {/* ═══════════════════════════════════════════════════════════
             头部区域 - Header Section
             ═══════════════════════════════════════════════════════════ */}
@@ -130,16 +131,18 @@ export default function PluginManagerModal({ isOpen, onClose }: PluginManagerMod
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleRefreshPlugins}
               disabled={isRefreshing}
-              className="p-2 bg-ink/30 hover:bg-ink-soft/40 text-cream rounded-md transition-all duration-200 disabled:opacity-50 group hover:scale-105 active:scale-95"
+              className="h-9 w-9 bg-ink/30 hover:bg-ink-soft/40 text-cream group hover:scale-105 active:scale-95"
               title={t("plugins.refresh")}
             >
               <RefreshCw
                 className={`w-4 h-4 ${isRefreshing ? "animate-spin" : "group-hover:rotate-180"} transition-transform duration-300`}
               />
-            </button>
+            </Button>
           </div>
         </div>
 

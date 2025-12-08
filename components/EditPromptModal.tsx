@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -106,7 +107,7 @@ const EditPromptModal = ({
 
   return (
     <Dialog open={isOpen && !!prompt} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden bg-deep border-border gap-0">
+      <DialogContent className="max-w-lg p-0 overflow-hidden  border-border gap-0">
         <div className="p-6 border-b border-border">
           <DialogHeader>
             <DialogTitle className={"text-xl font-medium text-primary-soft magical-text "}>
@@ -130,20 +131,16 @@ const EditPromptModal = ({
             </div>
 
             <div className="flex justify-end space-x-3">
-              <button
+              <Button
+                variant="outline"
                 onClick={() => handleOpenChange(false)}
-                className="px-4 py-2 bg-gradient-to-r from-overlay to-ember text-ink-soft rounded-md hover:from-overlay hover:to-muted-surface transition-all duration-300 border border-border "
                 disabled={isSaving}
               >
                 {t("preset.cancel")}
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-800 text-white rounded-md hover:from-primary-700 hover:to-primary-900 transition-all duration-300  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
-                disabled={isSaving}
-              >
+              </Button>
+              <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? t("common.saving") : t("common.save")}
-              </button>
+              </Button>
             </div>
           </div>
         )}

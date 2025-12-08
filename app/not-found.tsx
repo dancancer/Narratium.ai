@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Star, Circle } from "lucide-react";
 import { useLanguage } from "./i18n";
 
@@ -30,11 +29,7 @@ export default function NotFound() {
       </div>
 
       <div className="relative z-10 w-full max-w-2xl px-6 py-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="mb-8 relative">
             <div className="relative mx-auto w-32 h-32 flex items-center justify-center">
               <div className="absolute inset-0 rounded-full border-2 border-border opacity-20"></div>
@@ -57,20 +52,18 @@ export default function NotFound() {
 
           <div className="flex items-center justify-center space-x-4">
             <Link href="/">
-              <motion.div
-                className={`text-primary hover:text-foreground px-4 py-2 text-sm border border-border rounded-md cursor-pointer transition-colors hover:bg-muted ${fontClass}`}
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              <div
+                className={`text-primary hover:text-foreground px-4 py-2 text-sm border border-border rounded-md cursor-pointer transition-all duration-150 hover:bg-muted hover:scale-105 ${fontClass}`}
               >
                 {t("notFound.backToHome")}
-              </motion.div>
+              </div>
             </Link>
             <span className="mx-1 text-ink">•</span>
             <div className={`text-xs text-muted-foreground ${fontClass}`}>
               {t("notFound.exploreMore")}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

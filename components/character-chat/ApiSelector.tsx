@@ -13,6 +13,7 @@ import Image from "next/image";
 import { ChevronDown, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { resolveApiIcon } from "@/lib/utils/api-icon-resolver";
 import type { APIConfig } from "@/hooks/useApiConfig";
+import { Button } from "@/components/ui/button";
 
 // ============================================================================
 //                              类型定义
@@ -66,9 +67,11 @@ export default function ApiSelector({
   return (
     <div className="relative mx-2 api-dropdown-container">
       {/* 主按钮 */}
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onToggleDropdown}
-        className="p-1 rounded-md transition-all duration-300 group relative text-text-muted hover:text-primary flex items-center"
+        className="p-1 h-auto w-auto group relative text-text-muted hover:text-primary flex items-center"
       >
         <div className="flex items-center">
           <ApiIcon name={currentConfig?.name || "openai"} />
@@ -77,7 +80,7 @@ export default function ApiSelector({
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border z-50">
           {currentConfig?.name || t("modelSettings.noConfigs")}
         </div>
-      </button>
+      </Button>
 
       {/* 第一层：API 配置列表 */}
       {showApiDropdown && !showModelDropdown && (
@@ -125,21 +128,22 @@ function ConfigDropdown({ configs, activeConfigId, onSelect, emptyText }: Config
   return (
     <div className="absolute top-full left-0 mt-1 bg-overlay border border-border rounded-md  z-50 min-w-[160px]">
       {configs.map((config) => (
-        <button
+        <Button
           key={config.id}
+          variant="ghost"
           onClick={() => onSelect(config.id)}
-          className={`w-full text-left px-2 py-1.5 text-xs hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-between ${
+          className={`w-full justify-start text-left px-2 py-1.5 h-auto text-xs hover:bg-accent hover:text-accent-foreground flex items-center ${
             activeConfigId === config.id ? "bg-accent text-accent-foreground" : "text-cream"
           }`}
         >
-          <div className="flex items-center">
+          <div className="flex items-center flex-1">
             <span className="mr-2.5"><ApiIcon name={config.name} /></span>
             <span className="truncate" title={config.name}>
               {config.name.length > 20 ? `${config.name.substring(0, 20)}...` : config.name}
             </span>
           </div>
           <ChevronRight className="h-3 w-3 ml-2" />
-        </button>
+        </Button>
       ))}
     </div>
   );
@@ -159,13 +163,15 @@ function ModelDropdown({ config, onBack, onSelect, t }: ModelDropdownProps) {
     <div className="absolute top-full left-0 mt-1 bg-overlay border border-border rounded-md  z-50 min-w-[180px]">
       {/* 头部：返回按钮 */}
       <div className="px-2 py-1.5 text-xs text-text-muted border-b border-border flex items-center justify-between">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onBack}
-          className="flex items-center text-primary-soft hover:text-primary transition-colors"
+          className="flex items-center text-primary-soft hover:text-primary h-auto p-0"
         >
           <ChevronLeft className="h-3 w-3 mr-1" />
           {t("characterChat.back")}
-        </button>
+        </Button>
         <span>{t("characterChat.selectModel")}</span>
       </div>
 
@@ -211,9 +217,10 @@ function ModelItem({ modelName, configName, isActive, onSelect, defaultLabel }: 
   const truncatedName = displayName.length > 25 ? `${displayName.substring(0, 25)}...` : displayName;
 
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={onSelect}
-      className={`w-full text-left px-2 py-1.5 text-xs hover:bg-accent hover:text-accent-foreground transition-colors flex items-center ${
+      className={`w-full justify-start text-left px-2 py-1.5 h-auto text-xs hover:bg-accent hover:text-accent-foreground flex items-center ${
         isActive ? "bg-accent text-accent-foreground" : "text-cream"
       }`}
     >
@@ -221,6 +228,6 @@ function ModelItem({ modelName, configName, isActive, onSelect, defaultLabel }: 
         <ApiIcon name={isDefault ? configName : modelName} />
       </span>
       <span className="truncate" title={displayName}>{truncatedName}</span>
-    </button>
+    </Button>
   );
 }

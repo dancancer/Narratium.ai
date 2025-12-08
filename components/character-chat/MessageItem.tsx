@@ -15,6 +15,7 @@ import ChatHtmlBubble from "@/components/ChatHtmlBubble";
 import ThinkBubble from "@/components/ThinkBubble";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
+import { Button } from "@/components/ui/button";
 import type { TavernHelperScript } from "@/lib/models/character-model";
 
 // ============================================================================
@@ -291,7 +292,7 @@ function MessageHeader({
 
 function DefaultAvatar() {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-deep">
+    <div className="w-full h-full flex items-center justify-center ">
       <User className="h-4 w-4 text-ink" />
     </div>
   );
@@ -314,16 +315,18 @@ function ActionButton({ onClick, tooltip, icon, hoverColor }: ActionButtonProps)
     : "hover:text-orange-400 hover:shadow-[0_0_8px_rgba(249,115,22,0.4)]";
 
   return (
-    <button
+    <Button
+      variant="outline"
+      size="icon"
       onClick={onClick}
-      className={`ml-1 w-6 h-6 flex items-center justify-center text-ink-soft bg-surface rounded-md border border-stroke  transition-all duration-300 hover:border-stroke-strong group relative ${colorClass}`}
+      className={`ml-1 h-6 w-6 text-ink-soft bg-surface border-stroke hover:border-stroke-strong group relative ${colorClass}`}
       data-tooltip={tooltip}
     >
       <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-overlay text-cream text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-border">
         {tooltip}
       </div>
       {icon}
-    </button>
+    </Button>
   );
 }
 

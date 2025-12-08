@@ -18,15 +18,14 @@
  * - EditCharacterModal: For editing existing character
  * - DownloadCharacterModal: For downloading character data
  * - CharacterCardGrid: For displaying characters in grid view
- * - Framer Motion: For animations
  */
 
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Aperture, LayoutGrid, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/app/i18n";
-import { motion } from "framer-motion";
 import ImportCharacterModal from "@/components/ImportCharacterModal";
 import EditCharacterModal from "@/components/EditCharacterModal";
 import DownloadCharacterModal from "@/components/DownloadCharacterModal";
@@ -339,18 +338,13 @@ export default function CharacterCards() {
       <div className="h-full w-full overflow-y-auto">
         <div className="flex flex-col items-center justify-start w-full py-8">
           <div className="w-full max-w-4xl relative z-10 px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex justify-between items-center mb-8"
-            >
+            <div className="flex justify-between items-center mb-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="flex items-center gap-3">
                 <h1 className={"text-xl sm:text-2xl magical-login-text "}>{t("sidebar.characterCards")}</h1>
-                <motion.button
-                  className={`hidden md:block portal-button text-primary-soft hover:text-highlight p-1.5 sm:p-2 border border-border rounded-md cursor-pointer ${fontClass} translate-y-[1px]`}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={`hidden md:flex ${fontClass}`}
                   onClick={() => {
                     trackButtonClick("view_mode_btn", "切换视图模式");
                     const newViewMode = viewMode === "grid" ? "carousel" : "grid";
@@ -359,68 +353,34 @@ export default function CharacterCards() {
                   }}
                 >
                   {viewMode === "grid" ? (
-                    <LayoutGrid className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <LayoutGrid className="h-4 w-4" />
                   ) : (
-                    <Aperture className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <Aperture className="h-4 w-4" />
                   )}
-                </motion.button>
+                </Button>
               </div>
               <div className="flex gap-2 sm:gap-3">
-                <motion.div
-                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-md cursor-pointer ${fontClass}
-                    bg-gradient-to-b from-overlay to-deep
-                    border border-border
-                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-[rgba(192,164,128,0.1)] before:to-transparent
-                    before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700
-                    group`}
-                  whileHover={{ 
-                    scale: 1.01,
-                    boxShadow: "0 0 25px rgba(192,164,128,0.3)",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 400, 
-                    damping: 10, 
-                  }}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={fontClass}
                   onClick={() => setIsImportModalOpen(true)}
                 >
-                  <span className="relative z-10 text-primary-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
-                    {t("characterCardsPage.importCharacter")}
-                  </span>
-                </motion.div>
-                <motion.div
-                  className={`portal-button relative overflow-hidden px-2 py-1.5 sm:px-4 sm:py-2 rounded-md cursor-pointer ${fontClass}
-                    bg-gradient-to-b from-overlay to-deep
-                    border border-border
-                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-[rgba(192,164,128,0.1)] before:to-transparent
-                    before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700
-                    group`}
-                  whileHover={{ 
-                    scale: 1.01,
-                    boxShadow: "0 0 25px rgba(192,164,128,0.3)",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 400, 
-                    damping: 10, 
-                  }}
+                  {t("characterCardsPage.importCharacter")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={fontClass}
                   onClick={() => setIsDownloadModalOpen(true)}
                 >
-                  <span className="relative z-10 text-primary-soft group-hover:text-highlight transition-colors duration-300 text-xs sm:text-base">
-                    {t("characterCardsPage.downloadCharacter")}
-                  </span>
-                </motion.div>
+                  {t("characterCardsPage.downloadCharacter")}
+                </Button>
               </div>
-            </motion.div>
+            </div>
 
             {isLoading ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex justify-center items-center h-64"
-              >
+              <div className="flex justify-center items-center h-64 animate-in fade-in duration-300">
                 <div className="relative w-16 h-16">
                   <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin"></div>
                   <div className="absolute inset-2 rounded-full border-2 border-t-ink-soft border-r-primary-bright border-b-primary-soft border-l-transparent animate-spin-slow"></div>
@@ -428,27 +388,20 @@ export default function CharacterCards() {
                     {isDownloadingPresets ? t("characterCardsPage.downloadingPresets") : t("characterCardsPage.loading")}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ) : characters.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="session-card p-8 text-center"
-              >
+              <div className="session-card p-8 text-center animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="mb-6 opacity-60 text-primary-bright">
                   <Star size={64} fill="currentColor" fillOpacity={0.3} className="mx-auto" />
                 </div>
                 <p className={"text-cream-soft mb-6 "}>{t("characterCardsPage.noCharacters")}</p>
-                <motion.div
-                  className={`portal-button inline-block text-primary-soft hover:text-highlight px-5 py-2 border border-border rounded-md cursor-pointer ${fontClass}`}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                <div
+                  className={`portal-button inline-block text-primary-soft hover:text-highlight px-5 py-2 border border-border rounded-md cursor-pointer ${fontClass} transition-transform duration-150 hover:scale-105 active:scale-95`}
                   onClick={() => setIsImportModalOpen(true)}
                 >
                   {t("characterCardsPage.importFirstCharacter")}
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             ) : viewMode === "grid" || isMobile ? (
               <CharacterCardGrid
                 characters={characters}

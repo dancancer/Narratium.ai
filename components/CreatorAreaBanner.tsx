@@ -11,7 +11,6 @@
  * - Elegant background and border effects
  * 
  * Dependencies:
- * - framer-motion: For smooth animations
  * - lucide-react: For icons
  * - ResearchSession: From agent model definitions
  */
@@ -19,9 +18,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { ResearchSession } from "@/lib/models/agent-model";
+import { Button } from "@/components/ui/button";
 
 interface CreatorAreaBannerProps {
   session: ResearchSession | null;
@@ -46,19 +45,12 @@ export default function CreatorAreaBanner({
   serifFontClass, 
 }: CreatorAreaBannerProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-deep border-b border-border p-4 flex items-center"
-    >
+    <div className="border-b border-border p-4 flex items-center animate-in fade-in slide-in-from-top-2 duration-300">
       <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 flex-1">
         <div className="flex items-center space-x-4">
-          <button
-            onClick={onBack}
-            className="group p-2.5 bg-black/40 border border-primary-500/30 rounded-xl hover:bg-black/50 hover:border-primary-400/50 transition-all duration-200 backdrop-blur-sm flex-shrink-0"
-          >
-            <ArrowLeft className="w-4 h-4 text-primary-soft group-hover:text-primary-400 transition-colors" />
-          </button>
+          <Button variant="outline" size="icon" onClick={onBack} className="flex-shrink-0">
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
           
           <div className="flex items-center space-x-3">
             <h2 className={"text-lg md:text-xl text-cream-soft magical-text  truncate max-w-[200px] md:max-w-[300px]"}>
@@ -88,6 +80,6 @@ export default function CreatorAreaBanner({
           </span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 } 

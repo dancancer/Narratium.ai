@@ -14,7 +14,7 @@
 - 插件/脚本：`lib/plugins/*` 提供插件发现与注册，`components/PluginManagerModal.tsx` 读取全局 `window.pluginRegistry`；`lib/script-runner` 负责脚本运行。
 
 ## 技术架构速览
-- 前端：Next.js 15（App Router）+ React 19，绝大部分页面为 client component；动效使用 framer-motion。
+- 前端：Next.js 15（App Router）+ React 19，绝大部分页面为 client component；动效使用 Tailwind animate-in/transition。
 - 工作流：自研 NodeFlow（`lib/workflow/*`, `lib/nodeflow/*`）实现有向无环节点执行，支持 AFTER 类节点。
 - 数据层：全部存储在浏览器 IndexedDB（`lib/data/local-storage.ts`），各模块通过封装的读写操作实现“表”概念。
 - LLM 接入：LangChain OpenAI/Ollama/Gemini runnable，预设与世界书拼装系统提示，Regex 节点做结构化解析。

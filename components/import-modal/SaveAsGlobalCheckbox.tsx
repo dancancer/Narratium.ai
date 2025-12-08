@@ -86,7 +86,7 @@ export function GlobalFormFields({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           placeholder={namePlaceholder}
-          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300"
+          className="w-full px-2 py-1.5 text-sm /60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-300"
         />
       </div>
       <div>
@@ -96,7 +96,7 @@ export function GlobalFormFields({
           onChange={(e) => onDescriptionChange(e.target.value)}
           placeholder={descriptionPlaceholder}
           rows={2}
-          className="w-full px-2 py-1.5 text-sm bg-deep/60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 resize-none transition-all duration-300"
+          className="w-full px-2 py-1.5 text-sm /60 backdrop-blur-sm border border-border/60 rounded-md text-cream-soft placeholder-ink-soft/60 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20 resize-none transition-all duration-300"
         />
       </div>
     </div>

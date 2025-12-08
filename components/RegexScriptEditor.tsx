@@ -27,6 +27,7 @@ import {
   ScriptWithKey,
 } from "@/hooks/useRegexScripts";
 import { X, Plus, Download, Code } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    类型定义
@@ -153,7 +154,7 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
   }
 
   return (
-    <div className="h-full flex flex-col bg-deep text-cream-soft">
+    <div className="h-full flex flex-col  text-cream-soft">
       {/* ─────────────────────────────────────────────────────────────────────
           头部栏
           ───────────────────────────────────────────────────────────────────── */}
@@ -176,6 +177,12 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
         serifFontClass={serifFontClass}
         fontClass={fontClass}
         t={t}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        filterBy={filterBy}
+        onSortByChange={setSortBy}
+        onSortOrderToggle={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
+        onFilterByChange={setFilterBy}
         onAddNew={() => setEditingScript({})}
         onOpenImport={() => {
           trackButtonClick("page", "打开正则导入");
@@ -184,20 +191,9 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
       />
 
       {/* ─────────────────────────────────────────────────────────────────────
-          排序筛选控件 + 脚本列表
+          脚本列表
           ───────────────────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
-        <SortFilterControls
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          filterBy={filterBy}
-          serifFontClass={serifFontClass}
-          t={t}
-          onSortByChange={setSortBy}
-          onSortOrderToggle={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
-          onFilterByChange={setFilterBy}
-        />
-
         <div ref={scrollContainerRef} className="h-full overflow-y-auto p-2 sm:p-4 pb-16 space-y-2 sm:space-y-4">
           {stats.total === 0 ? (
             <EmptyState fontClass={fontClass} t={t} />
@@ -257,7 +253,7 @@ export default function RegexScriptEditor({ onClose, characterName, characterId 
 
 function LoadingSpinner({ t }: { t: (key: string) => string }) {
   return (
-    <div className="h-full flex items-center justify-center bg-deep">
+    <div className="h-full flex items-center justify-center ">
       <div className="flex flex-col items-center">
         <div className="relative w-16 h-16">
           <div className="absolute inset-0 rounded-full border-2 border-t-primary-bright border-r-primary-soft border-b-ink-soft border-l-transparent animate-spin" />
@@ -316,19 +312,21 @@ function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontCla
 
           {/* 移动端统计 */}
           <div className={`md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft ${fontClass} flex-shrink-0`}>
-            <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
+            <span className=" px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
               {stats.total} / {stats.enabled} / {stats.disabled}
               {filterBy !== "all" && ` (${filteredCount})`}
             </span>
           </div>
         </div>
 
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => { trackButtonClick("page", "关闭正则编辑器"); onClose(); }}
-          className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group flex-shrink-0 ml-2"
+          className="h-6 w-6 sm:h-7 sm:w-7 text-ink-soft hover:text-cream-soft hover:bg-stroke group flex-shrink-0 ml-2"
         >
           <X size={12} className="transition-transform duration-300 group-hover:scale-110" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -340,47 +338,88 @@ function HeaderBar({ characterName, stats, filteredCount, filterBy, serifFontCla
 
 interface ToolbarProps {
   settings: { enabled: boolean; applyToResponse: boolean };
+  sortBy: SortField;
+  sortOrder: SortOrder;
+  filterBy: FilterType;
   serifFontClass: string;
   fontClass: string;
   t: (key: string) => string;
+  onSortByChange: (value: SortField) => void;
+  onSortOrderToggle: () => void;
+  onFilterByChange: (value: FilterType) => void;
   onAddNew: () => void;
   onOpenImport: () => void;
 }
 
-function Toolbar({ settings, serifFontClass, fontClass, t, onAddNew, onOpenImport }: ToolbarProps) {
+function Toolbar({
+  settings,
+  sortBy,
+  sortOrder,
+  filterBy,
+  serifFontClass,
+  fontClass,
+  t,
+  onSortByChange,
+  onSortOrderToggle,
+  onFilterByChange,
+  onAddNew,
+  onOpenImport,
+}: ToolbarProps) {
   return (
-    <div className="p-2 sm:p-3 border-b border-border bg-deep">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3">
-        <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
-          <button onClick={onAddNew} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-ember to-coal hover:from-muted-surface hover:to-ember text-primary-soft hover:text-primary-soft rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  group flex-shrink-0 border border-border">
-            <span className={"flex items-center "}>
+    <div className="sticky top-0 z-20  border-b border-border p-2 sm:p-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <Button
+            variant="outline"
+            onClick={onAddNew}
+            className="h-auto px-2 sm:px-3 py-1 sm:py-1.5 text-primary-soft hover:text-primary-soft text-xs sm:text-sm font-medium group flex-shrink-0 border-border"
+          >
+            <span className="flex items-center">
               <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.addNewScript")}
             </span>
-          </button>
+          </Button>
 
-          <button onClick={onOpenImport} className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal hover:from-muted-surface hover:to-coal text-sky-300 hover:text-sky-200 rounded-md transition-all duration-300 text-xs sm:text-sm font-medium  hover:shadow-sky-400/20 group flex-shrink-0 border border-stroke-strong">
-            <span className={"flex items-center "}>
+          <Button
+            variant="outline"
+            onClick={onOpenImport}
+            className="h-auto px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-overlay to-coal text-xs sm:text-sm font-medium group flex-shrink-0 border-stroke-strong"
+          >
+            <span className="flex items-center">
               <Download size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
               {t("regexScriptEditor.importScript")}
             </span>
-          </button>
+          </Button>
         </div>
 
-        <div className="flex items-center space-x-2 sm:space-x-4 text-2xs sm:text-xs text-ink-soft bg-muted-surface px-2 sm:px-3 py-1.5 sm:py-2 rounded border border-border flex-shrink-0 overflow-hidden">
-          <div className="flex items-center space-x-1 sm:space-x-2">
+        <div className="flex items-center gap-2 sm:gap-3 text-2xs sm:text-xs text-ink-soft bg-muted-surface px-2 sm:px-3 py-1.5 sm:py-2 rounded border border-border flex-shrink-0 overflow-hidden">
+          <div className="flex items-center gap-1 sm:gap-2">
             <span className={`whitespace-nowrap ${fontClass} truncate`}>{t("regexScriptEditor.globalEnabled")}:</span>
             <span className={`${settings.enabled ? "text-primary-400" : "text-rose-400"} font-medium flex-shrink-0`}>
               {settings.enabled ? t("regexScriptEditor.yes") : t("regexScriptEditor.no")}
             </span>
           </div>
           <span className="hidden sm:inline">•</span>
-          <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <span className={`whitespace-nowrap ${fontClass} truncate`}>{t("regexScriptEditor.applyToResponse")}:</span>
             <span className={`${settings.applyToResponse ? "text-primary-400" : "text-rose-400"} font-medium flex-shrink-0`}>
               {settings.applyToResponse ? t("regexScriptEditor.yes") : t("regexScriptEditor.no")}
             </span>
           </div>
+        </div>
+
+        <div className="flex-1 min-w-[260px]">
+          <SortFilterControls
+            variant="inline"
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            filterBy={filterBy}
+            serifFontClass={serifFontClass}
+            t={t}
+            onSortByChange={onSortByChange}
+            onSortOrderToggle={onSortOrderToggle}
+            onFilterByChange={onFilterByChange}
+          />
         </div>
       </div>
     </div>

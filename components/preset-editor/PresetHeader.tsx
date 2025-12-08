@@ -9,6 +9,7 @@
 
 import { X } from "lucide-react";
 import { PresetData } from "./index";
+import { Button } from "@/components/ui/button";
 
 interface PresetHeaderProps {
   characterName?: string;
@@ -74,18 +75,20 @@ export function PresetHeader({
             )}
           </div>
           <div className={"md:hidden flex items-center space-x-1 text-2xs sm:text-xs text-ink-soft  flex-shrink-0"}>
-            <span className="bg-deep px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
+            <span className=" px-1.5 sm:px-2 py-1 rounded border border-border whitespace-nowrap">
               {presets.length} / {activeCount} / {emptyCount}
               {filterBy !== "all" && ` (${filteredCount})`}
             </span>
           </div>
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-ink-soft hover:text-cream-soft transition-colors duration-300 rounded-md hover:bg-stroke group flex-shrink-0 ml-2"
+          className="w-6 h-6 sm:w-7 sm:h-7 text-ink-soft hover:text-cream-soft hover:bg-stroke group flex-shrink-0 ml-2"
         >
           <X size={12} className="transition-transform duration-300 group-hover:scale-110" />
-        </button>
+        </Button>
       </div>
     </div>
   );

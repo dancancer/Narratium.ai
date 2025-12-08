@@ -7,6 +7,8 @@
 
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 interface DialoguePlaceholderCardProps {
   title: string;
   description: string;
@@ -30,12 +32,13 @@ export function DialoguePlaceholderCard({
         <h4 className={"text-primary-400 mb-3 "}>{title}</h4>
         <p className={`text-cream mb-4 ${fontClass}`}>{description}</p>
         {actionText && onAction && (
-          <button
+          <Button
+            variant="outline"
             onClick={onAction}
-            className={`px-4 py-2 bg-muted-surface hover:bg-overlay text-primary-400 rounded-md transition-all duration-300 border border-primary-700 ${fontClass}`}
+            className={`px-4 py-2 bg-muted-surface hover:bg-overlay text-primary-400 border border-primary-700 ${fontClass}`}
           >
             {actionText}
-          </button>
+          </Button>
         )}
       </div>
     </div>
