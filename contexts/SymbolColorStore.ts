@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create, StateCreator } from "zustand";
+import { persist, PersistOptions } from "zustand/middleware";
 
 export interface SymbolColor {
   symbol: string;
@@ -45,8 +45,13 @@ const DEFAULT_SYMBOL_COLORS: SymbolColor[] = [
   { symbol: "[...](...)", color: "#67e8f9" },
 ];
 
-export const useSymbolColorStore = create<SymbolColorStore>()(
-  persist(
+type SymbolColorPersist = (
+  config: StateCreator<SymbolColorStore>,
+  options: PersistOptions<SymbolColorStore>
+) => StateCreator<SymbolColorStore>;
+
+export const useSymbolColorStore = create<SymbolColorStore>(
+  (persist as SymbolColorPersist)(
     (set, get) => ({
       symbolColors: DEFAULT_SYMBOL_COLORS,
       updateSymbolColors: (colors) => set({ symbolColors: colors }),

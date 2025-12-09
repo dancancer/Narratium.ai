@@ -275,12 +275,12 @@ export default function ImportCharacterModal({ isOpen, onClose, onImport }: Impo
               disabled={selectedFiles.length === 0 || isUploading}
             >
               {isUploading
-                ? (selectedFiles.length > 1 
-                    ? `${t("importCharacterModal.uploading")} (${selectedFiles.length})`
-                    : t("importCharacterModal.uploading"))
-                : (selectedFiles.length > 1 
-                    ? `${t("importCharacterModal.import")} (${selectedFiles.length})`
-                    : t("importCharacterModal.import"))
+                ? (selectedFiles.length > 1
+                  ? `${t("importCharacterModal.uploading")} (${selectedFiles.length})`
+                  : t("importCharacterModal.uploading"))
+                : (selectedFiles.length > 1
+                  ? `${t("importCharacterModal.import")} (${selectedFiles.length})`
+                  : t("importCharacterModal.import"))
               }
             </Button>
           </div>

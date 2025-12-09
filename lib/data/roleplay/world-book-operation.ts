@@ -151,4 +151,29 @@ export class WorldBookOperations {
     
     return newSettings;
   }
+
+  static async deleteWorldBook(characterId: string): Promise<boolean> {
+    try {
+      const worldBooks = await this.getWorldBooks();
+      let changed = false;
+
+      if (worldBooks[characterId]) {
+        delete worldBooks[characterId];
+        changed = true;
+      }
+
+      if (worldBooks[`${characterId}_settings`]) {
+        delete worldBooks[`${characterId}_settings`];
+        changed = true;
+      }
+
+      if (!changed) return false;
+
+      await this.saveWorldBooks(worldBooks);
+      return true;
+    } catch (error) {
+      console.error("Error deleting world book:", error);
+      return false;
+    }
+  }
 }

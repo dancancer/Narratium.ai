@@ -117,6 +117,7 @@ export default function CharacterChatPanel({
   const scriptBridge = useScriptBridge({
     characterId: character.id,
     characterName: character.name,
+    messages,
   });
 
   // ═══════════════════════════════════════════════════════════════
@@ -234,6 +235,8 @@ export default function CharacterChatPanel({
         fontClass={fontClass}
         serifFontClass={serifFontClass}
         t={t}
+        scriptVariables={scriptBridge.scriptVariables}
+        onScriptMessage={scriptBridge.handleScriptMessage}
         renderHeaderSlot={renderMessageHeaderSlot}
       />
 

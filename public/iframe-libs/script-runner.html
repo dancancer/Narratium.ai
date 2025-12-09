@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'none'; 
                  script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
@@ -12,16 +10,9 @@
                  img-src 'self' data: https:;
                  font-src 'self' data:;
                  connect-src 'self';">
-  
   <title>Script Runner - Narratium</title>
-  
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
@@ -30,12 +21,7 @@
       background: transparent;
       overflow-x: hidden;
     }
-    
-    #root {
-      min-height: 100vh;
-      padding: 8px;
-    }
-    
+    #root { min-height: 100vh; padding: 8px; }
     .error {
       padding: 12px;
       background: #fee;
@@ -45,259 +31,105 @@
       font-size: 12px;
       word-break: break-word;
     }
-    
-    .loading {
-      padding: 12px;
-      text-align: center;
-      color: #666;
-    }
   </style>
 </head>
 <body>
   <div id="root"></div>
   
+  <!-- 复用统一的 API Shim -->
+  <script src="/iframe-libs/slash-runner-shim.js"></script>
+  
+  <!-- 脚本执行器扩展 -->
   <script>
-    /**
-     * Script Runner Iframe
-     * 
-     * This iframe provides a sandboxed environment for executing user scripts.
-     * It communicates with the parent via postMessage for:
-     * - Receiving scripts to execute
-     * - Sending execution results
-     * - Handling events
-     * - Auto-resizing based on content
-     */
-    
     (function() {
-      'use strict';
-      
-      // State
-      let Narratium = null;
-      let parentOrigin = null;
-      const logs = [];
-      
-      /**
-       * Send message to parent
-       */
+      "use strict";
+
+      // ════════════════════════════════════════════════════════════════════
+      //  脚本执行器（扩展 slash-runner-shim 的能力）
+      // ════════════════════════════════════════════════════════════════════
+
+      var parentOrigin = null;
+
       function sendMessage(type, payload, id) {
-        const message = {
-          type,
-          payload,
-          id,
+        window.parent.postMessage({
+          type: type,
+          payload: payload,
+          id: id,
           timestamp: Date.now(),
-          origin: window.location.origin,
-        };
-        
-        window.parent.postMessage(message, '*');
+          origin: window.location.origin
+        }, "*");
       }
-      
-      /**
-       * Log message (captured for debugging)
-       */
-      function log(...args) {
-        const message = args.map(arg =>
-          typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-        ).join(' ');
-        
-        logs.push(`[${new Date().toISOString()}] ${message}`);
-        console.log('[ScriptRunner]', ...args);
-        
-        // Send to parent
-        sendMessage('CONSOLE_LOG', { message, args });
+
+      function log() {
+        var args = Array.prototype.slice.call(arguments);
+        console.log("[ScriptRunner]", args.join(" "));
       }
-      
-      /**
-       * Initialize Narratium API
-       */
-      function initializeAPI(context) {
-        Narratium = {
-          version: '1.0.0',
-          context: context || {},
-          
-          variables: {
-            get: (key) => {
-              return Narratium.context.variables?.[key];
-            },
-            set: (key, value) => {
-              if (!Narratium.context.variables) {
-                Narratium.context.variables = {};
-              }
-              Narratium.context.variables[key] = value;
-              sendMessage('API_CALL', { method: 'setVariable', args: [key, value] });
-            },
-            delete: (key) => {
-              if (Narratium.context.variables) {
-                delete Narratium.context.variables[key];
-              }
-              sendMessage('API_CALL', { method: 'deleteVariable', args: [key] });
-            },
-            list: () => {
-              return Object.keys(Narratium.context.variables || {});
-            },
-          },
-          
-          events: {
-            on: (eventName, handler) => {
-              window.addEventListener(`narratium:${eventName}`, (e) => {
-                handler(e.detail);
-              });
-            },
-            once: (eventName, handler) => {
-              const wrappedHandler = (e) => {
-                handler(e.detail);
-                window.removeEventListener(`narratium:${eventName}`, wrappedHandler);
-              };
-              window.addEventListener(`narratium:${eventName}`, wrappedHandler);
-            },
-            off: (eventName, handler) => {
-              if (handler) {
-                window.removeEventListener(`narratium:${eventName}`, handler);
-              }
-            },
-            emit: (eventName, data) => {
-              const event = new CustomEvent(`narratium:${eventName}`, { detail: data });
-              window.dispatchEvent(event);
-              sendMessage('EVENT_EMIT', { eventName, data });
-            },
-          },
-          
-          utils: {
-            log: log,
-            waitFor: (ms) => {
-              if (ms > 60000) {
-                throw new Error('Wait time cannot exceed 60 seconds');
-              }
-              return new Promise(resolve => setTimeout(resolve, ms));
-            },
-            getContext: () => {
-              return { ...Narratium.context };
-            },
-          },
-        };
-        
-        // Make it globally available
-        window.Narratium = Narratium;
-      }
-      
-      /**
-       * Execute script
-       */
+
+      // ════════════════════════════════════════════════════════════════════
+      //  执行脚本
+      // ════════════════════════════════════════════════════════════════════
+
       async function executeScript(code, context, messageId) {
-        const startTime = Date.now();
-        
+        var startTime = Date.now();
+
         try {
-          // Initialize API with context
-          initializeAPI(context);
-          
-          // Create async function wrapper
-          const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-          const fn = new AsyncFunction('Narratium', code);
-          
-          // Execute
-          const result = await fn(Narratium);
-          
-          const executionTime = Date.now() - startTime;
-          
-          // Send result
-          sendMessage('SCRIPT_RESULT', {
-            result,
-            executionTime,
+          // 更新 Narratium context
+          if (window.Narratium && context) {
+            window.Narratium.context = context;
+          }
+
+          // 创建异步函数包装器
+          var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+          var fn = new AsyncFunction("Narratium", code);
+
+          // 执行
+          var result = await fn(window.Narratium);
+          var executionTime = Date.now() - startTime;
+
+          sendMessage("SCRIPT_RESULT", {
+            result: result,
+            executionTime: executionTime
           }, messageId);
-          
+
         } catch (error) {
-          const executionTime = Date.now() - startTime;
-          
-          // Send error
-          sendMessage('SCRIPT_ERROR', {
+          sendMessage("SCRIPT_ERROR", {
             error: error.message,
             stack: error.stack,
             line: error.lineNumber,
-            column: error.columnNumber,
+            column: error.columnNumber
           }, messageId);
         }
       }
-      
-      /**
-       * Auto-resize based on content height
-       */
-      function updateHeight() {
-        const height = document.body.scrollHeight;
-        sendMessage('HEIGHT_UPDATE', { height });
-      }
-      
-      /**
-       * Handle messages from parent
-       */
-      window.addEventListener('message', async (event) => {
-        // Store parent origin on first message
-        if (!parentOrigin) {
-          parentOrigin = event.origin;
-        }
-        
-        // Validate origin (basic check)
-        // In production, this should be more strict
-        if (event.origin !== parentOrigin) {
-          log('Invalid origin:', event.origin);
-          return;
-        }
-        
-        const message = event.data;
-        
-        if (!message || typeof message !== 'object' || !message.type) {
-          return;
-        }
-        
-        switch (message.type) {
-          case 'SCRIPT_EXECUTE':
-            const { code, context, timeout } = message.payload;
-            await executeScript(code, context, message.id);
-            updateHeight();
-            break;
-            
-          case 'EVENT_EMIT':
-            const { eventName, data } = message.payload;
-            const event = new CustomEvent(`narratium:${eventName}`, { detail: data });
-            window.dispatchEvent(event);
-            break;
-            
-          default:
-            log('Unknown message type:', message.type);
+
+      // ════════════════════════════════════════════════════════════════════
+      //  消息监听（扩展）
+      // ════════════════════════════════════════════════════════════════════
+
+      window.addEventListener("message", async function(event) {
+        if (!parentOrigin) parentOrigin = event.origin;
+        if (event.origin !== parentOrigin) return;
+
+        var message = event.data;
+        if (!message || typeof message !== "object" || !message.type) return;
+
+        if (message.type === "SCRIPT_EXECUTE") {
+          var payload = message.payload;
+          await executeScript(payload.code, payload.context, message.id);
         }
       });
-      
-      /**
-       * Set up auto-resize observer
-       */
-      const resizeObserver = new ResizeObserver(() => {
-        updateHeight();
-      });
-      
-      resizeObserver.observe(document.body);
-      
-      /**
-       * Initialize
-       */
-      window.addEventListener('DOMContentLoaded', () => {
-        log('Script runner initialized');
-        
-        // Signal ready to parent
-        sendMessage('READY', {
-          version: '1.0.0',
-          userAgent: navigator.userAgent,
+
+      // ════════════════════════════════════════════════════════════════════
+      //  初始化
+      // ════════════════════════════════════════════════════════════════════
+
+      window.addEventListener("DOMContentLoaded", function() {
+        log("Script runner initialized");
+        sendMessage("READY", {
+          version: "1.0.0",
+          userAgent: navigator.userAgent
         });
-        
-        // Initial height update
-        updateHeight();
       });
-      
-      /**
-       * Cleanup on unload
-       */
-      window.addEventListener('beforeunload', () => {
-        log('Script runner unloading');
-        resizeObserver.disconnect();
-      });
-      
+
     })();
   </script>
 </body>

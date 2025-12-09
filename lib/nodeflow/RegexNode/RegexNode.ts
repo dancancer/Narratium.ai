@@ -3,6 +3,11 @@ import { NodeConfig, NodeInput, NodeOutput, NodeCategory } from "@/lib/nodeflow/
 import { RegexNodeTools } from "./RegexNodeTools";
 import { NodeToolRegistry } from "../NodeTool";
 
+const DEBUG = true;
+function log(tag: string, ...args: unknown[]): void {
+  if (DEBUG) console.log(`[RegexNode][${tag}]`, ...args);
+}
+
 export class RegexNode extends NodeBase {
   static readonly nodeName = "regex";
   static readonly description = "Processes LLM responses with regex patterns";
@@ -13,30 +18,35 @@ export class RegexNode extends NodeBase {
     super(config);
     this.toolClass = RegexNodeTools;
   }
-  
+
   protected getDefaultCategory(): NodeCategory {
     return NodeCategory.MIDDLE;
   }
 
   protected async _call(input: NodeInput): Promise<NodeOutput> {
+    log("START", "━━━ RegexNode 开始执行 ━━━");
+    log("INPUT", `llmResponse长度=${input.llmResponse?.length}, characterId=${input.characterId}`);
+
     let llmResponse = input.llmResponse;
     const characterId = input.characterId;
 
     if (!llmResponse) {
+      log("ERROR", "缺少 llmResponse");
       throw new Error("LLM response is required for RegexNode");
     }
 
     if (!characterId) {
+      log("ERROR", "缺少 characterId");
       throw new Error("Character ID is required for RegexNode");
     }
 
-    // Extract thinking content from LLM response
+    // 提取思考内容
     let thinkingContent = "";
     const thinkingMatch = llmResponse.match(/<(?:think|thinking)>([\s\S]*?)<\/(?:think|thinking)>/);
     if (thinkingMatch) {
       thinkingContent = thinkingMatch[1].trim();
+      log("THINK", `提取到思考内容，长度=${thinkingContent.length}`);
     }
-    console.log("thinkingContent", thinkingContent);
 
     llmResponse = llmResponse
       .replace(/\n*\s*<think>[\s\S]*?<\/think>\s*\n*/g, "")

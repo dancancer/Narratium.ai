@@ -1,189 +1,167 @@
 /**
- * Tag Replacer - HTML标签替换和样式注入工具
- * 
- * 设计原则：
- * 1. 递归处理：支持嵌套标签的递归处理
- * 2. 样式合并：保留原有样式，智能合并新样式
- * 3. 安全跳过：自动跳过script、style等敏感标签
- * 4. 性能优化：使用正则表达式批量处理，减少DOM操作
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                         标签替换器                                         ║
+ * ║                                                                            ║
+ * ║  职责：为 HTML 标签添加样式和语义属性                                        ║
+ * ║  设计：递归处理嵌套标签，智能合并样式                                        ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import { generatePalette, detectHtmlTags } from "./html-tag-processor";
 import { useSymbolColorStore } from "@/contexts/SymbolColorStore";
 
-/**
- * 替换HTML中的标签，添加样式和语义信息
- * 
- * 处理流程：
- * 1. 检测所有HTML标签
- * 2. 生成颜色调色板
- * 3. 递归处理嵌套标签
- * 4. 为每个标签添加样式、data属性和class
- * 5. 处理自闭合标签
- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   日志开关
+   ═══════════════════════════════════════════════════════════════════════════ */
+const DEBUG_TAG = true;
+
+function log(tag: string, ...args: unknown[]): void {
+  if (DEBUG_TAG) {
+    console.log(`[TagReplacer][${tag}]`, ...args);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   常量
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SKIP_TAGS = new Set(["script", "style", "head", "meta", "link", "title"]);
+const SKIP_SELF_CLOSING = new Set(["br", "hr", "img", "input", "meta", "link"]);
+
+const TAG_REGEX = /<([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)>([\s\S]*?)<\/\1>/g;
+const SELF_CLOSING_REGEX = /<([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)\s*\/\s*>/g;
+const CLASS_REGEX = /class\s*=\s*["']([^"']*)["']/i;
+const STYLE_REGEX = /style\s*=\s*["']([^"']*)["']/i;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   辅助函数
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+function getTagColor(
+  tagName: string,
+  className: string,
+  colours: Record<string, string>,
+  getColorForHtmlTag: (tag: string, cls: string) => string | undefined,
+): string | undefined {
+  return getColorForHtmlTag(tagName, className) || colours[tagName];
+}
+
+function buildAttributes(
+  original: string,
+  color: string,
+  tagName: string,
+): string {
+  let attrs = original.trim();
+  const styleMatch = attrs.match(STYLE_REGEX);
+  const classMatch = attrs.match(CLASS_REGEX);
+
+  // 合并 style
+  if (styleMatch) {
+    attrs = attrs.replace(styleMatch[0], `style="${styleMatch[1]}; color:${color}"`);
+  } else {
+    attrs += ` style="color:${color}"`;
+  }
+
+  // 合并 class
+  if (classMatch) {
+    attrs = attrs.replace(classMatch[0], `class="${classMatch[1]} tag-styled"`);
+  } else {
+    attrs += " class=\"tag-styled\"";
+  }
+
+  return `${attrs} data-tag="${tagName}"`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   主函数
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 export function replaceTags(html: string): string {
+  log("START", `输入长度=${html.length}`);
+  log("INPUT", `前200字符: ${html.slice(0, 200)}...`);
+
   const tags = detectHtmlTags(html);
-  if (tags.length === 0) return html;
-  
+  log("DETECT", `检测到标签: ${tags.length} 种 - ${tags.join(", ")}`);
+
+  if (tags.length === 0) {
+    log("SKIP", "无标签，跳过处理");
+    return html;
+  }
+
   const colours = generatePalette(tags);
+  log("PALETTE", `生成调色板: ${JSON.stringify(colours)}`);
+
   const { getColorForHtmlTag } = useSymbolColorStore.getState();
 
-  /**
-   * 处理普通标签（有闭合标签）
-   */
-  function processHtml(htmlStr: string): string {
-    htmlStr = htmlStr.replace(/>\s*\n\s*</g, "><");
-    
-    const tagRegex = /<([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)>([\s\S]*?)<\/\1>/g;
-    
-    return htmlStr.replace(tagRegex, (match, tagName: string, attributes: string, innerContent: string) => {
-      const lowerTagName = tagName.toLowerCase();
+  let processCount = 0;
+  let colorApplyCount = 0;
 
-      // 跳过敏感标签
-      const skipTags = ["script", "style", "head", "meta", "link", "title"];
-      if (skipTags.includes(lowerTagName)) {
+  function processHtml(htmlStr: string, depth = 0): string {
+    // 移除标签间空白
+    const cleaned = htmlStr.replace(/>\s*\n\s*</g, "><");
+
+    return cleaned.replace(TAG_REGEX, (match, tagName, attributes, inner) => {
+      const lower = tagName.toLowerCase();
+      processCount++;
+
+      log("PROCESS", `${"  ".repeat(depth)}[${processCount}] <${tagName}> attrs='${attributes.slice(0, 50)}'`);
+
+      if (SKIP_TAGS.has(lower)) {
+        log("PROCESS", `${"  ".repeat(depth)}  ✗ 跳过敏感标签`);
         return match;
       }
 
-      // 递归处理内部内容
-      const processedInner = processHtml(innerContent);
+      // 递归处理内部
+      const processedInner = processHtml(inner, depth + 1);
 
-      // 提取class属性
-      let className = "";
-      const classMatch = attributes.match(/class\s*=\s*["']([^"']*)["']/i);
-      if (classMatch) {
-        className = classMatch[1];
+      // 获取颜色
+      const className = attributes.match(CLASS_REGEX)?.[1] || "";
+      const color = getTagColor(lower, className, colours, getColorForHtmlTag);
+
+      if (color) {
+        colorApplyCount++;
+        log("PROCESS", `${"  ".repeat(depth)}  ✓ 应用颜色: ${color}`);
+        const finalAttrs = buildAttributes(attributes, color, tagName);
+        return `<${tagName} ${finalAttrs}>${processedInner}</${tagName}>`;
       }
 
-      // 获取标签颜色
-      let tagColor = getColorForHtmlTag(lowerTagName, className);
-      
-      if (!tagColor && colours[lowerTagName]) {
-        tagColor = colours[lowerTagName];
-      }
-
-      // 如果有颜色，添加样式和属性
-      if (tagColor) {
-        const preservedAttrs = attributes.trim();
-        const styleAttr = `style="color:${tagColor}"`;
-        const dataAttr = `data-tag="${tagName}"`;
-        const classAttr = "class=\"tag-styled\"";
-        
-        let finalAttrs = "";
-        if (preservedAttrs) {
-          const styleMatch = preservedAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
-          const classMatch = preservedAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
-          
-          let modifiedAttrs = preservedAttrs;
-          
-          // 合并样式
-          if (styleMatch) {
-            const existingStyle = styleMatch[1];
-            const newStyle = `${existingStyle}; color:${tagColor}`;
-            modifiedAttrs = modifiedAttrs.replace(styleMatch[0], `style="${newStyle}"`);
-          } else {
-            modifiedAttrs += ` ${styleAttr}`;
-          }
-          
-          // 合并class
-          if (classMatch) {
-            const existingClass = classMatch[1];
-            const newClass = `${existingClass} tag-styled`;
-            modifiedAttrs = modifiedAttrs.replace(classMatch[0], `class="${newClass}"`);
-          } else {
-            modifiedAttrs += ` ${classAttr}`;
-          }
-          
-          finalAttrs = modifiedAttrs + ` ${dataAttr}`;
-        } else {
-          finalAttrs = `${classAttr} ${styleAttr} ${dataAttr}`;
-        }
-        
-        return `<${tagName}${finalAttrs ? " " + finalAttrs : ""}>${processedInner}</${tagName}>`;
-      } else {
-        // 无颜色，返回原样
-        return `<${tagName}${attributes ? " " + attributes : ""}>${processedInner}</${tagName}>`;
-      }
+      log("PROCESS", `${"  ".repeat(depth)}  ✗ 无颜色配置`);
+      return `<${tagName}${attributes ? " " + attributes : ""}>${processedInner}</${tagName}>`;
     });
   }
-  
-  /**
-   * 处理自闭合标签
-   */
-  function processSelfClosingTags(htmlStr: string): string {
-    const selfClosingRegex = /<([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)\s*\/\s*>/g;
-    
-    return htmlStr.replace(selfClosingRegex, (match, tagName: string, attributes: string) => {
-      const lowerTagName = tagName.toLowerCase();
-      
-      // 跳过不需要处理的自闭合标签
-      const skipTags = ["br", "hr", "img", "input", "meta", "link"];
-      if (skipTags.includes(lowerTagName)) {
+
+  function processSelfClosing(htmlStr: string): string {
+    return htmlStr.replace(SELF_CLOSING_REGEX, (match, tagName, attributes) => {
+      const lower = tagName.toLowerCase();
+      processCount++;
+
+      log("SELF_CLOSE", `[${processCount}] <${tagName} /> attrs='${attributes.slice(0, 50)}'`);
+
+      if (SKIP_SELF_CLOSING.has(lower)) {
+        log("SELF_CLOSE", "  ✗ 跳过");
         return match;
-      }
-      
-      // 提取class属性
-      let className = "";
-      const classMatch = attributes.match(/class\s*=\s*["']([^"']*)["']/i);
-      if (classMatch) {
-        className = classMatch[1];
       }
 
-      // 获取标签颜色
-      let tagColor = getColorForHtmlTag(lowerTagName, className);
-      
-      if (!tagColor && colours[lowerTagName]) {
-        tagColor = colours[lowerTagName];
+      const className = attributes.match(CLASS_REGEX)?.[1] || "";
+      const color = getTagColor(lower, className, colours, getColorForHtmlTag);
+
+      if (color) {
+        colorApplyCount++;
+        log("SELF_CLOSE", `  ✓ 应用颜色: ${color}`);
+        const finalAttrs = buildAttributes(attributes, color, tagName);
+        return `<${tagName} ${finalAttrs} />`;
       }
-      
-      // 如果有颜色，添加样式和属性
-      if (tagColor) {
-        const preservedAttrs = attributes.trim();
-        const styleAttr = `style="color:${tagColor}"`;
-        const dataAttr = `data-tag="${tagName}"`;
-        const classAttr = "class=\"tag-styled\"";
-        
-        let finalAttrs = "";
-        if (preservedAttrs) {
-          const styleMatch = preservedAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
-          const classMatch = preservedAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
-          
-          let modifiedAttrs = preservedAttrs;
-          
-          // 合并样式
-          if (styleMatch) {
-            const existingStyle = styleMatch[1];
-            const newStyle = `${existingStyle}; color:${tagColor}`;
-            modifiedAttrs = modifiedAttrs.replace(styleMatch[0], `style="${newStyle}"`);
-          } else {
-            modifiedAttrs += ` ${styleAttr}`;
-          }
-          
-          // 合并class
-          if (classMatch) {
-            const existingClass = classMatch[1];
-            const newClass = `${existingClass} tag-styled`;
-            modifiedAttrs = modifiedAttrs.replace(classMatch[0], `class="${newClass}"`);
-          } else {
-            modifiedAttrs += ` ${classAttr}`;
-          }
-          
-          finalAttrs = modifiedAttrs + ` ${dataAttr}`;
-        } else {
-          finalAttrs = `${classAttr} ${styleAttr} ${dataAttr}`;
-        }
-        
-        return `<${tagName}${finalAttrs ? " " + finalAttrs : ""} />`;
-      } else {
-        // 无颜色，返回原样
-        return match;
-      }
+
+      log("SELF_CLOSE", "  ✗ 无颜色配置");
+      return match;
     });
   }
-  
-  // 处理HTML
+
   let result = processHtml(html);
-  result = processSelfClosingTags(result);
+  result = processSelfClosing(result);
+
+  log("DONE", `处理标签: ${processCount} 个，应用颜色: ${colorApplyCount} 个`);
+  log("DONE", `输出长度=${result.length}`);
+  log("OUTPUT", `前200字符: ${result.slice(0, 200)}...`);
 
   return result;
 }

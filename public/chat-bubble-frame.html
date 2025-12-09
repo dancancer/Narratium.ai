@@ -431,9 +431,32 @@
         }
       }
 
-      // Forward API calls and events from nested iframes (Slash Runner Embeds)
+      // ╔══════════════════════════════════════════════════════════════════╗
+      // ║  双向消息转发：确保上行和下行通道对称                              ║
+      // ╚══════════════════════════════════════════════════════════════════╝
+      
+      // 上行：嵌套 iframe → 父窗口
       if (e.data && (e.data.type === 'API_CALL' || e.data.type === 'EVENT_EMIT' || e.data.type === 'CONSOLE_LOG')) {
         window.parent.postMessage(e.data, '*');
+      }
+      
+      // 下行：父窗口 → 嵌套 iframe（API_RESPONSE 回传）
+      if (e.data && e.data.type === 'API_RESPONSE') {
+        document.querySelectorAll('iframe[data-embedded-html]').forEach((frame) => {
+          try {
+            frame.contentWindow.postMessage(e.data, '*');
+          } catch (_) {}
+        });
+      }
+
+      // ╔══════════════════════════════════════════════════════════════════╗
+      // ║  监听内嵌 slash-runner-embed 的高度变化                           ║
+      // ║  当内嵌 iframe 内容异步加载完成后，重新计算外层气泡高度            ║
+      // ╚══════════════════════════════════════════════════════════════════╝
+      if (e.data && e.data.type === 'HEIGHT_UPDATE') {
+        resizeSlashRunnerEmbeds();
+        calculationCount = 0;
+        debounceCalculation(checkSizeChanges);
       }
 
       // Handle broadcast messages from parent to nested iframes

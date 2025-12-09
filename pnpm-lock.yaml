@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  material-colors: 1.2.5
+
 importers:
 
   .:
@@ -4121,8 +4124,8 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
-  material-colors@1.2.6:
-    resolution: {integrity: sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==}
+  material-colors@1.2.5:
+    resolution: {integrity: sha512-B35X1aAkjtk5fC2tPrQe3bWllKCOw3HaNztbloY0IHEiH8jJMNtC30K0wslP5skn1kWR16e/GhScO5c6Jy7t4Q==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -9617,7 +9620,7 @@ snapshots:
 
   marked@15.0.12: {}
 
-  material-colors@1.2.6: {}
+  material-colors@1.2.5: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -10205,7 +10208,7 @@ snapshots:
       '@icons/material': 0.2.4(react@19.2.1)
       lodash: 4.17.21
       lodash-es: 4.17.21
-      material-colors: 1.2.6
+      material-colors: 1.2.5
       prop-types: 15.8.1
       react: 19.2.1
       reactcss: 1.2.3(react@19.2.1)

@@ -168,9 +168,9 @@ const PresetRow = memo(function PresetRow({
               className={`inline-flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-2xs sm:text-xs font-medium whitespace-nowrap transition-all duration-300 backdrop-blur-sm border ${
                 preset.enabled !== false
                   ? preset.totalPrompts > 0
-                    ? "bg-gradient-to-br from-slate-800/60 via-primary-900/40 to-slate-800/60 text-primary-200/90 border-primary-600/30"
-                    : "bg-gradient-to-br from-slate-800/60 via-blue-900/40 to-slate-800/60 text-blue-200/90 border-blue-600/30"
-                  : "bg-gradient-to-br from-slate-800/60 via-stone-700/40 to-slate-800/60 text-stone-300/90 border-stone-500/30"
+                    ? " text-primary-200/90 border-primary-600/30"
+                    :  "text-blue-200/90 border-blue-600/30"
+                  : " text-stone-300/90 border-stone-500/30"
               }`}
             >
               <span

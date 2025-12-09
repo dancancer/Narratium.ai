@@ -99,6 +99,24 @@ export class ScriptExecutor {
             debug: false,
             timeout: this.options.timeout,
           });
+
+          // 兼容 TavernHelper API_CALL（最少返回空结果，避免脚本超时）
+          this.bridge.on("API_CALL", (message) => {
+            const method = (message.payload as any)?.method;
+            const args = (message.payload as any)?.args || [];
+            const reply = (result: any) => {
+              if (!message.id) return;
+              this.bridge?.send("API_RESPONSE", { result }, message.id);
+            };
+
+            if (method === "getChatMessages") {
+              reply([]);
+            } else if (method === "getCurrentMessageId") {
+              reply(null);
+            } else if (method === "eventEmit" || method === "events.emit") {
+              reply(args[0] ?? null);
+            }
+          });
           
           // Create event emitter
           this.eventEmitter = createEventEmitterWithBridge(this.bridge);

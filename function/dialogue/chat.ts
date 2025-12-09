@@ -139,8 +139,10 @@ async function processPostResponseAsync({
       regexResult: screenContent,
       nextPrompts,
     };
+
     const dialogueTree = await LocalCharacterDialogueOperations.getDialogueTreeById(characterId);
     const parentNodeId = dialogueTree ? dialogueTree.current_nodeId : "root";
+
     await LocalCharacterDialogueOperations.addNodeToDialogueTree(
       characterId,
       parentNodeId,
@@ -152,20 +154,21 @@ async function processPostResponseAsync({
       nodeId,
     );
 
+    // 处理 MVU 变量更新
+    const { processMessageVariables } = await import("@/lib/mvu");
+    await processMessageVariables(characterId, nodeId, fullResponse);
+
     if (event) {
-      const updatedDialogueTree = await LocalCharacterDialogueOperations.getDialogueTreeById(characterId);
-      if (updatedDialogueTree) {
-        await LocalCharacterDialogueOperations.updateNodeInDialogueTree(
-          characterId,
-          nodeId,
-          {
-            parsedContent: {
-              ...parsed,
-              compressedContent: event,
-            },
+      await LocalCharacterDialogueOperations.updateNodeInDialogueTree(
+        characterId,
+        nodeId,
+        {
+          parsedContent: {
+            ...parsed,
+            compressedContent: event,
           },
-        );
-      }
+        },
+      );
     }
   } catch (e) {
     console.error("Error in processPostResponseAsync:", e);

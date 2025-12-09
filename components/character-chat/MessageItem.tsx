@@ -11,12 +11,13 @@
 
 import { useCallback } from "react";
 import { ArrowUp, RefreshCw, User } from "lucide-react";
-import ChatHtmlBubble from "@/components/ChatHtmlBubble";
+import MessageBubble from "@/components/MessageBubble";
 import ThinkBubble from "@/components/ThinkBubble";
 import { CharacterAvatarBackground } from "@/components/CharacterAvatarBackground";
 import { trackButtonClick } from "@/utils/google-analytics";
 import { Button } from "@/components/ui/button";
 import type { TavernHelperScript } from "@/lib/models/character-model";
+import type { ScriptMessageData } from "@/types/script-message";
 
 // ============================================================================
 //                              类型定义
@@ -55,7 +56,9 @@ interface MessageItemProps {
   fontClass: string;
   serifFontClass: string;
   t: (key: string) => string;
-  headerSlot?: React.ReactNode; // API 选择器、流式切换等
+  headerSlot?: React.ReactNode;
+  scriptVariables?: Record<string, unknown>;
+  onScriptMessage?: (data: ScriptMessageData) => Promise<unknown> | unknown;
 }
 
 // ============================================================================
@@ -77,6 +80,8 @@ export default function MessageItem({
   serifFontClass,
   t,
   headerSlot,
+  scriptVariables,
+  onScriptMessage,
 }: MessageItemProps) {
   // 用户消息直接返回简化版
   if (message.role === "user") {
@@ -100,6 +105,8 @@ export default function MessageItem({
       serifFontClass={serifFontClass}
       t={t}
       headerSlot={headerSlot}
+      scriptVariables={scriptVariables}
+      onScriptMessage={onScriptMessage}
     />
   );
 }
@@ -156,6 +163,8 @@ interface AssistantMessageProps {
   serifFontClass: string;
   t: (key: string) => string;
   headerSlot?: React.ReactNode;
+  scriptVariables?: Record<string, unknown>;
+  onScriptMessage?: (data: ScriptMessageData) => Promise<unknown> | unknown;
 }
 
 function AssistantMessage({
@@ -173,6 +182,8 @@ function AssistantMessage({
   serifFontClass,
   t,
   headerSlot,
+  scriptVariables,
+  onScriptMessage,
 }: AssistantMessageProps) {
   const showRegenerateButton = !isSending && isLastMessage;
 
@@ -209,19 +220,17 @@ function AssistantMessage({
       />
 
       {/* 消息内容 */}
-      <ChatHtmlBubble
+      <MessageBubble
         key={message.id}
         html={message.content}
+        characterId={character.id}
         scripts={character.extensions?.TavernHelper_scripts || []}
+        scriptVariables={scriptVariables}
         isLoading={isSending && isLastMessage && message.content.trim() === ""}
         enableStreaming={enableStreaming && index >= streamingTarget}
         onContentChange={isLastMessage ? onContentChange : undefined}
         enableScript={true}
-        onScriptMessage={(data) => {
-          if (data.type === "CONSOLE_LOG") {
-            console.log("[Script]", ...data.payload.args);
-          }
-        }}
+        onScriptMessage={onScriptMessage}
       />
     </div>
   );

@@ -5,6 +5,11 @@ import { LocalCharacterRecordOperations } from "@/lib/data/roleplay/character-re
 import { adaptText } from "@/lib/adapter/tagReplacer";
 import { RegexProcessor } from "@/lib/core/regex-processor";
 
+const DEBUG = true;
+function log(tag: string, ...args: unknown[]): void {
+  if (DEBUG) console.log(`[DialogueInit][${tag}]`, ...args);
+}
+
 interface InitCharacterDialogueOptions {
   username?: string;
   characterId: string;
@@ -53,14 +58,19 @@ export async function initCharacterDialogue(options: InitCharacterDialogueOption
 
       for (let index = 0; index < messagesToProcess.length; index++) {
         const message = messagesToProcess[index];
-        const adaptedMessage = adaptText(message, language, username);
+        log("ADAPT", `处理开场白 ${index + 1}/${messagesToProcess.length}`);
 
+        const adaptedMessage = adaptText(message, language, username);
+        log("ADAPT", `adaptText 完成，长度=${adaptedMessage.length}`);
+
+        log("REGEX", `调用 RegexProcessor...`);
         const regexResult = await RegexProcessor.processFullContext(
-          adaptedMessage, 
-          { 
-            ownerId: characterId, 
+          adaptedMessage,
+          {
+            ownerId: characterId,
           },
         );
+        log("REGEX", `RegexProcessor 完成，应用脚本: ${regexResult.appliedScripts.join(", ") || "(无)"}`);
 
         const processedMessage = regexResult.replacedText;
 

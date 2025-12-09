@@ -14,10 +14,11 @@ import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import MessageItem, { type Message } from "./MessageItem";
 import { Button } from "@/components/ui/button";
 import type { TavernHelperScript } from "@/lib/models/character-model";
-
 // ============================================================================
 //                              类型定义
 // ============================================================================
+
+import type { ScriptMessageData } from "@/types/script-message";
 
 interface Character {
   id: string;
@@ -50,6 +51,8 @@ interface MessageListProps {
   serifFontClass: string;
   t: (key: string) => string;
   renderHeaderSlot?: (message: Message, index: number) => React.ReactNode;
+  scriptVariables?: Record<string, unknown>;
+  onScriptMessage?: (data: ScriptMessageData) => Promise<unknown> | unknown;
 }
 
 // ============================================================================
@@ -72,6 +75,8 @@ export default function MessageList({
   serifFontClass,
   t,
   renderHeaderSlot,
+  scriptVariables,
+  onScriptMessage,
 }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -147,6 +152,8 @@ export default function MessageList({
                   fontClass={fontClass}
                   serifFontClass={serifFontClass}
                   t={t}
+                  scriptVariables={scriptVariables}
+                  onScriptMessage={onScriptMessage}
                   headerSlot={renderHeaderSlot?.(message, index)}
                 />
               );

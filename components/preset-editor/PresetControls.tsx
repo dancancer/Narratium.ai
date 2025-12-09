@@ -44,7 +44,7 @@ export function PresetControls({
             variant="outline"
             size="sm"
             onClick={onCreate}
-            className="px-2 sm:px-3 py-1 sm:py-1.5 h-auto hover:from-muted-surface text-primary-soft hover:text-primary-soft text-xs sm:text-sm font-medium group flex-shrink-0 border border-border"
+            className="px-2 sm:px-3 py-1 sm:py-1.5 h-auto text-primary-soft  text-xs sm:text-sm font-medium group border border-border"
           >
             <span className="flex items-center">
               <Plus size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
@@ -57,7 +57,7 @@ export function PresetControls({
             variant="outline"
             size="sm"
             onClick={onImport}
-            className="px-2 sm:px-3 py-1 sm:py-1.5 h-auto bg-gradient-to-r from-overlay to-coal text-brand text-xs sm:text-sm font-medium hover:shadow-success/20 group flex-shrink-0 border border-border"
+            className="px-2 sm:px-3 py-1 sm:py-1.5 h-auto text-xs sm:text-sm font-medium group  border border-border"
           >
             <span className="flex items-center">
               <FileText size={10} className="mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110" />
